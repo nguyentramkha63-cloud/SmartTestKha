@@ -2477,7 +2477,6 @@ export default function App() {
                     Sau khi AI soạn xong, thầy cô có thể:
                     <ul className="list-disc ml-5 mt-2 space-y-1">
                       <li>Chỉnh sửa nội dung câu hỏi, phương án, đáp án bằng công cụ "cây bút"</li>
-                      <li>Tạo hình ảnh minh họa cho câu hỏi bằng AI. Lưu ý: AI vẽ tốt dạng hình ảnh nghệ thuật như họa sĩ, chưa chính xác về mặt khoa học. Thầy cô có thể copy/dán hình ảnh từ nguồn khác vào câu hỏi/đáp án</li>
                       <li>Chọn khóa các câu hỏi/đáp án (nếu muốn) để không bị thay đổi khi trộn đề bằng cách click công cụ "mũi tên tròn" màu xanh.</li>
                       <li>Sau khi kiểm tra kỹ, thầy cô có thể "Xuất hồ sơ đề", trong file word này có đầy đủ các phần: Mục tiêu-Ma trận-Đặc tả-Đề gốc-Đáp án. Nếu thầy cô quên thì file này vẫn có trong file Zip ở Bước 4</li>
                     </ul>
@@ -2764,13 +2763,13 @@ export default function App() {
                         : 'text-slate-300 cursor-not-allowed'
                   }`}
                 >
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-[10px] ${
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xl ${
                     step === s.id ? 'bg-white/20' : isClickable ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100'
                   }`}>
                     {s.id}
                   </div>
                   <div className="flex flex-col text-left">
-                    <span className="text-[10px] font-bold leading-none">{s.label}</span>
+                    <span className="text-base font-bold leading-none">{s.label}</span>
                   </div>
                 </button>
                 {idx < 3 && <div className="w-3 h-px bg-slate-200" />}
