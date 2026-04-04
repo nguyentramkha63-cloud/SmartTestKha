@@ -1936,6 +1936,8 @@ export default function App() {
         - Mức độ phân bổ điểm số: Nhận biết ${knowledge}%, Thông hiểu ${comprehension}%, Vận dụng ${application}%
         - Danh sách các chủ đề/bài học: ${topics.join(', ')}
 
+        ${subject === 'Tin học' && ['Khối 6', 'Khối 7', 'Khối 8', 'Khối 9'].includes(grade) ? `LƯU Ý RIÊNG CHO MÔN TIN HỌC: Với các nội dung liên quan đến lập trình, thuật toán, cấu trúc điều khiển, bạn PHẢI sử dụng ngôn ngữ lập trình Scratch để minh họa và đặt câu hỏi. TUYỆT ĐỐI KHÔNG sử dụng Python hay ngôn ngữ khác cho khối lớp này.` : ''}
+
         LƯU Ý QUAN TRỌNG VỀ MỨC ĐỘ NHẬN THỨC:
         - Phân bổ các mức độ nhận thức (NHẬN BIẾT, THÔNG HIỂU, VẬN DỤNG) linh hoạt cho TẤT CẢ các loại câu hỏi (MCQ, TF, SA, TL) để đảm bảo tổng điểm khớp với tỷ lệ yêu cầu.
         - ƯU TIÊN: Mỗi loại câu hỏi (ví dụ MCQ) nên có sự pha trộn của 2-3 mức độ nhận thức khác nhau (ví dụ MCQ có cả câu NB, TH và VD). Chỉ sử dụng 1 mức độ duy nhất cho một loại câu hỏi khi thực sự cần thiết hoặc không còn lựa chọn nào khác để đảm bảo tính đa dạng của đề thi.
@@ -1991,7 +1993,7 @@ export default function App() {
         model: "gemini-flash-latest",
         contents: [{ parts: [{ text: prompt }] }],
         config: {
-          systemInstruction: "Bạn là một chuyên gia khảo thí Việt Nam. Hãy soạn đề thi chuẩn GDPT 2018, nội dung khoa học, chính xác. Trả về JSON chuẩn. QUAN TRỌNG: Phải đếm kỹ số lượng câu hỏi trước khi kết thúc phản hồi để đảm bảo khớp 100% với yêu cầu.",
+          systemInstruction: `Bạn là một chuyên gia khảo thí Việt Nam. Hãy soạn đề thi chuẩn GDPT 2018, nội dung khoa học, chính xác. Trả về JSON chuẩn. QUAN TRỌNG: Phải đếm kỹ số lượng câu hỏi trước khi kết thúc phản hồi để đảm bảo khớp 100% với yêu cầu. ${subject === 'Tin học' && ['Khối 6', 'Khối 7', 'Khối 8', 'Khối 9'].includes(grade) ? 'Lưu ý: Với môn Tin học cấp THCS (lớp 6-9), phần lập trình chỉ sử dụng ngôn ngữ Scratch.' : ''}`,
           responseMimeType: "application/json",
           maxOutputTokens: 16384,
           responseSchema: {
