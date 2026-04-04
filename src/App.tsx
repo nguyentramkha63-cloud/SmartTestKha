@@ -3443,7 +3443,7 @@ export default function App() {
                               <span className="px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded-full text-[10px] font-black uppercase tracking-wider border border-emerald-200">
                                 {q.level}
                               </span>
-                              <span className="px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-wider border border-emerald-100 italic">
+                              <span className="px-3 py-1.5 bg-yellow-50 text-red-600 rounded-full text-[10px] font-black uppercase tracking-wider border border-yellow-200 italic">
                                 NỘI DUNG: {q.topic}
                               </span>
                             </div>
@@ -4058,7 +4058,7 @@ export default function App() {
                               <span className="px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded-full text-[10px] font-black uppercase tracking-wider border border-emerald-200">
                                 {q.level}
                               </span>
-                              <span className="px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-wider border border-emerald-100 italic">
+                              <span className="px-3 py-1.5 bg-yellow-50 text-red-600 rounded-full text-[10px] font-black uppercase tracking-wider border border-yellow-200 italic">
                                 NỘI DUNG: {q.topic}
                               </span>
                             </div>
