@@ -7,11 +7,10 @@ export const LESSON_LIBRARY: Record<string, Record<string, Record<string, string
   'Toán học': {
     'Khối 12': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Tính đơn điệu và cực trị của hàm số', 'Bài 2. Giá trị lớn nhất và giá trị nhỏ nhất của hàm số', 'Bài 3. Đường tiệm cận của đồ thị hàm số', 'Bài 4. Khảo sát sự biến thiên và vẽ đồ thị của hàm số', 'Bài 5. Ứng dụng đạo hàm giải quyết bài toán thực tế',
-        'Bài 6. Vectơ trong không gian', 'Bài 7. Hệ tọa độ trong không gian', 'Bài 8. Biểu thức tọa độ của các phép toán vectơ', 'Bài 9. Nguyên hàm', 'Bài 10. Nguyên hàm của một số hàm số sơ cấp',
-        'Bài 11. Tích phân', 'Bài 12. Ứng dụng hình học của tích phân', 'Bài 13. Phương trình mặt phẳng', 'Bài 14. Phương trình đường thẳng trong không gian', 'Bài 15. Phương trình mặt cầu',
-        'Bài 16. Công thức xác suất điều kiện', 'Bài 17. Công thức xác suất toàn phần và công thức Bayes', 'Bài 18. Biến ngẫu nhiên rời rạc và các đặc trưng', 'Bài 19. Biến ngẫu nhiên liên tục và các đặc trưng', 'Bài 20. Mẫu số liệu ghép nhóm',
-        'Bài 21. Các số đặc trưng đo mức độ phân tán', 'Bài 22. Ôn tập tổng hợp cuối năm'
+        'Bài 1. Tính đơn điệu và cực trị của hàm số.', 'Bài 2. Giá trị lớn nhất và giá trị nhỏ nhất của hàm số.', 'Bài 3. Đường tiệm cận của đồ thị hàm số.', 'Bài 4. Khảo sát sự biến thiên và vẽ đồ thị của hàm số.', 'Bài 5. Ứng dụng đạo hàm để giải quyết một số vấn đề liên quan đến thực tiễn.',
+        'Bài 6. Vectơ trong không gian.', 'Bài 7. Hệ trục toạ độ trong không gian.', 'Bài 8. Biểu thức toạ độ của các phép toán vectơ.', 'Bài 9. Khoảng biến thiên và khoảng tứ phân vị.', 'Bài 10. Phương sai và độ lệch chuẩn.',
+        'Bài 11. Nguyên hàm.', 'Bài 12. Tích phân.', 'Bài 13. Ứng dụng hình học của tích phân.', 'Bài 14. Phương trình mặt phẳng.', 'Bài 15. Phương trình đường thẳng trong không gian.',
+        'Bài 16. Công thức tính góc trong không gian.', 'Bài 17. Phương trình mặt cầu.', 'Bài 18. Xác suất có điều kiện.', 'Bài 19. Công thức xác suất toàn phần và công thức Bayes.'
       ],
       'Cánh diều': [
         'Bài 1. Tính đơn điệu của hàm số', 'Bài 2. Giá trị lớn nhất và giá trị nhỏ nhất của hàm số', 'Bài 3. Đường tiệm cận của đồ thị hàm số', 'Bài 4. Khảo sát sự biến thiên và vẽ đồ thị của hàm số',
@@ -24,63 +23,69 @@ export const LESSON_LIBRARY: Record<string, Record<string, Record<string, string
     },
     'Khối 11': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Giá trị lượng giác của góc lượng giác', 'Bài 2. Các công thức lượng giác', 'Bài 3. Hàm số lượng giác và đồ thị', 'Bài 4. Phương trình lượng giác cơ bản', 'Bài 5. Dãy số',
-        'Bài 6. Cấp số cộng', 'Bài 7. Cấp số nhân', 'Bài 8. Mẫu số liệu ghép nhóm', 'Bài 9. Các số đặc trưng đo xu thế trung tâm', 'Bài 10. Đường thẳng và mặt phẳng trong không gian',
-        'Bài 11. Hai đường thẳng song song', 'Bài 12. Đường thẳng và mặt phẳng song song', 'Bài 13. Hai mặt phẳng song song', 'Bài 14. Phép chiếu song song', 'Bài 15. Giới hạn của dãy số',
-        'Bài 16. Giới hạn của hàm số', 'Bài 17. Hàm số liên tục', 'Bài 18. Đạo hàm', 'Bài 19. Các quy tắc tính đạo hàm', 'Bài 20. Đạo hàm cấp hai'
+        'Bài 1. Giá trị lượng giác của góc lượng giác.', 'Bài 2. Công thức lượng giác.', 'Bài 3. Hàm số lượng giác.', 'Bài 4. Phương trình lượng giác cơ bản.', 'Bài 5. Dãy số.',
+        'Bài 6. Cấp số cộng.', 'Bài 7. Cấp số nhân.', 'Bài 8. Mẫu số liệu ghép nhóm.', 'Bài 9. Các số đặc trưng đo xu thế trung tâm.', 'Bài 10. Đường thẳng và mặt phẳng trong không gian.',
+        'Bài 11. Hai đường thẳng song song.', 'Bài 12. Đường thẳng và mặt phẳng song song.', 'Bài 13. Hai mặt phẳng song song.', 'Bài 14. Phép chiếu song song.', 'Bài 15. Giới hạn của dãy số.',
+        'Bài 16. Giới hạn của hàm số.', 'Bài 17. Hàm số liên tục.', 'Bài 18. Luỹ thừa với số mũ thực.', 'Bài 19. Lôgarit.', 'Bài 20. Hàm số mũ và hàm số lôgarit.',
+        'Bài 21. Phương trình, bất phương trình mũ và lôgarit.', 'Bài 22. Hai đường thẳng vuông góc.', 'Bài 23. Đường thẳng vuông góc với mặt phẳng.', 'Bài 24. Phép chiếu vuông góc. Góc giữa đường thẳng và mặt phẳng.', 'Bài 25. Hai mặt phẳng vuông góc.',
+        'Bài 26. Khoảng cách.', 'Bài 27. Thể tích.', 'Bài 28. Biến cố hợp, biến cố giao, biến cố độc lập.', 'Bài 29. Công thức cộng xác suất.', 'Bài 30. Công thức nhân xác suất cho hai biến cố độc lập.',
+        'Bài 31. Định nghĩa và ý nghĩa của đạo hàm.', 'Bài 32. Các quy tắc tính đạo hàm.', 'Bài 33. Đạo hàm cấp hai.'
       ]
     },
     'Khối 10': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Mệnh đề', 'Bài 2. Tập hợp', 'Bài 3. Các phép toán trên tập hợp', 'Bài 4. Bất phương trình bậc nhất hai ẩn', 'Bài 5. Hệ bất phương trình bậc nhất hai ẩn',
-        'Bài 6. Hệ thức lượng trong tam giác', 'Bài 7. Vectơ', 'Bài 8. Tích vô hướng của hai vectơ', 'Bài 9. Các số đặc trưng đo xu thế trung tâm', 'Bài 10. Các số đặc trưng đo độ phân tán',
-        'Bài 11. Hàm số và đồ thị', 'Bài 12. Hàm số bậc hai', 'Bài 13. Tam thức bậc hai', 'Bài 14. Phương trình quy về phương trình bậc hai', 'Bài 15. Phương pháp tọa độ trong mặt phẳng',
-        'Bài 16. Đường thẳng trong mặt phẳng tọa độ', 'Bài 17. Đường tròn trong mặt phẳng tọa độ', 'Bài 18. Ba đường conic', 'Bài 19. Quy tắc đếm', 'Bài 20. Hoán vị, chỉnh hợp và tổ hợp'
+        'Bài 1. Mệnh đề.', 'Bài 2. Tập hợp và các phép toán trên tập hợp.', 'Bài 3. Bất phương trình bậc nhất hai ẩn.', 'Bài 4. Hệ bất phương trình bậc nhất hai ẩn.', 'Bài 5. Giá trị lượng giác của một góc từ 0° đến 180°.',
+        'Bài 6. Hệ thức lượng trong tam giác.', 'Bài 7. Các khái niệm mở đầu.', 'Bài 8. Tổng và hiệu của hai vectơ.', 'Bài 9. Tích của vectơ với một số.', 'Bài 10. Vectơ trong mặt phẳng toạ độ.',
+        'Bài 11. Tích vô hướng của hai vectơ.', 'Bài 12. Số gần đúng và sai số.', 'Bài 13. Các số đặc trưng đo xu thế trung tâm.', 'Bài 14. Các số đặc trưng đo độ phân tán.', 'Bài 15. Hàm số.',
+        'Bài 16. Hàm số bậc hai.', 'Bài 17. Dấu của tam thức bậc hai.', 'Bài 18. Phương trình quy về phương trình bậc hai.', 'Bài 19. Phương trình đường thẳng.', 'Bài 20. Đường thẳng trong mặt phẳng toạ độ.',
+        'Bài 21. Đường tròn trong mặt phẳng toạ độ.', 'Bài 22. Ba đường conic.', 'Bài 23. Quy tắc đếm.', 'Bài 24. Hoán vị, chỉnh hợp và tổ hợp.', 'Bài 25. Nhị thức Newton.',
+        'Bài 26. Biến cố và định nghĩa cổ điển của xác suất.', 'Bài 27. Thực hành tính xác suất theo định nghĩa cổ điển.'
       ]
     },
     'Khối 7': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Tập hợp các số hữu tỉ', 'Bài 2. Cộng, trừ, nhân, chia số hữu tỉ', 'Bài 3. Phép tính lũy thừa với số mũ tự nhiên của một số hữu tỉ', 'Bài 4. Thứ tự thực hiện các phép tính. Quy tắc chuyển vế', 'Bài 5. Làm quen với số thập phân vô hạn tuần hoàn',
-        'Bài 6. Số vô tỉ. Căn bậc hai số học', 'Bài 7. Tập hợp các số thực', 'Bài 8. Góc ở vị trí đặc biệt. Tia phân giác của một góc', 'Bài 9. Hai đường thẳng song song và dấu hiệu nhận biết', 'Bài 10. Tiên đề Euclid. Tính chất của hai đường thẳng song song',
-        'Bài 11. Định lí và chứng minh định lí', 'Bài 12. Tổng các góc trong một tam giác', 'Bài 13. Hai tam giác bằng nhau. Trường hợp bằng nhau thứ nhất của tam giác', 'Bài 14. Trường hợp bằng nhau thứ hai và thứ ba của tam giác', 'Bài 15. Các trường hợp bằng nhau của tam giác vuông',
-        'Bài 16. Tam giác cân. Đường trung trực của đoạn thẳng', 'Bài 17. Thu thập và phân loại dữ liệu', 'Bài 18. Biểu đồ hình quạt tròn', 'Bài 19. Biểu đồ đoạn thẳng', 'Bài 20. Tỉ lệ thức',
-        'Bài 21. Tính chất của dãy tỉ số bằng nhau', 'Bài 22. Đại lượng tỉ lệ thuận', 'Bài 23. Đại lượng tỉ lệ nghịch', 'Bài 24. Biểu thức đại số', 'Bài 25. Đa thức một biến',
-        'Bài 26. Phép cộng và phép trừ đa thức một biến', 'Bài 27. Phép nhân đa thức một biến', 'Bài 28. Phép chia đa thức một biến', 'Bài 29. Làm quen với biến cố của trò chơi gieo xúc xắc', 'Bài 30. Làm quen với xác suất của biến cố',
-        'Bài 31. Quan hệ giữa góc và cạnh đối diện trong một tam giác', 'Bài 32. Quan hệ giữa đường vuông góc và đường xiên', 'Bài 33. Quan hệ giữa ba cạnh của một tam giác', 'Bài 34. Sự đồng quy của ba đường trung tuyến, ba đường phân giác trong một tam giác', 'Bài 35. Sự đồng quy của ba đường trung trực, ba đường cao trong một tam giác',
-        'Bài 36. Hình hộp chữ nhật. Hình lập phương', 'Bài 37. Hình lăng trụ đứng tam giác. Hình lăng trụ đứng tứ giác'
+        'Bài 1. Tập hợp các số hữu tỉ.', 'Bài 2. Cộng, trừ, nhân, chia số hữu tỉ.', 'Bài 3. Luỹ thừa với số mũ tự nhiên của một số hữu tỉ.', 'Bài 4. Thứ tự thực hiện các phép tính. Quy tắc chuyển vế.', 'Bài 5. Làm quen với số thập phân vô hạn tuần hoàn.',
+        'Bài 6. Số vô tỉ. Căn bậc hai số học.', 'Bài 7. Tập hợp các số thực.', 'Bài 8. Góc ở vị trí đặc biệt. Tia phân giác của một góc.', 'Bài 9. Hai đường thẳng song song và dấu hiệu nhận biết.', 'Bài 10. Tiên đề Euclid. Tính chất của hai đường thẳng song song.',
+        'Bài 11. Định lí và chứng minh định lí.', 'Bài 12. Tổng các góc trong một tam giác.', 'Bài 13. Hai tam giác bằng nhau. Trường hợp bằng nhau thứ nhất của tam giác.', 'Bài 14. Trường hợp bằng nhau thứ hai và thứ ba của tam giác.', 'Bài 15. Các trường hợp bằng nhau của tam giác vuông.',
+        'Bài 16. Tam giác cân. Đường trung trực của đoạn thẳng.', 'Bài 17. Thu thập và phân loại dữ liệu.', 'Bài 18. Biểu đồ hình quạt tròn.', 'Bài 19. Biểu đồ đoạn thẳng.', 'Bài 20. Tỉ lệ thức.',
+        'Bài 21. Tính chất của dãy tỉ số bằng nhau.', 'Bài 22. Đại lượng tỉ lệ thuận.', 'Bài 23. Đại lượng tỉ lệ nghịch.', 'Bài 24. Biểu thức đại số.', 'Bài 25. Đa thức một biến.',
+        'Bài 26. Phép cộng và phép trừ đa thức một biến.', 'Bài 27. Phép nhân đa thức một biến.', 'Bài 28. Phép chia đa thức một biến.', 'Bài 29. Làm quen với biến cố.', 'Bài 30. Làm quen với xác suất của biến cố.',
+        'Bài 31. Quan hệ giữa góc và cạnh đối diện trong một tam giác.', 'Bài 32. Quan hệ giữa đường vuông góc và đường xiên.', 'Bài 33. Quan hệ giữa ba cạnh của một tam giác.', 'Bài 34. Sự đồng quy của ba trung tuyến, ba đường phân giác trong một tam giác.', 'Bài 35. Sự đồng quy của ba đường trung trực, ba đường cao trong một tam giác.',
+        'Bài 36. Hình hộp chữ nhật và hình lập phương.', 'Bài 37. Hình lăng trụ đứng tam giác và hình lăng trụ đứng tứ giác.'
       ]
     },
     'Khối 8': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Đơn thức', 'Bài 2. Đa thức', 'Bài 3. Phép cộng và phép trừ đa thức', 'Bài 4. Phép nhân đa thức', 'Bài 5. Phép chia đa thức cho đơn thức',
-        'Bài 6. Hiệu hai bình phương. Bình phương của một tổng hay một hiệu', 'Bài 7. Lập phương của một tổng hay một hiệu', 'Bài 8. Tổng và hiệu hai lập phương', 'Bài 9. Phân tích đa thức thành nhân tử', 'Bài 10. Tứ giác',
-        'Bài 11. Hình thang cân', 'Bài 12. Hình bình hành', 'Bài 13. Hình chữ nhật', 'Bài 14. Hình thoi và hình vuông', 'Bài 15. Định lí Thalès trong tam giác',
-        'Bài 16. Đường trung bình của tam giác', 'Bài 17. Tính chất đường phân giác của tam giác', 'Bài 18. Thu thập và phân loại dữ liệu', 'Bài 19. Biểu diễn dữ liệu bằng bảng, biểu đồ', 'Bài 20. Phân tích số liệu thống kê dựa vào biểu đồ',
-        'Bài 21. Phân thức đại số', 'Bài 22. Tính chất cơ bản của phân thức đại số', 'Bài 23. Phép cộng và phép trừ phân thức đại số', 'Bài 24. Phép nhân và phép chia phân thức đại số', 'Bài 25. Phương trình bậc nhất một ẩn',
-        'Bài 26. Giải bài toán bằng cách lập phương trình', 'Bài 27. Khái niệm hàm số và đồ thị của hàm số', 'Bài 28. Hàm số bậc nhất và đồ thị của hàm số bậc nhất', 'Bài 29. Hệ số góc của đường thẳng', 'Bài 30. Hai tam giác đồng dạng',
-        'Bài 31. Các trường hợp đồng dạng của hai tam giác', 'Bài 32. Hai tam giác vuông đồng dạng', 'Bài 33. Hình chóp tam giác đều', 'Bài 34. Hình chóp tứ giác đều', 'Bài 35. Định lí Pythagore',
-        'Bài 36. Các trường hợp đồng dạng của tam giác vuông', 'Bài 37. Hình đồng dạng', 'Bài 38. Dữ liệu và biểu đồ', 'Bài 39. Phân tích số liệu thống kê', 'Bài 40. Xác suất của biến cố ngẫu nhiên'
+        'Bài 1. Đơn thức.', 'Bài 2. Đa thức.', 'Bài 3. Phép cộng và phép trừ đa thức.', 'Bài 4. Phép nhân đa thức.', 'Bài 5. Phép chia đa thức cho đơn thức.',
+        'Bài 6. Hiệu hai bình phương. Bình phương của một tổng hay một hiệu.', 'Bài 7. Lập phương của một tổng hay một hiệu.', 'Bài 8. Tổng và hiệu hai lập phương.', 'Bài 9. Phân tích đa thức thành nhân tử.', 'Bài 10. Tứ giác.',
+        'Bài 11. Hình thang cân.', 'Bài 12. Hình bình hành.', 'Bài 13. Hình chữ nhật.', 'Bài 14. Hình thoi và hình vuông.', 'Bài 15. Định lí Thalès trong tam giác.',
+        'Bài 16. Đường trung bình của tam giác.', 'Bài 17. Tính chất đường phân giác của tam giác.', 'Bài 18. Thu thập và phân loại dữ liệu.', 'Bài 19. Biểu diễn dữ liệu bằng bảng, biểu đồ.', 'Bài 20. Phân tích số liệu thống kê dựa vào biểu đồ.',
+        'Bài 21. Phân thức đại số.', 'Bài 22. Tính chất cơ bản của phân thức đại số.', 'Bài 23. Phép cộng và phép trừ phân thức đại số.', 'Bài 24. Phép nhân và phép chia phân thức đại số.', 'Bài 25. Phương trình bậc nhất một ẩn.',
+        'Bài 26. Giải bài toán bằng cách lập phương trình.', 'Bài 27. Khái niệm hàm số và đồ thị của hàm số.', 'Bài 28. Hàm số bậc nhất và đồ thị của hàm số bậc nhất.', 'Bài 29. Hệ số góc của đường thẳng.', 'Bài 30. Kết quả có thể và kết quả thuận lợi.',
+        'Bài 31. Cách tính xác suất của biến cố bằng tỉ số.', 'Bài 32. Mối liên hệ giữa xác suất thực nghiệm với xác suất và ứng dụng.', 'Bài 33. Hai tam giác đồng dạng.', 'Bài 34. Ba trường hợp đồng dạng của hai tam giác.', 'Bài 35. Định lí Pythagore và ứng dụng.',
+        'Bài 36. Các trường hợp đồng dạng của hai tam giác vuông.', 'Bài 37. Hình đồng dạng.', 'Bài 38. Hình chóp tam giác đều.', 'Bài 39. Hình chóp tứ giác đều.'
       ]
     },
     'Khối 9': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Khái niệm phương trình và hệ hai phương trình bậc nhất hai ẩn', 'Bài 2. Giải hệ hai phương trình bậc nhất hai ẩn', 'Bài 3. Giải bài toán bằng cách lập hệ phương trình', 'Bài 4. Phương trình quy về phương trình bậc nhất một ẩn', 'Bài 5. Bất đẳng thức và tính chất',
-        'Bài 6. Bất phương trình bậc nhất một ẩn', 'Bài 7. Căn bậc hai và căn thức bậc hai', 'Bài 8. Khai căn bậc hai với phép nhân và phép chia', 'Bài 9. Biến đổi đơn giản biểu thức chứa căn thức bậc hai', 'Bài 10. Căn bậc ba và căn thức bậc ba',
-        'Bài 11. Tỉ số lượng giác của góc nhọn', 'Bài 12. Một số hệ thức giữa cạnh và góc trong tam giác vuông', 'Bài 13. Ứng dụng thực tế các tỉ số lượng giác của góc nhọn', 'Bài 14. Đường tròn và sự xác định đường tròn', 'Bài 15. Tính chất đối xứng của đường tròn',
-        'Bài 16. Vị trí tương đối của đường thẳng và đường tròn', 'Bài 17. Vị trí tương đối của hai đường tròn', 'Bài 18. Tiếp tuyến của đường tròn', 'Bài 19. Hàm số y = ax^2 (a ≠ 0)', 'Bài 20. Phương trình bậc hai một ẩn',
-        'Bài 21. Định lí Viète và ứng dụng', 'Bài 22. Giải bài toán bằng cách lập phương trình bậc hai', 'Bài 23. Đường tròn ngoại tiếp và đường tròn nội tiếp của một tam giác', 'Bài 24. Độ dài đường tròn và diện tích hình tròn', 'Bài 25. Hình trụ',
-        'Bài 26. Hình nón', 'Bài 27. Hình cầu', 'Bài 28. Thu thập và trình bày dữ liệu', 'Bài 29. Các số đặc trưng đo xu thế trung tâm cho mẫu số liệu ghép nhóm', 'Bài 30. Xác suất của biến cố'
+        'Bài 1. Khái niệm phương trình và hệ hai phương trình bậc nhất hai ẩn.', 'Bài 2. Giải hệ hai phương trình bậc nhất hai ẩn.', 'Bài 3. Giải bài toán bằng cách lập hệ phương trình.', 'Bài 4. Phương trình quy về phương trình bậc nhất một ẩn.', 'Bài 5. Bất đẳng thức và tính chất.',
+        'Bài 6. Bất phương trình bậc nhất một ẩn.', 'Bài 7. Căn bậc hai và căn thức bậc hai.', 'Bài 8. Khai căn bậc hai với phép nhân và phép chia.', 'Bài 9. Biến đổi đơn giản và rút gọn biểu thức chứa căn thức bậc hai.', 'Bài 10. Căn bậc ba và căn thức bậc ba.',
+        'Bài 11. Tỉ số lượng giác của góc nhọn.', 'Bài 12. Một số hệ thức giữa cạnh, góc trong tam giác vuông và ứng dụng.', 'Bài 13. Mở đầu về đường tròn.', 'Bài 14. Cung và dây của đường tròn.', 'Bài 15. Độ dài cung tròn. Diện tích hình quạt tròn và hình vành khuyên.',
+        'Bài 16. Vị trí tương đối của đường thẳng và đường tròn.', 'Bài 17. Vị trí tương đối của hai đường tròn.', 'Bài 18. Hàm số y = ax^2 (a ≠ 0).', 'Bài 19. Phương trình bậc hai một ẩn.', 'Bài 20. Định lí Viète và ứng dụng.',
+        'Bài 21. Giải bài toán bằng cách lập phương trình.', 'Bài 22. Bảng tần số và biểu đồ tần số.', 'Bài 23. Bảng tần số tương đối và biểu đồ tần số tương đối.', 'Bài 24. Bảng tần số, tần số tương đối ghép nhóm và biểu đồ.', 'Bài 25. Phép thử ngẫu nhiên và không gian mẫu.',
+        'Bài 26. Xác suất của biến cố liên quan tới phép thử.', 'Bài 27. Góc nội tiếp.', 'Bài 28. Đường tròn ngoại tiếp và đường tròn nội tiếp của một tam giác.', 'Bài 29. Tứ giác nội tiếp.', 'Bài 30. Đa giác đều.',
+        'Bài 31. Hình trụ và hình nón.', 'Bài 32. Hình cầu.'
       ]
     },
     'Khối 6': {
       'Kết nối tri thức với cuộc sống': [
         'Bài 1. Tập hợp', 'Bài 2. Cách ghi số tự nhiên', 'Bài 3. Thứ tự trong tập hợp các số tự nhiên', 'Bài 4. Phép cộng và phép trừ số tự nhiên', 'Bài 5. Phép nhân và phép chia số tự nhiên',
-        'Bài 6. Lũy thừa với số mũ tự nhiên', 'Bài 7. Thứ tự thực hiện các phép tính', 'Bài 8. Quan hệ chia hết và tính chất', 'Bài 9. Dấu hiệu chia hết', 'Bài 10. Số nguyên tố',
+        'Bài 6. Luỹ thừa với số mũ tự nhiên', 'Bài 7. Thứ tự thực hiện các phép tính', 'Bài 8. Quan hệ chia hết và tính chất', 'Bài 9. Dấu hiệu chia hết', 'Bài 10. Số nguyên tố',
         'Bài 11. Ước chung. Ước chung lớn nhất', 'Bài 12. Bội chung. Bội chung nhỏ nhất', 'Bài 13. Tập hợp các số nguyên', 'Bài 14. Phép cộng và phép trừ số nguyên', 'Bài 15. Quy tắc dấu ngoặc',
-        'Bài 16. Phép nhân số nguyên', 'Bài 17. Phép chia hết. Ước và bội của một số nguyên', 'Bài 18. Hình tam giác đều. Hình vuông. Hình lục giác đều', 'Bài 19. Hình chữ nhật. Hình thoi. Hình bình hành. Hình thang cân', 'Bài 20. Chu vi và diện tích của một số hình phẳng',
-        'Bài 21. Hình có trục đối xứng', 'Bài 22. Hình có tâm đối xứng', 'Bài 23. Mở đầu về phân số. Phân số bằng nhau', 'Bài 24. So sánh phân số. Hỗn số dương', 'Bài 25. Phép cộng và phép trừ phân số',
-        'Bài 26. Phép nhân và phép chia phân số', 'Bài 27. Hai bài toán về phân số', 'Bài 28. Số thập phân', 'Bài 29. Tính toán với số thập phân', 'Bài 30. Làm tròn số và ước lượng',
-        'Bài 31. Một số bài toán về tỉ số và tỉ số phần trăm', 'Bài 32. Điểm. Đường thẳng', 'Bài 33. Điểm nằm giữa hai điểm. Tia', 'Bài 34. Đoạn thẳng. Độ dài đoạn thẳng', 'Bài 35. Trung điểm của đoạn thẳng',
+        'Bài 16. Phép nhân số nguyên', 'Bài 17. Phép chia hết. Ước và bội của một số nguyên', 'Bài 18. Hình tam giác đều. Hình vuông. Hình lục giác đều', 'Bài 19. Hình chữ nhật. Hình thoi. Hình bình hành. Hình thang cân', 'Bài 20. Chu vi và diện tích của một số tứ giác đã học',
+        'Bài 21. Hình có trục đối xứng', 'Bài 22. Hình có tâm đối xứng', 'Bài 23. Mở rộng phân số. Phân số bằng nhau', 'Bài 24. So sánh phân số. Hỗn số dương', 'Bài 25. Phép cộng và phép trừ phân số',
+        'Bài 26. Phép nhân và phép chia phân số', 'Bài 27. Hai bài toán về phân số', 'Bài 28. Số thập phân', 'Bài 29. Tính toán với số thập phân', 'Bài 30. Làm tròn và ước lượng',
+        'Bài 31. Một số bài toán về tỉ số và tỉ số phần trăm', 'Bài 32. Điểm và đường thẳng', 'Bài 33. Điểm nằm giữa hai điểm. Tia', 'Bài 34. Đoạn thẳng. Độ dài đoạn thẳng', 'Bài 35. Trung điểm của đoạn thẳng',
         'Bài 36. Góc', 'Bài 37. Số đo góc', 'Bài 38. Dữ liệu và thu thập dữ liệu', 'Bài 39. Bảng thống kê và biểu đồ tranh', 'Bài 40. Biểu đồ cột',
         'Bài 41. Biểu đồ cột kép', 'Bài 42. Kết quả có thể và sự kiện trong trò chơi, thí nghiệm', 'Bài 43. Xác suất thực nghiệm'
       ]
@@ -105,150 +110,168 @@ export const LESSON_LIBRARY: Record<string, Record<string, Record<string, string
   'Vật lí': {
     'Khối 12': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Nội năng. Định luật 1 của nhiệt động lực học', 'Bài 2. Thang nhiệt độ', 'Bài 3. Nhiệt dung riêng, nhiệt nóng chảy riêng', 'Bài 4. Nhiệt hóa hơi riêng', 'Bài 5. Thuyết động học phân tử chất khí',
-        'Bài 6. Áp suất khí theo mô hình động học phân tử', 'Bài 7. Phương trình trạng thái của khí lí tưởng', 'Bài 8. Áp suất khí lí tưởng', 'Bài 9. Từ trường', 'Bài 10. Lực từ. Cảm ứng từ',
-        'Bài 11. Từ thông. Cảm ứng điện từ', 'Bài 12. Hiện tượng tự cảm', 'Bài 13. Cấu tạo hạt nhân', 'Bài 14. Độ hụt khối. Năng lượng liên kết', 'Bài 15. Phóng xạ', 'Bài 16. Phản ứng phân hạch và nhiệt hạch'
+        'Bài 1. Cấu trúc của chất. Sự chuyển thể.', 'Bài 2. Nội năng. Định luật I của nhiệt động lực học.', 'Bài 3. Nhiệt độ. Thang nhiệt độ – nhiệt kế.', 'Bài 4. Nhiệt dung riêng.', 'Bài 5. Nhiệt nóng chảy riêng.',
+        'Bài 6. Nhiệt hóa hơi riêng.', 'Bài 7. Bài tập về vật lí nhiệt.', 'Bài 8. Mô hình động học phân tử chất khí.', 'Bài 9. Định luật Boyle.', 'Bài 10. Định luật Charles.',
+        'Bài 11. Phương trình trạng thái của khí lí tưởng.', 'Bài 12. Áp suất khí theo mô hình động học phân tử. Quan hệ giữa động năng phân tử và nhiệt độ.', 'Bài 13. Bài tập về khí lí tưởng.', 'Bài 14. Từ trường.', 'Bài 15. Lực từ tác dụng lên dây dẫn mang dòng điện. Cảm ứng từ.',
+        'Bài 16. Từ thông. Hiện tượng cảm ứng điện từ.', 'Bài 17. Máy phát điện xoay chiều.', 'Bài 18. Ứng dụng hiện tượng cảm ứng điện từ.', 'Bài 19. Điện từ trường. Mô hình sóng điện từ.', 'Bài 20. Bài tập về từ trường.',
+        'Bài 21. Cấu trúc hạt nhân.', 'Bài 22. Phản ứng hạt nhân và năng lượng liên kết.', 'Bài 23. Hiện tượng phóng xạ.', 'Bài 24. Công nghiệp hạt nhân.', 'Bài 25. Bài tập về vật lí hạt nhân.'
       ]
     },
     'Khối 11': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Dao động điều hoà', 'Bài 2. Mô tả dao động điều hoà', 'Bài 3. Vận tốc, gia tốc trong dao động điều hoà', 'Bài 4. Bài tập về dao động điều hoà', 'Bài 5. Động năng. Thế năng. Sự chuyển hoá năng lượng trong dao động điều hoà',
-        'Bài 6. Dao động tắt dần. Dao động cưỡng bức. Hiện tượng cộng hưởng', 'Bài 7. Bài tập về đồ thị dao động điều hoà', 'Bài 8. Mô tả sóng', 'Bài 9. Sóng ngang. Sóng dọc. Sự truyền năng lượng của sóng cơ', 'Bài 10. Thực hành: Đo tần số của sóng âm',
+        'Bài 1. Dao động điều hoà', 'Bài 2. Mô tả dao động điều hoà', 'Bài 3. Vận tốc, gia tốc trong dao động điều hoà', 'Bài 4. Bài tập về dao động điều hoà', 'Bài 5. Động năng. Thế năng. Sự chuyển hoá năng lượng giữa động năng và thế năng trong dao động điều hoà',
+        'Bài 6. Dao động tắt dần. Dao động cưỡng bức. Hiện tượng cộng hưởng', 'Bài 7. Bài tập về sự chuyển năng lượng trong dao động điều hoà', 'Bài 8. Mô tả sóng', 'Bài 9. Sóng ngang, sóng dọc, sự truyền năng lượng của sóng cơ', 'Bài 10. Thực hành: Đo tần số của sóng âm',
         'Bài 11. Sóng điện từ', 'Bài 12. Giao thoa sóng', 'Bài 13. Sóng dừng', 'Bài 14. Bài tập về sóng', 'Bài 15. Thực hành: Đo tốc độ truyền âm',
         'Bài 16. Lực tương tác giữa hai điện tích', 'Bài 17. Khái niệm điện trường', 'Bài 18. Điện trường đều', 'Bài 19. Thế năng điện', 'Bài 20. Điện thế',
-        'Bài 21. Tụ điện', 'Bài 22. Cường độ dòng điện', 'Bài 23. Điện trở. Định luật Ohm', 'Bài 24. Nguồn điện', 'Bài 25. Năng lượng điện. Công suất điện',
-        'Bài 26. Thực hành: Đo suất điện động và điện trở trong của pin'
+        'Bài 21. Tụ điện', 'Bài 22. Cường độ dòng điện', 'Bài 23. Điện trở. Định luật Ohm', 'Bài 24. Nguồn điện', 'Bài 25. Năng lượng điện và công suất điện',
+        'Bài 26. Thực hành: Đo suất điện động và điện trở trong của pin điện hoá'
       ]
     },
     'Khối 10': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Làm quen với Vật lí', 'Bài 2. Các quy tắc an toàn trong phòng thực hành Vật lí', 'Bài 3. Thực hành tính sai số trong phép đo. Ghi kết quả đo', 'Bài 4. Độ dịch chuyển và quãng đường đi được', 'Bài 5. Tốc độ và vận tốc',
-        'Bài 6. Đồ thị độ dịch chuyển – thời gian', 'Bài 7. Gia tốc', 'Bài 8. Chuyển động biến đổi. Gia tốc', 'Bài 9. Chuyển động thẳng biến đổi đều', 'Bài 10. Sự rơi tự do',
-        'Bài 11. Thực hành: Đo gia tốc rơi tự do', 'Bài 12. Chuyển động ném', 'Bài 13. Tổng hợp và phân tích lực. Cân bằng lực', 'Bài 14. Định luật 1 Newton', 'Bài 15. Định luật 2 Newton',
-        'Bài 16. Định luật 3 Newton', 'Bài 17. Trọng lực và lực căng', 'Bài 18. Lực ma sát', 'Bài 19. Lực cản và lực nâng', 'Bài 20. Một số ví dụ về cách giải các bài toán thuộc phần động lực học',
-        'Bài 21. Moment lực. Cân bằng của vật rắn', 'Bài 22. Thực hành: Tổng hợp lực', 'Bài 23. Năng lượng. Công cơ học', 'Bài 24. Công suất', 'Bài 25. Động năng, Thế năng',
-        'Bài 26. Cơ năng và định luật bảo toàn cơ năng', 'Bài 27. Hiệu suất', 'Bài 28. Động lượng', 'Bài 29. Định luật bảo toàn động lượng', 'Bài 30. Thực hành: Xác định động lượng của vật trước và sau va chạm',
-        'Bài 31. Động học của chuyển động tròn đều', 'Bài 32. Lực hướng tâm và gia tốc hướng tâm', 'Bài 33. Biến dạng của vật rắn. Định luật Hooke', 'Bài 34. Khối lượng riêng. Áp suất chất lỏng'
+        'Bài 1. Làm quen với Vật lí.', 'Bài 2. Các quy tắc an toàn trong phòng thực hành Vật lí.', 'Bài 3. Thực hành tính sai số trong phép đo. Ghi kết quả đo.',
+        'Bài 4. Độ dịch chuyển và quãng đường đi được.', 'Bài 5. Tốc độ và vận tốc.', 'Bài 6. Thực hành: Đo tốc độ của vật chuyển động.', 'Bài 7. Đồ thị độ dịch chuyển – thời gian.', 'Bài 8. Chuyển động biến đổi. Gia tốc.', 'Bài 9. Chuyển động thẳng biến đổi đều.', 'Bài 10. Sự rơi tự do.',
+        'Bài 11. Thực hành: Đo gia tốc rơi tự do.', 'Bài 12. Chuyển động ném.', 'Bài 13. Tổng hợp và phân tích lực. Cân bằng lực.', 'Bài 14. Định luật 1 Newton.', 'Bài 15. Định luật 2 Newton.',
+        'Bài 16. Định luật 3 Newton.', 'Bài 17. Trọng lực và lực căng.', 'Bài 18. Lực ma sát.', 'Bài 19. Lực cản và lực nâng.', 'Bài 20. Một số ví dụ về cách giải các bài toán thuộc phần động lực học.',
+        'Bài 21. Moment lực. Cân bằng của vật rắn.', 'Bài 22. Thực hành: Tổng hợp lực.', 'Bài 23. Năng lượng. Công cơ học.', 'Bài 24. Công suất.', 'Bài 25. Động năng, thế năng.',
+        'Bài 26. Cơ năng và định luật bảo toàn cơ năng.', 'Bài 27. Hiệu suất.', 'Bài 28. Động lượng.', 'Bài 29. Định luật bảo toàn động lượng.', 'Bài 30. Thực hành: Xác định động lượng của vật trước và sau va chạm.',
+        'Bài 31. Động học của chuyển động tròn đều.', 'Bài 32. Lực hướng tâm và gia tốc hướng tâm.', 'Bài 33. Biến dạng của vật rắn.', 'Bài 34. Khối lượng riêng. Áp suất chất lỏng.'
       ]
     }
   },
   'Hóa học': {
     'Khối 12': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Este - Lipit', 'Bài 2. Xà phòng và chất giặt rửa', 'Bài 3. Glucose và Saccharose', 'Bài 4. Tinh bột và Cellulose', 'Bài 5. Amino acid',
-        'Bài 6. Peptide và protein', 'Bài 7. Enzyme và nucleic acid', 'Bài 8. Đại cương về polymer', 'Bài 9. Vật liệu polymer', 'Bài 10. Thế điện cực chuẩn của kim loại',
-        'Bài 11. Nguồn điện hóa học', 'Bài 12. Điện phân', 'Bài 13. Cấu tạo và tính chất vật lí của kim loại', 'Bài 14. Tính chất hóa học của kim loại', 'Bài 15. Ăn mòn kim loại',
-        'Bài 16. Tách kim loại và hợp kim', 'Bài 17. Kim loại kiềm và kiềm thổ', 'Bài 18. Nhôm và hợp chất của nhôm', 'Bài 19. Sắt và hợp chất của sắt', 'Bài 20. Crom và hợp chất của crom'
+        'Bài 1. Ester – Lipid.', 'Bài 2. Xà phòng và chất giặt rửa.', 'Bài 3. Ôn tập chương 1.', 'Bài 4. Giới thiệu về carbohydrate. Glucose và fructose.', 'Bài 5. Saccharose và maltose.',
+        'Bài 6. Tinh bột và cellulose.', 'Bài 7. Ôn tập chương 2.', 'Bài 8. Amine.', 'Bài 9. Amino acid và peptide.', 'Bài 10. Protein và enzyme.',
+        'Bài 11. Ôn tập chương 3.', 'Bài 12. Đại cương về polymer.', 'Bài 13. Vật liệu polymer.', 'Bài 14. Ôn tập chương 4.', 'Bài 15. Thế điện cực và nguồn điện hóa học.',
+        'Bài 16. Điện phân.', 'Bài 17. Ôn tập chương 5.', 'Bài 18. Cấu tạo và liên kết trong tinh thể kim loại.', 'Bài 19. Tính chất vật lí và tính chất hóa học của kim loại.', 'Bài 20. Kim loại trong tự nhiên và phương pháp tách kim loại.',
+        'Bài 21. Hợp kim.', 'Bài 22. Sự ăn mòn kim loại.', 'Bài 23. Ôn tập chương 6.', 'Bài 24. Nguyên tố nhóm IA.', 'Bài 25. Nguyên tố nhóm IIA.',
+        'Bài 26. Ôn tập chương 7.', 'Bài 27. Đại cương về kim loại chuyển tiếp dãy thứ nhất.', 'Bài 28. Sơ lược về phức chất.', 'Bài 29. Một số tính chất và ứng dụng của phức chất.', 'Bài 30. Ôn tập chương 8.'
       ]
     },
     'Khối 11': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Khái niệm về cân bằng hóa học', 'Bài 2. Cân bằng trong dung dịch nước', 'Bài 3. Ôn tập chương 1', 'Bài 4. Nitrogen', 'Bài 5. Ammonia. Muối ammonium',
-        'Bài 6. Một số hợp chất của nitrogen với oxygen', 'Bài 7. Sulfur và sulfur dioxide', 'Bài 8. Sulfuric acid và muối sulfate', 'Bài 9. Ôn tập chương 2', 'Bài 10. Hợp chất hữu cơ và hóa học hữu cơ',
-        'Bài 11. Phương pháp tách biệt và tinh chế hợp chất hữu cơ', 'Bài 12. Công thức phân tử hợp chất hữu cơ', 'Bài 13. Cấu tạo hóa học hợp chất hữu cơ', 'Bài 14. Ôn tập chương 3', 'Bài 15. Alkane',
-        'Bài 16. Hydrocarbon không no', 'Bài 17. Arene (Hydrocarbon thơm)', 'Bài 18. Ôn tập chương 4', 'Bài 19. Dẫn xuất halogen', 'Bài 20. Alcohol',
-        'Bài 21. Phenol', 'Bài 22. Ôn tập chương 5', 'Bài 23. Hợp chất carbonyl', 'Bài 24. Carboxylic acid', 'Bài 25. Ôn tập chương 6'
+        'Bài 1. Khái niệm về cân bằng hoá học.', 'Bài 2. Cân bằng trong dung dịch nước.', 'Bài 3. Ôn tập chương 1.', 'Bài 4. Nitrogen.', 'Bài 5. Ammonia – Muối ammonium.',
+        'Bài 6. Một số hợp chất của nitrogen với oxygen.', 'Bài 7. Sulfur và sulfur dioxide.', 'Bài 8. Sulfuric acid và muối sulfate.', 'Bài 9. Ôn tập chương 2.', 'Bài 10. Hợp chất hữu cơ và hoá học hữu cơ.',
+        'Bài 11. Phương pháp tách biệt và tinh chế hợp chất hữu cơ.', 'Bài 12. Công thức phân tử hợp chất hữu cơ.', 'Bài 13. Cấu tạo hoá học hợp chất hữu cơ.', 'Bài 14. Ôn tập chương 3.', 'Bài 15. Alkane.',
+        'Bài 16. Hydrocarbon không no.', 'Bài 17. Arene (Hydrocarbon thơm).', 'Bài 18. Ôn tập chương 4.', 'Bài 19. Dẫn xuất halogen.', 'Bài 20. Alcohol.',
+        'Bài 21. Phenol.', 'Bài 22. Ôn tập chương 5.', 'Bài 23. Hợp chất carbonyl.', 'Bài 24. Carboxylic acid.', 'Bài 25. Ôn tập chương 6.'
       ]
     },
     'Khối 10': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Thành phần của nguyên tử', 'Bài 2. Nguyên tố hóa học', 'Bài 3. Cấu trúc lớp vỏ electron nguyên tử', 'Bài 4. Ôn tập chương 1', 'Bài 5. Cấu tạo bảng tuần hoàn các nguyên tố hóa học',
-        'Bài 6. Xu hướng biến đổi thành phần và một số tính chất của hợp chất trong một chu kì', 'Bài 7. Định luật tuần hoàn. Ý nghĩa của bảng tuần hoàn các nguyên tố hóa học', 'Bài 8. Ôn tập chương 2', 'Bài 9. Liên kết ion', 'Bài 10. Liên kết cộng hóa trị',
-        'Bài 11. Liên kết hydrogen và tương tác van der Waals', 'Bài 12. Ôn tập chương 3', 'Bài 13. Phản ứng oxi hóa – khử', 'Bài 14. Ôn tập chương 4', 'Bài 15. Ý nghĩa và cách tính biến thiên enthalpy phản ứng hóa học',
-        'Bài 16. Thuyết va chạm và tốc độ phản ứng hóa học', 'Bài 17. Biến thiên enthalpy trong các phản ứng hóa học', 'Bài 18. Ôn tập chương 5', 'Bài 19. Tốc độ phản ứng hóa học', 'Bài 20. Ôn tập chương 6',
-        'Bài 21. Nhóm halogen', 'Bài 22. Hydrogen halide và muối halide', 'Bài 23. Ôn tập chương 7'
+        'Bài 1. Thành phần của nguyên tử.', 'Bài 2. Nguyên tố hoá học.', 'Bài 3. Cấu trúc lớp vỏ electron nguyên tử.', 'Bài 4. Ôn tập chương 1.', 'Bài 5. Cấu tạo của bảng tuần hoàn các nguyên tố hoá học.',
+        'Bài 6. Xu hướng biến đổi một số tính chất của nguyên tử các nguyên tố trong một chu kì và trong một nhóm.', 'Bài 7. Xu hướng biến đổi thành phần và một số tính chất của hợp chất trong một chu kì.', 'Bài 8. Định luật tuần hoàn. Ý nghĩa của bảng tuần hoàn các nguyên tố hoá học.', 'Bài 9. Ôn tập chương 2.', 'Bài 10. Quy tắc octet.',
+        'Bài 11. Liên kết ion.', 'Bài 12. Liên kết cộng hoá trị.', 'Bài 13. Liên kết hydrogen và tương tác van der Waals.', 'Bài 14. Ôn tập chương 3.', 'Bài 15. Phản ứng oxi hoá – khử.',
+        'Bài 16. Ôn tập chương 4.', 'Bài 17. Biến thiên enthalpy trong các phản ứng hoá học.', 'Bài 18. Ôn tập chương 5.', 'Bài 19. Tốc độ phản ứng.', 'Bài 20. Ôn tập chương 6.',
+        'Bài 21. Nhóm halogen.', 'Bài 22. Hydrogen halide. Muối halide.', 'Bài 23. Ôn tập chương 7.'
       ]
     }
   },
   'Sinh học': {
     'Khối 12': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Gen, mã di truyền và nhân đôi DNA', 'Bài 2. Phiên mã và dịch mã', 'Bài 3. Điều hòa hoạt động gen', 'Bài 4. Đột biến gen', 'Bài 5. Nhiễm sắc thể và đột biến cấu trúc NST',
-        'Bài 6. Đột biến số lượng NST', 'Bài 7. Quy luật phân li', 'Bài 8. Quy luật phân li độc lập', 'Bài 9. Tương tác gen và tác động đa hiệu của gen', 'Bài 10. Di truyền liên kết',
-        'Bài 11. Di truyền liên kết với giới tính', 'Bài 12. Di truyền ngoài nhân', 'Bài 13. Ảnh hưởng của môi trường lên sự biểu hiện của gen', 'Bài 14. Di truyền quần thể', 'Bài 15. Chọn giống bằng phương pháp truyền thống',
-        'Bài 16. Chọn giống bằng công nghệ tế bào', 'Bài 17. Chọn giống bằng công nghệ gen', 'Bài 18. Di truyền y học', 'Bài 19. Bằng chứng tiến hóa', 'Bài 20. Học thuyết Lamark và Darwin'
+        'Bài 1. DNA và cơ chế tái bản DNA.', 'Bài 2. Gene, quá trình truyền đạt thông tin di truyền và hệ gene.', 'Bài 3. Điều hòa biểu hiện gene.', 'Bài 4. Đột biến gene.', 'Bài 5. Công nghệ di truyền.',
+        'Bài 6. Thực hành: Tách chiết DNA.', 'Bài 7. Cấu trúc và chức năng của nhiễm sắc thể.', 'Bài 8. Học thuyết di truyền của Mendel.', 'Bài 9. Mở rộng học thuyết Mendel.', 'Bài 10. Di truyền giới tính và di truyền liên kết với giới tính.',
+        'Bài 11. Liên kết gene và hoán vị gene.', 'Bài 12. Đột biến nhiễm sắc thể.', 'Bài 13. Di truyền học người và di truyền y học.', 'Bài 14. Thực hành: Quan sát một số dạng đột biến nhiễm sắc thể.', 'Bài 15. Di truyền gene ngoài nhân.',
+        'Bài 16. Tương tác giữa kiểu gene với môi trường và thành tựu chọn giống.', 'Bài 17. Thực hành: Thí nghiệm về thường biến ở cây trồng.', 'Bài 18. Di truyền quần thể.', 'Bài 19. Các bằng chứng tiến hoá.', 'Bài 20. Quan niệm của Darwin về chọn lọc tự nhiên và hình thành loài.',
+        'Bài 21. Học thuyết tiến hoá tổng hợp hiện đại.', 'Bài 22. Tiến hoá lớn và quá trình phát sinh chủng loại.', 'Bài 23. Môi trường và các nhân tố sinh thái.', 'Bài 24. Sinh thái học quần thể.', 'Bài 25. Thực hành: Xác định khu vực phân bố, kiểu phân bố cá thể và ước tính kích thước mật độ của quần thể thực vật hoặc động vật ít di chuyển.',
+        'Bài 26. Quần xã sinh vật.', 'Bài 27. Thực hành: Tìm hiểu một số đặc trưng cơ bản của quần xã trong tự nhiên.', 'Bài 28. Hệ sinh thái.', 'Bài 29. Trao đổi chất và chuyển hóa năng lượng trong hệ sinh thái.', 'Bài 30. Diễn thế.',
+        'Bài 31. Sinh quyển, các chu trình sinh – địa – hóa.', 'Bài 32. Thực hành: Thiết kế một hệ sinh thái nhân tạo.', 'Bài 33. Sinh thái học phục hồi và bảo tồn đa dạng.', 'Bài 34. Phát triển bền vững.', 'Bài 35. Dự án: Tìm hiểu thực trạng bảo tồn sinh thái tại địa phương và đề xuất giải pháp bảo tồn.'
       ]
     },
     'Khối 11': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Khái quát về trao đổi chất và chuyển hóa năng lượng', 'Bài 2. Trao đổi nước và khoáng ở thực vật', 'Bài 3. Thực hành: Thí nghiệm trao đổi nước ở thực vật và trông cây bằng phương pháp thủy canh, khí canh', 'Bài 4. Quang hợp ở thực vật', 'Bài 5. Thực hành: Quang hợp ở thực vật',
+        'Bài 1. Khái quát về trao đổi chất và chuyển hóa năng lượng', 'Bài 2. Trao đổi nước và khoáng ở thực vật', 'Bài 3. Thực hành: Trao đổi nước và khoáng ở thực vật', 'Bài 4. Quang hợp ở thực vật', 'Bài 5. Thực hành: Quang hợp ở thực vật',
         'Bài 6. Hô hấp ở thực vật', 'Bài 7. Thực hành: Hô hấp ở thực vật', 'Bài 8. Dinh dưỡng và tiêu hóa ở động vật', 'Bài 9. Hô hấp ở động vật', 'Bài 10. Tuần hoàn ở động vật',
-        'Bài 11. Thực hành: Một số thí nghiệm về tuần hoàn ở động vật', 'Bài 12. Miễn dịch ở động vật và người', 'Bài 13. Bài tiết và cân bằng nội môi', 'Bài 14. Khái quát về cảm ứng', 'Bài 15. Cảm ứng ở thực vật',
-        'Bài 16. Thực hành: Cảm ứng ở thực vật', 'Bài 17. Cảm ứng ở động vật', 'Bài 18. Tập tính ở động vật', 'Bài 19. Khái quát về sinh trưởng và phát triển', 'Bài 20. Sinh trưởng và phát triển ở thực vật',
-        'Bài 21. Thực hành: Bấm ngọn, tỉa cành, tính tuổi cây và tác động của ethylene đến sự chín của quả', 'Bài 22. Sinh trưởng và phát triển ở động vật', 'Bài 23. Thực hành: Quan sát biến thái ở côn trùng và cho cá ăn ngũ cốc thay thế mồi sống', 'Bài 24. Khái quát về sinh sản', 'Bài 25. Sinh sản ở thực vật',
-        'Bài 26. Thực hành: Nhân giống vô tính ở thực vật bằng giâm, chiết, ghép', 'Bài 27. Sinh sản ở động vật', 'Bài 28. Mối quan hệ giữa các quá trình sinh lí trong cơ thể sinh vật và một số ngành nghề liên quan đến sinh học cơ thể'
+        'Bài 11. Thực hành: Một số thí nghiệm về hệ tuần hoàn', 'Bài 12. Miễn dịch ở động vật và người', 'Bài 13. Bài tiết và cân bằng nội môi', 'Bài 14. Khái quát về cảm ứng ở sinh vật', 'Bài 15. Cảm ứng ở thực vật',
+        'Bài 16. Thực hành: Cảm ứng ở thực vật', 'Bài 17. Cảm ứng ở động vật', 'Bài 18. Tập tính ở động vật', 'Bài 19. Khái quát về sinh trưởng và phát triển ở sinh vật', 'Bài 20. Sinh trưởng và phát triển ở thực vật',
+        'Bài 21. Thực hành: Bấm ngọn, tỉa cành, tính tuổi cây', 'Bài 22. Sinh trưởng và phát triển ở động vật', 'Bài 23. Thực hành: Quan sát quá trình biến thái ở động vật', 'Bài 24. Khái quát về sinh sản ở sinh vật', 'Bài 25. Sinh sản ở thực vật',
+        'Bài 26. Thực hành: Nhân giống vô tính và thụ phấn cho cây', 'Bài 27. Sinh sản ở động vật', 'Bài 28. Mối quan hệ giữa các quá trình sinh lí trong cơ thể sinh vật', 'Bài 29. Một số ngành nghề liên quan đến sinh học cơ thể'
       ]
     },
     'Khối 10': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Giới thiệu chương trình môn Sinh học. Sinh học và sự phát triển bền vững', 'Bài 2. Phương pháp nghiên cứu và học tập môn Sinh học', 'Bài 3. Các cấp độ tổ chức của thế giới sống', 'Bài 4. Các nguyên tố hóa học và nước', 'Bài 5. Các phân tử sinh học',
-        'Bài 6. Thực hành: Nhận biết một số thành phần hóa học trong tế bào', 'Bài 7. Tế bào nhân sơ', 'Bài 8. Tế bào nhân thực', 'Bài 9. Thực hành: Quan sát tế bào', 'Bài 10. Trao đổi chất qua màng tế bào',
-        'Bài 11. Thực hành: Thí nghiệm co và phản co nguyên sinh', 'Bài 12. Truyền tin tế bào', 'Bài 13. Khái quát về chuyển hóa vật chất và năng lượng', 'Bài 14. Phân giải các chất và giải phóng năng lượng', 'Bài 15. Tổng hợp các chất và tích lũy năng lượng',
-        'Bài 16. Chu kì tế bào và nguyên phân', 'Bài 17. Giảm phân', 'Bài 18. Thực hành: Làm tiêu bản nhất thời quan sát quá trình nguyên phân và giảm phân', 'Bài 19. Công nghệ tế bào', 'Bài 20. Khái quát về vi sinh vật',
-        'Bài 21. Trao đổi chất, sinh trưởng và sinh sản ở vi sinh vật', 'Bài 22. Vai trò và ứng dụng của vi sinh vật', 'Bài 23. Thực hành: Một số phương pháp nghiên cứu vi sinh vật thông dụng. Tìm hiểu về các sản phẩm công nghệ vi sinh vật và làm một số sản phẩm lên men', 'Bài 24. Khái quát về virus', 'Bài 25. Một số bệnh do virus và các thành tựu nghiên cứu ứng dụng virus'
+        'Bài 1. Giới thiệu khái quát môn Sinh học.', 'Bài 2. Phương pháp nghiên cứu và học tập môn Sinh học.', 'Bài 3. Các cấp độ tổ chức của thế giới sống.', 'Bài 4. Các nguyên tố hoá học và nước.', 'Bài 5. Các phân tử sinh học.',
+        'Bài 6. Thực hành: Nhận biết một số phân tử sinh học.', 'Bài 7. Tế bào nhân sơ.', 'Bài 8. Tế bào nhân thực.', 'Bài 9. Thực hành: Quan sát tế bào.', 'Bài 10. Trao đổi chất qua màng tế bào.',
+        'Bài 11. Thực hành: Thí nghiệm co và phản co nguyên sinh.', 'Bài 12. Truyền tin tế bào.', 'Bài 13. Khái quát về chuyển hoá vật chất và năng lượng.', 'Bài 14. Phân giải và tổng hợp các chất trong tế bào.', 'Bài 15. Thực hành: Thí nghiệm phân tích ảnh hưởng của một số yếu tố đến hoạt tính của enzyme và kiểm tra hoạt tính của enzyme amylase.',
+        'Bài 16. Chu kì tế bào và nguyên phân.', 'Bài 17. Giảm phân.', 'Bài 18. Thực hành: Làm và quan sát tiêu bản quá trình nguyên phân và giảm phân.', 'Bài 19. Công nghệ tế bào.', 'Bài 20. Sự đa dạng và phương pháp nghiên cứu vi sinh vật.',
+        'Bài 21. Trao đổi chất, sinh trưởng và sinh sản ở vi sinh vật.', 'Bài 22. Vai trò và ứng dụng của vi sinh vật.', 'Bài 23. Thực hành: Một số phương pháp nghiên cứu vi sinh vật thông dụng, tìm hiểu về các sản phẩm công nghệ vi sinh vật và làm một số sản phẩm lên men từ vi sinh vật.', 'Bài 24. Khái quát về virus.', 'Bài 25. Một số bệnh do virus và các thành tựu nghiên cứu ứng dụng virus.',
+        'Bài 26. Thực hành: Điều tra một số bệnh do virus và tuyên truyền phòng chống bệnh.'
       ]
     }
   },
   'Lịch sử': {
     'Khối 12': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Liên hợp quốc', 'Bài 2. Trật tự thế giới trong Chiến tranh lạnh', 'Bài 3. Trật tự thế giới sau Chiến tranh lạnh', 'Bài 4. Sự ra đời và phát triển của ASEAN', 'Bài 5. Cộng đồng ASEAN',
-        'Bài 6. Hành trình đi đến độc lập dân tộc ở Đông Nam Á', 'Bài 7. Chiến tranh bảo vệ Tổ quốc trong lịch sử Việt Nam', 'Bài 8. Cuộc vận động giải phóng dân tộc (1939-1945)', 'Bài 9. Cách mạng tháng Tám năm 1945', 'Bài 10. Khởi nghĩa Yên Bái',
-        'Bài 11. Phong trào Xô viết Nghệ - Tĩnh', 'Bài 12. Cuộc kháng chiến chống thực dân Pháp (1945-1954)', 'Bài 13. Chiến dịch Điện Biên Phủ', 'Bài 14. Cuộc kháng chiến chống Mỹ (1954-1975)', 'Bài 15. Chiến dịch Hồ Chí Minh',
-        'Bài 16. Công cuộc xây dựng và bảo vệ Tổ quốc từ 1975 đến nay', 'Bài 17. Đổi mới đất nước', 'Bài 18. Lịch sử đối ngoại Việt Nam thời hiện đại', 'Bài 19. Thành tựu văn hóa Việt Nam', 'Bài 20. Tổng kết lịch sử Việt Nam'
+        'Bài 1. Liên hợp quốc.', 'Bài 2. Trật tự thế giới trong Chiến tranh lạnh.', 'Bài 3. Trật tự thế giới sau Chiến tranh lạnh.', 'Bài 4. Sự ra đời và phát triển của Hiệp hội các quốc gia Đông Nam Á (ASEAN).', 'Bài 5. Cộng đồng ASEAN: Từ ý tưởng đến hiện thực.',
+        'Bài 6. Cách mạng tháng Tám năm 1945.', 'Bài 7. Cuộc kháng chiến chống thực dân Pháp (1945 – 1954).', 'Bài 8. Cuộc kháng chiến chống Mỹ, cứu nước (1954 – 1975).', 'Bài 9. Cuộc đấu tranh bảo vệ Tổ quốc từ sau tháng 4 – 1975 đến nay. Một số bài học lịch sử của các cuộc kháng chiến bảo vệ Tổ quốc từ năm 1945 đến nay.', 'Bài 10. Khái quát về công cuộc Đổi mới từ năm 1986 đến nay.',
+        'Bài 11. Thành tựu cơ bản và bài học của công cuộc Đổi mới ở Việt Nam từ năm 1986 đến nay.', 'Bài 12. Hoạt động đối ngoại của Việt Nam trong đấu tranh giành độc lập dân tộc (từ đầu thế kỉ XX đến Cách mạng tháng Tám năm 1945).', 'Bài 13. Hoạt động đối ngoại của Việt Nam trong kháng chiến chống Pháp (1945 – 1954) và kháng chiến chống Mỹ (1954 – 1975).', 'Bài 14. Hoạt động đối ngoại của Việt Nam từ năm 1975 đến nay.', 'Bài 15. Khái quát cuộc đời và sự nghiệp của Hồ Chí Minh.',
+        'Bài 16. Hồ Chí Minh – Anh hùng giải phóng dân tộc.', 'Bài 17. Dấu ấn Hồ Chí Minh trong lòng nhân dân thế giới và Việt Nam.'
       ]
     },
     'Khối 11': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Một số vấn đề chung về cách mạng tư sản', 'Bài 2. Sự xác lập và phát triển của chủ nghĩa tư bản', 'Bài 3. Sự hình thành Liên bang Cộng hòa xã hội chủ nghĩa Xô viết và sự phát triển của chủ nghĩa xã hội sau Chiến tranh thế giới thứ hai', 'Bài 4. Sự phát triển của chủ nghĩa xã hội ở Đông Âu và một số quốc gia khác trên thế giới', 'Bài 5. Quá trình xâm lược và cai trị của chủ nghĩa thực dân ở Đông Nam Á',
-        'Bài 6. Hành trình đi đến độc lập dân tộc ở Đông Nam Á', 'Bài 7. Khái quát về chiến tranh bảo vệ Tổ quốc trong lịch sử Việt Nam', 'Bài 8. Một số cuộc khởi nghĩa tiêu biểu trong lịch sử Việt Nam', 'Bài 9. Cuộc cải cách của Hồ Quý Ly và triều Hồ', 'Bài 10. Cuộc cải cách của Lê Thánh Tông',
-        'Bài 11. Cuộc cải cách của Minh Mạng', 'Bài 12. Vị trí và tầm quan trọng của Biển Đông trong lịch sử Việt Nam', 'Bài 13. Việt Nam và Biển Đông trong lịch sử'
+        'Bài 1. Một số vấn đề chung về cách mạng tư sản.', 'Bài 2. Sự xác lập và phát triển của chủ nghĩa tư bản.', 'Bài 3. Sự hình thành Liên bang Cộng hoà xã hội chủ nghĩa Xô viết.', 'Bài 4. Sự phát triển của chủ nghĩa xã hội từ sau Chiến tranh thế giới thứ hai đến nay.', 'Bài 5. Quá trình xâm lược và cai trị của chủ nghĩa thực dân ở Đông Nam Á.',
+        'Bài 6. Hành trình đi đến độc lập dân tộc ở Đông Nam Á.', 'Bài 7. Chiến tranh bảo vệ Tổ quốc trong lịch sử Việt Nam.', 'Bài 8. Một số cuộc khởi nghĩa và chiến tranh giải phóng lịch sử Việt Nam (từ thế kỉ III trước Công nguyên đến cuối thế kỉ XIX).', 'Bài 9. Cuộc cải cách của Hồ Quý Ly và triều Hồ.', 'Bài 10. Cuộc cải cách của Lê Thánh Tông (thế kỉ XV).',
+        'Bài 11. Cuộc cải cách của Minh Mạng (nửa đầu thế kỉ XIX).', 'Bài 12. Vị trí và tầm quan trọng của Biển Đông.', 'Bài 13. Việt Nam và Biển Đông.'
       ]
     },
     'Khối 10': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Hiện thực lịch sử và nhận thức lịch sử', 'Bài 2. Tri thức lịch sử và cuộc sống', 'Bài 3. Sử học với các lĩnh vực khoa học khác', 'Bài 4. Sử học với truyền thống, di sản và du lịch', 'Bài 5. Khái niệm văn minh. Một số nền văn minh Phương Đông thời kì cổ - trung đại',
-        'Bài 6. Một số nền văn minh Phương Tây thời kì cổ - trung đại', 'Bài 7. Các cuộc cách mạng công nghiệp thời kì cận đại', 'Bài 8. Các cuộc cách mạng công nghiệp thời kì hiện đại', 'Bài 9. Cơ sở hình thành văn minh Đông Nam Á thời kì cổ - trung đại', 'Bài 10. Hành trình phát triển và thành tựu của văn minh Đông Nam Á thời kì cổ - trung đại',
-        'Bài 11. Một số nền văn minh cổ trên đất nước Việt Nam', 'Bài 12. Văn minh Đại Việt', 'Bài 13. Đời sống vật chất và tinh thần của cộng đồng các dân tộc Việt Nam', 'Bài 14. Khối đại đoàn kết dân tộc trong lịch sử Việt Nam'
+        'Bài 1. Hiện thực lịch sử và nhận thức lịch sử.', 'Bài 2. Tri thức lịch sử và cuộc sống.', 'Bài 3. Sử học với các lĩnh vực khoa học.', 'Bài 4. Sử học với một số lĩnh vực, ngành nghề hiện đại.', 'Bài 5. Khái niệm văn minh. Một số nền văn minh phương Đông thời kì cổ – trung đại.',
+        'Bài 6. Một số nền văn minh phương Tây thời kì cổ – trung đại.', 'Bài 7. Các cuộc cách mạng công nghiệp thời kì cận đại.', 'Bài 8. Các cuộc cách mạng công nghiệp thời kì hiện đại.', 'Bài 9. Cơ sở hình thành văn minh Đông Nam Á thời kì cổ – trung đại.', 'Bài 10. Hành trình phát triển và thành tựu của văn minh Đông Nam Á thời kì cổ – trung đại.',
+        'Bài 11. Một số nền văn minh cổ trên đất nước Việt Nam.', 'Bài 12. Văn minh Đại Việt.', 'Bài 13. Đời sống vật chất và tinh thần của cộng đồng các dân tộc Việt Nam.', 'Bài 14. Khối đại đoàn kết dân tộc trong lịch sử Việt Nam.'
       ]
     }
   },
   'Địa lí': {
     'Khối 12': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Vị trí địa lí và phạm vi lãnh thổ', 'Bài 2. Thiên nhiên nhiệt đới ẩm gió mùa', 'Bài 3. Sự phân hóa đa dạng của thiên nhiên', 'Bài 4. Sử dụng và bảo vệ tài nguyên thiên nhiên', 'Bài 5. Bảo vệ môi trường và phòng chống thiên tai',
-        'Bài 6. Đặc điểm dân số và phân bố dân cư', 'Bài 7. Lao động và việc làm', 'Bài 8. Đô thị hóa', 'Bài 9. Chuyển dịch cơ cấu kinh tế', 'Bài 10. Vấn đề phát triển nông nghiệp',
-        'Bài 11. Vấn đề phát triển ngành lâm nghiệp và thủy sản', 'Bài 12. Tổ chức lãnh thổ nông nghiệp', 'Bài 13. Vấn đề phát triển công nghiệp', 'Bài 14. Vấn đề phát triển ngành công nghiệp trọng điểm', 'Bài 15. Tổ chức lãnh thổ công nghiệp',
-        'Bài 16. Vấn đề phát triển ngành giao thông vận tải và thông tin liên lạc', 'Bài 17. Vấn đề phát triển ngành thương mại và du lịch', 'Bài 18. Các vùng kinh tế trọng điểm', 'Bài 19. Vấn đề khai thác thế mạnh ở Trung du và miền núi Bắc Bộ', 'Bài 20. Vấn đề chuyển dịch cơ cấu kinh tế ở Đồng bằng sông Hồng'
+        'Bài 1. Vị trí địa lí và phạm vi lãnh thổ.', 'Bài 2. Thiên nhiên nhiệt đới ẩm gió mùa.', 'Bài 3. Sự phân hoá đa dạng của thiên nhiên.', 'Bài 4. Thực hành: Viết báo cáo về sự phân hoá tự nhiên Việt Nam.', 'Bài 5. Vấn đề sử dụng hợp lí tài nguyên thiên nhiên và bảo vệ môi trường.',
+        'Bài 6. Dân số Việt Nam.', 'Bài 7. Lao động và việc làm.', 'Bài 8. Đô thị hoá.', 'Bài 9. Thực hành: Viết báo cáo về một chủ đề dân cư ở Việt Nam.', 'Bài 10. Chuyển dịch cơ cấu kinh tế.',
+        'Bài 11. Vấn đề phát triển ngành nông nghiệp.', 'Bài 12. Vấn đề phát triển ngành lâm nghiệp và ngành thuỷ sản.', 'Bài 13. Tổ chức lãnh thổ nông nghiệp.', 'Bài 14. Thực hành: Tìm hiểu vai trò ngành nông nghiệp, lâm nghiệp và thuỷ sản; vẽ biểu đồ và nhận xét về ngành nông nghiệp, lâm nghiệp và thuỷ sản.', 'Bài 15. Chuyển dịch cơ cấu ngành công nghiệp.',
+        'Bài 16. Một số ngành công nghiệp.', 'Bài 17. Tổ chức lãnh thổ công nghiệp.', 'Bài 18. Thực hành: Vẽ biểu đồ, nhận xét và giải thích tình hình phát triển ngành công nghiệp.', 'Bài 19. Vai trò, các nhân tố ảnh hưởng đến sự phát triển và phân bố các ngành dịch vụ.', 'Bài 20. Giao thông vận tải và bưu chính viễn thông.',
+        'Bài 21. Thương mại và du lịch.', 'Bài 22. Thực hành: Tìm hiểu sự phát triển một số ngành dịch vụ.', 'Bài 23. Khai thác thế mạnh ở Trung du và miền núi Bắc Bộ.', 'Bài 24. Phát triển kinh tế – xã hội ở Đồng bằng sông Hồng.', 'Bài 25. Phát triển nông nghiệp, lâm nghiệp và thuỷ sản ở Bắc Trung Bộ.',
+        'Bài 26. Phát triển kinh tế biển ở Duyên hải Nam Trung Bộ.', 'Bài 27. Thực hành: Tìm hiểu và viết báo cáo về ý nghĩa của phát triển kinh tế biển đối với quốc phòng an ninh ở Duyên hải Nam Trung Bộ.', 'Bài 28. Khai thác thế mạnh để phát triển kinh tế ở Tây Nguyên.', 'Bài 29. Phát triển kinh tế – xã hội ở Đông Nam Bộ.', 'Bài 30. Sử dụng hợp lí tự nhiên để phát triển kinh tế ở Đồng bằng sông Cửu Long.',
+        'Bài 31. Thực hành: Viết báo cáo về biến đổi khí hậu ở Đồng bằng sông Cửu Long.', 'Bài 32. Phát triển các vùng kinh tế trọng điểm.', 'Bài 33. Phát triển kinh tế biển và đảm bảo quốc phòng an ninh ở Biển Đông và các đảo, quần đảo.', 'Bài 34. Thực hành: Viết báo cáo tuyên truyền về bảo vệ chủ quyền biển, đảo của Việt Nam.', 'Bài 35. Thực hành: Tìm hiểu địa lí địa phương.'
       ]
     },
     'Khối 11': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Sự khác biệt về trình độ phát triển kinh tế - xã hội của các nhóm nước', 'Bài 2. Toàn cầu hóa và khu vực hóa kinh tế', 'Bài 3. Thực hành: Tìm hiểu về cơ hội và thách thức của toàn cầu hóa và khu vực hóa kinh tế', 'Bài 4. Một số vấn đề an ninh toàn cầu', 'Bài 5. Thực hành: Viết báo cáo về đặc điểm và nội dung của một số vấn đề an ninh toàn cầu',
-        'Bài 6. Vị trí địa lí, điều kiện tự nhiên, dân cư và xã hội khu vực Mỹ La tinh', 'Bài 7. Kinh tế khu vực Mỹ La tinh', 'Bài 8. Thực hành: Viết báo cáo về tình hình phát triển kinh tế - xã hội ở Cộng hòa Liên bang Bra-xin', 'Bài 9. Liên minh châu Âu (EU)', 'Bài 10. Thực hành: Làm quen với cách sử dụng bản đồ điện tử và tìm hiểu về các nước trong Liên minh châu Âu',
-        'Bài 11. Vị trí địa lí, điều kiện tự nhiên, dân cư và xã hội khu vực Đông Nam Á', 'Bài 12. Kinh tế khu vực Đông Nam Á', 'Bài 13. Hiệp hội các quốc gia Đông Nam Á (ASEAN)', 'Bài 14. Thực hành: Tìm hiểu về hoạt động kinh tế đối ngoại của Đông Nam Á', 'Bài 15. Vị trí địa lí, điều kiện tự nhiên, dân cư và xã hội khu vực Tây Nam Á',
-        'Bài 16. Thực hành: Viết báo cáo về tình hình phát triển kinh tế và các vấn đề xã hội ở khu vực Tây Nam Á', 'Bài 17. Vị trí địa lí, điều kiện tự nhiên, dân cư và xã hội Hoa Kỳ', 'Bài 18. Kinh tế Hoa Kỳ', 'Bài 19. Vị trí địa lí, điều kiện tự nhiên, dân cư và xã hội Liên bang Nga', 'Bài 20. Kinh tế Liên bang Nga',
-        'Bài 21. Thực hành: Tìm hiểu về tình hình kinh tế - xã hội của Liên bang Nga', 'Bài 22. Vị trí địa lí, điều kiện tự nhiên, dân cư và xã hội Nhật Bản', 'Bài 23. Kinh tế Nhật Bản', 'Bài 24. Vị trí địa lí, điều kiện tự nhiên, dân cư và xã hội Trung Quốc', 'Bài 25. Kinh tế Trung Quốc',
-        'Bài 26. Thực hành: Tìm hiểu về sự thay đổi của kinh tế Trung Quốc', 'Bài 27. Vị trí địa lí, điều kiện tự nhiên, dân cư và xã hội Ô-xtrây-li-a', 'Bài 28. Kinh tế Ô-xtrây-li-a', 'Bài 29. Thực hành: Tìm hiểu về dân cư, xã hội và kinh tế của Ô-xtrây-li-a', 'Bài 30. Vị trí địa lí, điều kiện tự nhiên, dân cư và xã hội Cộng hòa Nam Phi',
-        'Bài 31. Kinh tế Cộng hòa Nam Phi'
+        'Bài 1. Sự khác biệt về trình độ phát triển kinh tế – xã hội của các nhóm nước', 'Bài 2. Toàn cầu hoá và khu vực hoá kinh tế', 'Bài 3. Thực hành: Tìm hiểu về cơ hội và thách thức của toàn cầu hoá và khu vực hoá kinh tế', 'Bài 4. Một số tổ chức quốc tế và khu vực, an ninh toàn cầu', 'Bài 5. Thực hành: Viết báo cáo về đặc điểm và biểu hiện của nền kinh tế tri thức',
+        'Bài 6. Vị trí địa lí, điều kiện tự nhiên, dân cư và xã hội khu vực Mỹ La-tinh', 'Bài 7. Kinh tế khu vực Mỹ La-tinh', 'Bài 8. Thực hành: Viết báo cáo về tình hình phát triển kinh tế – xã hội ở Cộng hoà Liên bang Bra-xin', 'Bài 9. Liên minh châu Âu – Một liên kết kinh tế khu vực lớn', 'Bài 10. Thực hành: Viết báo cáo về sự phát triển công nghiệp của Cộng hoà Liên bang Đức',
+        'Bài 11. Vị trí địa lí, điều kiện tự nhiên, dân cư và xã hội khu vực Đông Nam Á', 'Bài 12. Kinh tế khu vực Đông Nam Á', 'Bài 13. Hiệp hội các quốc gia Đông Nam Á (ASEAN)', 'Bài 14. Thực hành: Tìm hiểu hoạt động kinh tế đối ngoại của khu vực Đông Nam Á', 'Bài 15. Vị trí địa lí, điều kiện tự nhiên, dân cư và xã hội khu vực Tây Nam Á',
+        'Bài 16. Kinh tế khu vực Tây Nam Á', 'Bài 17. Thực hành: Viết báo cáo về vấn đề dầu mỏ của khu vực Tây Nam Á', 'Bài 18. Vị trí địa lí, điều kiện tự nhiên và dân cư Hoa Kỳ', 'Bài 19. Kinh tế Hoa Kỳ', 'Bài 20. Vị trí địa lí, điều kiện tự nhiên, dân cư và xã hội Liên bang Nga',
+        'Bài 21. Kinh tế Liên bang Nga', 'Bài 22. Thực hành: Tìm hiểu về công nghiệp khai thác dầu khí của Liên bang Nga', 'Bài 23. Vị trí địa lí, điều kiện tự nhiên, dân cư và xã hội Nhật Bản', 'Bài 24. Kinh tế Nhật Bản', 'Bài 25. Thực hành: Viết báo cáo về hoạt động kinh tế đối ngoại của Nhật Bản',
+        'Bài 26. Vị trí địa lí, điều kiện tự nhiên, dân cư và xã hội Trung Quốc', 'Bài 27. Kinh tế Trung Quốc', 'Bài 28. Thực hành: Viết báo cáo về sự thay đổi của kinh tế vùng duyên hải Trung Quốc', 'Bài 29. Thực hành: Tìm hiểu về kinh tế của Ô-xtrây-li-a', 'Bài 30. Vị trí địa lí, điều kiện tự nhiên, dân cư và xã hội Cộng hoà Nam Phi',
+        'Bài 31. Kinh tế Cộng hoà Nam Phi'
       ]
     },
     'Khối 10': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Môn Địa lí với định hướng nghề nghiệp', 'Bài 2. Phương pháp biểu hiện các đối tượng địa lí trên bản đồ', 'Bài 3. Sử dụng bản đồ trong học tập và đời sống, một số ứng dụng của GPS và bản đồ số', 'Bài 4. Sự hình thành Trái Đất, vỏ Trái Đất và vật liệu cấu tạo vỏ Trái Đất', 'Bài 5. Hệ quả địa lí các chuyển động của Trái Đất',
-        'Bài 6. Thạch quyển, nội lực', 'Bài 7. Ngoại lực', 'Bài 8. Thực hành: Sự phân bố các vành đai động đất, núi lửa trên thế giới', 'Bài 9. Khí quyển, phân bố nhiệt độ không khí trên Trái Đất', 'Bài 10. Khí áp và gió',
-        'Bài 11. Mưa và sự phân bố lượng mưa trên thế giới', 'Bài 12. Thực hành: Đọc bản đồ các đới và các kiểu khí hậu trên thế giới, phân tích biểu đồ một số kiểu khí hậu', 'Bài 13. Thủy quyển, nước trên lục địa', 'Bài 14. Đất trên Trái Đất', 'Bài 15. Sinh quyển, các nhân tố ảnh hưởng đến sự phát triển và phân bố của sinh vật',
-        'Bài 16. Thực hành: Phân tích sự phân bố của đất và sinh vật trên thế giới', 'Bài 17. Vỏ địa lí, quy luật thống nhất và hoàn chỉnh của vỏ địa lí', 'Bài 18. Quy luật địa đới và quy luật phi địa đới', 'Bài 19. Quy mô dân số, gia tăng dân số và cơ cấu dân số thế giới', 'Bài 20. Phân bố dân cư và đô thị hóa trên thế giới',
-        'Bài 21. Các nguồn lực phát triển kinh tế', 'Bài 22. Cơ cấu kinh tế, tổng sản phẩm trong nước và tổng thu nhập quốc gia', 'Bài 23. Vai trò, đặc điểm, các nhân tố ảnh hưởng tới sự phát triển và phân bố nông nghiệp, lâm nghiệp, thủy sản', 'Bài 24. Địa lí ngành nông nghiệp', 'Bài 25. Địa lí ngành lâm nghiệp và ngành thủy sản',
-        'Bài 26. Thực hành: Vẽ biểu đồ, nhận xét và giải thích tình hình phát triển ngành nông nghiệp, lâm nghiệp, thủy sản', 'Bài 27. Vai trò, đặc điểm, các nhân tố ảnh hưởng tới sự phát triển và phân bố công nghiệp', 'Bài 28. Địa lí các ngành công nghiệp', 'Bài 29. Thực hành: Vẽ biểu đồ, nhận xét và giải thích tình hình phát triển công nghiệp thế giới', 'Bài 30. Vai trò, đặc điểm, các nhân tố ảnh hưởng tới sự phát triển và phân bố dịch vụ',
-        'Bài 31. Địa lí ngành giao thông vận tải và bưu chính viễn thông', 'Bài 32. Địa lí ngành thương mại và ngành du lịch', 'Bài 33. Cơ cấu, vai trò, các nhân tố ảnh hưởng đến sự phát triển và phân bố ngành tài chính ngân hàng', 'Bài 34. Địa lí ngành tài chính ngân hàng', 'Bài 35. Môi trường và tài nguyên thiên nhiên',
-        'Bài 36. Đặc điểm của phát triển bền vững và tăng trưởng xanh'
+        'Bài 1. Môn Địa lí với định hướng nghề nghiệp', 'Bài 2. Phương pháp biểu hiện các đối tượng địa lí trên bản đồ', 'Bài 3. Sử dụng bản đồ trong học tập và đời sống, một số ứng dụng của GPS và bản đồ số trong đời sống', 'Bài 4. Sự hình thành Trái Đất, vỏ Trái Đất và vật liệu cấu tạo vỏ Trái Đất', 'Bài 5. Hệ quả địa lí các chuyển động của Trái Đất',
+        'Bài 6. Thạch quyển, thuyết kiến tạo mảng', 'Bài 7. Nội lực và ngoại lực', 'Bài 8. Thực hành: Sự phân bố các vành đai động đất, núi lửa', 'Bài 9. Khí quyển, các yếu tố khí hậu', 'Bài 10. Thực hành: Đọc bản đồ các đới và các kiểu khí hậu trên Trái Đất, phân tích biểu đồ một số kiểu khí hậu',
+        'Bài 11. Thuỷ quyển, nước trên lục địa', 'Bài 12. Nước biển và đại dương', 'Bài 13. Thực hành: Phân tích chế độ nước sông Hồng', 'Bài 14. Đất trên Trái Đất', 'Bài 15. Sinh quyển',
+        'Bài 16. Thực hành: Tìm hiểu sự phân bố đất và sinh vật trên Trái Đất', 'Bài 17. Vỏ địa lí, quy luật thống nhất và hoàn chỉnh của vỏ địa lí', 'Bài 18. Quy luật địa đới và quy luật phi địa đới', 'Bài 19. Quy mô dân số, gia tăng dân số và cơ cấu dân số thế giới', 'Bài 20. Phân bố dân cư và đô thị hoá trên thế giới',
+        'Bài 21. Các nguồn lực phát triển kinh tế', 'Bài 22. Cơ cấu kinh tế, tổng sản phẩm trong nước và tổng thu nhập quốc gia', 'Bài 23. Vai trò, đặc điểm, các nhân tố ảnh hưởng tới phát triển và phân bố nông nghiệp, lâm nghiệp, thuỷ sản', 'Bài 24. Địa lí ngành nông nghiệp', 'Bài 25. Địa lí ngành lâm nghiệp và ngành thuỷ sản',
+        'Bài 26. Tổ chức lãnh thổ nông nghiệp, một số vấn đề phát triển nông nghiệp hiện đại trên thế giới và định hướng phát triển nông nghiệp trong tương lai', 'Bài 27. Thực hành: Vẽ và nhận xét biểu đồ về sản lượng lương thực của thế giới', 'Bài 28. Vai trò, đặc điểm, cơ cấu ngành công nghiệp, các nhân tố ảnh hưởng tới sự phát triển và phân bố công nghiệp', 'Bài 29. Địa lí một số ngành công nghiệp', 'Bài 30. Tổ chức lãnh thổ công nghiệp',
+        'Bài 31. Tác động của công nghiệp đối với môi trường, phát triển năng lượng tái tạo, định hướng phát triển công nghiệp trong tương lai'
       ]
     }
   },
   'Tin học': {
     'Khối 12': {
-      'Kết nối tri thức với cuộc sống': [
+      'Kết nối tri thức với cuộc sống (Tin học ứng dụng ICT)': [
+        'Bài 1. Làm quen với Trí tuệ nhân tạo', 'Bài 2. Trí tuệ nhân tạo trong khoa học và đời sống', 'Bài 3. Một số thiết bị mạng thông dụng', 'Bài 4. Giao thức mạng', 'Bài 5. Thực hành chia sẻ tài nguyên trên mạng',
+        'Bài 6. Giao tiếp và ứng xử trong không gian mạng', 'Bài 7. HTML và cấu trúc trang web', 'Bài 8. Định dạng văn bản', 'Bài 9. Tạo danh sách, bảng', 'Bài 10. Tạo liên kết',
+        'Bài 11. Chèn tệp tin đa phương tiện và khung nội tuyến vào trang web', 'Bài 12. Tạo biểu mẫu', 'Bài 13. Khái niệm, vai trò của CSS', 'Bài 14. Định dạng văn bản bằng CSS', 'Bài 15. Tạo màu cho chữ và nền',
+        'Bài 16. Định dạng khung', 'Bài 17. Các mức ưu tiên của bộ chọn', 'Bài 18. Thực hành tổng hợp thiết kế trang web', 'Bài 19. Dịch vụ sửa chữa và bảo trì máy tính', 'Bài 20. Nhóm nghề quản trị thuộc ngành Công nghệ thông tin',
+        'Bài 21. Hội thảo hướng nghiệp', 'Bài 22. Thực hành kết nối các thiết bị số', 'Bài 23. Chuẩn bị xây dựng trang web', 'Bài 24. Xây dựng phần đầu trang web', 'Bài 25. Xây dựng phần thân và chân trang web',
+        'Bài 26. Liên kết và thanh điều hướng', 'Bài 27. Biểu mẫu trên trang web', 'Bài 28. Thực hành tổng hợp'
+      ],
+      'Kết nối tri thức với cuộc sống (Khoa học máy tính CS)': [
         'Bài 1. Hệ điều hành cho thiết bị di động và các thiết bị thông minh', 'Bài 2. Thực hành: Sử dụng hệ điều hành cho thiết bị di động', 'Bài 3. Trí tuệ nhân tạo và ứng dụng', 'Bài 4. Một số vấn đề đạo đức và pháp luật của trí tuệ nhân tạo', 'Bài 5. Mạng máy tính và giao thức mạng',
         'Bài 6. Thực hành: Cấu hình thiết bị mạng cục bộ', 'Bài 7. Internet vạn vật (IoT)', 'Bài 8. Thực hành: Kết nối và sử dụng thiết bị thông minh', 'Bài 9. Một số vấn đề về pháp luật, đạo đức và văn hóa khi sử dụng tài nguyên số', 'Bài 10. Định dạng dữ liệu và lưu trữ dữ liệu',
         'Bài 11. Một số kĩ thuật lập trình nâng cao trong Python', 'Bài 12. Thực hành: Xây dựng chương trình quản lí đơn giản', 'Bài 13. Một số nghề nghiệp trong lĩnh vực Tin học', 'Bài 14. Dự án: Tìm hiểu nghề nghiệp trong lĩnh vực Tin học', 'Bài 15. Hệ quản trị nội dung (CMS)',
@@ -257,12 +280,20 @@ export const LESSON_LIBRARY: Record<string, Record<string, Record<string, string
       ]
     },
     'Khối 11': {
-      'Kết nối tri thức với cuộc sống': [
+      'Kết nối tri thức với cuộc sống (Tin học ứng dụng ICT)': [
+        'Bài 1. Hệ điều hành.', 'Bài 2. Thực hành sử dụng hệ điều hành.', 'Bài 3. Phần mềm nguồn mở và phần mềm chạy trên Internet.', 'Bài 4. Bên trong máy tính.', 'Bài 5. Kết nối máy tính với các thiết bị số.',
+        'Bài 6. Lưu trữ và chia sẻ tập tin trên Internet.', 'Bài 7. Thực hành tìm kiếm thông tin trên Internet.', 'Bài 8. Thực hành nâng cao sử dụng thư điện tử và mạng xã hội.', 'Bài 9. Giao tiếp an toàn trên Internet.', 'Bài 10. Lưu trữ dữ liệu và khai thác thông tin phục vụ quản lí.',
+        'Bài 11. Cơ sở dữ liệu.', 'Bài 12. Hệ quản trị cơ sở dữ liệu và hệ cơ sở dữ liệu.', 'Bài 13. Cơ sở dữ liệu quan hệ.', 'Bài 14. SQL – Ngôn ngữ truy vấn có cấu trúc.', 'Bài 15. Bảo mật và an toàn hệ cơ sở dữ liệu.',
+        'Bài 16. Công việc quản trị cơ sở dữ liệu.', 'Bài 17. Quản trị cơ sở dữ liệu trên máy tính.', 'Bài 18. Thực hành xác định cấu trúc bảng và các trường khoá.', 'Bài 19. Thực hành tạo lập cơ sở dữ liệu và các bảng.', 'Bài 20. Thực hành tạo lập các bảng có khoá ngoài.',
+        'Bài 21. Thực hành cập nhật và truy xuất dữ liệu các bảng.', 'Bài 22. Thực hành cập nhật bảng dữ liệu có tham chiếu.', 'Bài 23. Thực hành truy xuất dữ liệu qua liên kết các bảng.', 'Bài 24. Thực hành sao lưu dữ liệu.', 'Bài 25. Phần mềm chỉnh sửa ảnh.',
+        'Bài 26. Công cụ tinh chỉnh màu sắc và công cụ chọn.', 'Bài 27. Công cụ vẽ và một số ứng dụng.', 'Bài 28. Tạo ảnh động.', 'Bài 29. Khám phá phần mềm làm phim.', 'Bài 30. Biên tập phim.',
+        'Bài 31. Thực hành tạo phim hoạt hình.'
+      ],
+      'Kết nối tri thức với cuộc sống (Khoa học máy tính CS)': [
         'Bài 1. Hệ điều hành', 'Bài 2. Thực hành: Sử dụng hệ điều hành', 'Bài 3. Phần mềm ứng dụng và dịch vụ phần mềm', 'Bài 4. Bên trong máy tính', 'Bài 5. Kết nối thiết bị số với máy tính',
         'Bài 6. Lưu trữ và chia sẻ tệp tin trên Internet', 'Bài 7. Thực hành: Tìm kiếm thông tin trên Internet', 'Bài 8. Đạo đức và văn hóa trong môi trường số', 'Bài 9. Cơ sở dữ liệu và hệ quản trị cơ sở dữ liệu', 'Bài 10. Bảng và khóa chính trong cơ sở dữ liệu quan hệ',
         'Bài 11. Thực hành: Khởi tạo cơ sở dữ liệu và bảng', 'Bài 12. Truy vấn dữ liệu và ngôn ngữ SQL', 'Bài 13. Thực hành: Truy vấn dữ liệu', 'Bài 14. Bảo mật và an toàn trong cơ sở dữ liệu', 'Bài 15. Nghề quản trị cơ sở dữ liệu',
-        'Bài 16. Phần mềm biên tập ảnh và video', 'Bài 17. Thực hành: Chỉnh sửa ảnh', 'Bài 18. Thực hành: Biên tập video', 'Bài 19. Thực hành: Tạo video giới thiệu dự án', 'Bài 20. Khái quát về thiết kế trang web',
-        'Bài 21. Các thẻ HTML cơ bản', 'Bài 22. Định dạng trang web bằng CSS', 'Bài 23. Thực hành: Tạo trang web cá nhân', 'Bài 24. Thực hành: Tạo trang web có nội dung đa phương tiện', 'Bài 25. Dự án: Xây dựng website giới thiệu trường học'
+        'Bài 16. Ngôn ngữ lập trình bậc cao và Python', 'Bài 17. Biến và lệnh gán', 'Bài 18. Các lệnh vào ra đơn giản', 'Bài 19. Câu lệnh điều kiện If', 'Bài 20. Câu lệnh lặp For'
       ]
     },
     'Khối 10': {
@@ -278,16 +309,18 @@ export const LESSON_LIBRARY: Record<string, Record<string, Record<string, string
     },
     'Khối 8': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Lược sử công cụ tính toán', 'Bài 2. Thông tin trong môi trường kĩ thuật số', 'Bài 3. Thẻ tiêu đề và định dạng văn bản', 'Bài 4. Danh sách và hình ảnh', 'Bài 5. Bảng và khung trong trang web',
-        'Bài 6. Thực hành: Tạo trang web cá nhân', 'Bài 7. Cấu trúc lặp', 'Bài 8. Cấu trúc lặp (Tiếp theo)', 'Bài 9. Lập trình chương trình máy tính', 'Bài 10. Các kiểu dữ liệu cơ bản của Python',
-        'Bài 11. Biến và lệnh gán', 'Bài 12. Câu lệnh điều kiện và cấu trúc rẽ nhánh', 'Bài 13. Câu lệnh lặp'
+        'Bài 1. Lược sử công cụ tính toán', 'Bài 2. Thông tin trong môi trường số', 'Bài 3. Thực hành: Khai thác thông tin số', 'Bài 4. Đạo đức và văn hoá trong sử dụng công nghệ kĩ thuật số', 'Bài 5. Sử dụng bảng tính giải quyết bài toán thực tế',
+        'Bài 6. Sắp xếp và lọc dữ liệu', 'Bài 7. Trực quan hoá dữ liệu', 'Bài 8a. Làm việc với danh sách dạng liệt kê và hình ảnh trong văn bản', 'Bài 9a. Tạo đầu trang, chân trang cho văn bản', 'Bài 10a. Định dạng nâng cao cho trang chiếu',
+        'Bài 11a. Sử dụng bản mẫu tạo bài trình chiếu', 'Bài 8b. Phần mềm chỉnh sửa ảnh', 'Bài 9b. Thay đổi khung hình, kích thước ảnh', 'Bài 10b. Thêm văn bản, tạo hiệu ứng cho ảnh', 'Bài 11b. Thực hành tổng hợp',
+        'Bài 12. Từ thuật toán đến chương trình', 'Bài 13. Biểu diễn dữ liệu', 'Bài 14. Cấu trúc điều khiển', 'Bài 15. Gỡ lỗi', 'Bài 16. Tin học với nghề nghiệp'
       ]
     },
     'Khối 7': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Thiết bị vào - ra', 'Bài 2. Phần mềm máy tính', 'Bài 3. Quản lí dữ liệu trong máy tính', 'Bài 4. Mạng xã hội và chia sẻ thông tin', 'Bài 5. Ứng xử trên mạng',
-        'Bài 6. Làm quen với phần mềm bảng tính', 'Bài 7. Tính toán dự án với phần mềm bảng tính', 'Bài 8. Công cụ phối màu sắc', 'Bài 9. Trình bày bài giới thiệu', 'Bài 10. Bản trình chiếu và đa phương tiện',
-        'Bài 11. Tạo bài trình chiếu hoàn thiện', 'Bài 12. Thuật toán tìm kiếm', 'Bài 13. Thuật toán sắp xếp', 'Bài 14. Thuật toán tìm kiếm nhị phân', 'Bài 15. Thuật toán sắp xếp nổi bọt'
+        'Bài 1. Thiết bị vào – ra', 'Bài 2. Phần mềm máy tính', 'Bài 3. Quản lí dữ liệu trong máy tính', 'Bài 4. Mạng xã hội và một số kênh trao đổi thông tin trên Internet', 'Bài 5. Ứng xử trên mạng',
+        'Bài 6. Làm quen với phần mềm bảng tính', 'Bài 7. Tính toán tự động trên bảng tính', 'Bài 8. Công cụ hỗ trợ tính toán', 'Bài 9. Trình bày bảng tính', 'Bài 10. Hoàn thiện bảng tính',
+        'Bài 11. Tạo bài trình chiếu', 'Bài 12. Định dạng đối tượng trên trang chiếu', 'Bài 13. Thực hành tổng hợp: Hoàn thiện bài trình chiếu', 'Bài 14. Thuật toán tìm kiếm tuần tự', 'Bài 15. Thuật toán tìm kiếm nhị phân',
+        'Bài 16. Thuật toán sắp xếp'
       ]
     },
     'Khối 6': {
@@ -310,51 +343,59 @@ export const LESSON_LIBRARY: Record<string, Record<string, Record<string, string
   'Khoa học tự nhiên': {
     'Khối 6': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Giới thiệu về Khoa học tự nhiên', 'Bài 2. An toàn trong phòng thực hành', 'Bài 3. Sử dụng kính lúp và kính hiển vi quang học', 'Bài 4. Đo chiều dài', 'Bài 5. Đo khối lượng',
-        'Bài 6. Đo thời gian', 'Bài 7. Đo nhiệt độ', 'Bài 8. Sự đa dạng của chất', 'Bài 9. Sự chuyển thể của chất', 'Bài 10. Hỗn hợp và tách chất ra khỏi hỗn hợp',
-        'Bài 11. Oxygen. Không khí', 'Bài 12. Một số vật liệu', 'Bài 13. Một số nhiên liệu', 'Bài 14. Một số nguyên liệu', 'Bài 15. Một số lương thực - thực phẩm',
-        'Bài 16. Sơ lược về bảng tuần hoàn các nguyên tố hóa học', 'Bài 17. Tế bào', 'Bài 18. Từ tế bào đến cơ thể', 'Bài 19. Nguy cơ và tác hại của virus', 'Bài 20. Vi khuẩn',
-        'Bài 21. Nấm', 'Bài 22. Thực vật', 'Bài 23. Động vật không xương sống', 'Bài 24. Động vật có xương sống', 'Bài 25. Đa dạng sinh học',
-        'Bài 26. Lực và tác dụng của lực', 'Bài 27. Lực tiếp xúc và lực không tiếp xúc', 'Bài 28. Lực ma sát', 'Bài 29. Lực cản của nước', 'Bài 30. Trọng lượng và khối lượng',
-        'Bài 31. Biến dạng của lò xo. Phép đo lực', 'Bài 32. Năng lượng và sự truyền năng lượng', 'Bài 33. Một số dạng năng lượng', 'Bài 34. Sự chuyển hóa năng lượng', 'Bài 35. Nhiên liệu và năng lượng tái tạo',
-        'Bài 36. Tiết kiệm năng lượng', 'Bài 37. Trái Đất và Bầu trời', 'Bài 38. Hệ Mặt Trời và Ngân Hà'
+        'Bài 1. Giới thiệu về Khoa học tự nhiên', 'Bài 2. An toàn trong phòng thực hành', 'Bài 3. Sử dụng kính lúp', 'Bài 4. Sử dụng kính hiển vi quang học', 'Bài 5. Đo chiều dài',
+        'Bài 6. Đo khối lượng', 'Bài 7. Đo thời gian', 'Bài 8. Đo nhiệt độ', 'Bài 9. Sự đa dạng của chất', 'Bài 10. Các thể của chất và sự chuyển thể',
+        'Bài 11. Oxygen. Không khí', 'Bài 12. Một số vật liệu', 'Bài 13. Một số nguyên liệu', 'Bài 14. Một số nhiên liệu', 'Bài 15. Một số lương thực, thực phẩm',
+        'Bài 16. Hỗn hợp các chất', 'Bài 17. Tách chất khỏi hỗn hợp', 'Bài 18. Tế bào – Đơn vị cơ bản của sự sống', 'Bài 19. Cấu tạo và chức năng các thành phần của tế bào', 'Bài 20. Sự lớn lên và sinh sản của tế bào',
+        'Bài 21. Thực hành: Quan sát và phân biệt một số loại tế bào', 'Bài 22. Cơ thể sinh vật', 'Bài 23. Tổ chức cơ thể đa bào', 'Bài 24. Thực hành: Quan sát và mô tả cơ thể đơn bào, cơ thể đa bào', 'Bài 25. Hệ thống phân loại sinh vật',
+        'Bài 26. Khóa lưỡng phân', 'Bài 27. Vi khuẩn', 'Bài 28. Thực hành: Làm sữa chua và quan sát vi khuẩn', 'Bài 29. Virus', 'Bài 30. Nguyên sinh vật',
+        'Bài 31. Thực hành: Quan sát nguyên sinh vật', 'Bài 32. Nấm', 'Bài 33. Thực hành: Quan sát các loại nấm', 'Bài 34. Thực vật', 'Bài 35. Thực hành: Quan sát và phân biệt một số nhóm thực vật',
+        'Bài 36. Động vật', 'Bài 37. Thực hành: Quan sát và nhận biết một số nhóm động vật ngoài thiên nhiên', 'Bài 38. Đa dạng sinh học', 'Bài 39. Tìm hiểu sinh vật ngoài thiên nhiên', 'Bài 40. Lực là gì?',
+        'Bài 41. Biểu diễn lực', 'Bài 42. Biến dạng của lò xo', 'Bài 43. Trọng lực, lực hấp dẫn', 'Bài 44. Lực ma sát', 'Bài 45. Lực cản của nước',
+        'Bài 46. Năng lượng và sự truyền năng lượng', 'Bài 47. Một số dạng năng lượng', 'Bài 48. Sự chuyển hóa năng lượng', 'Bài 49. Năng lượng hao phí', 'Bài 50. Năng lượng tái tạo',
+        'Bài 51. Tiết kiệm năng lượng', 'Bài 52. Chuyển động nhìn thấy của Mặt Trời. Thiên thể', 'Bài 53. Mặt Trăng', 'Bài 54. Hệ Mặt Trời', 'Bài 55. Ngân hà'
       ]
     },
     'Khối 7': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Phương pháp và kĩ năng học tập môn Khoa học tự nhiên', 'Bài 2. Nguyên tử', 'Bài 3. Nguyên tố hóa học', 'Bài 4. Sơ lược về bảng tuần hoàn các nguyên tố hóa học', 'Bài 5. Phân tử. Đơn chất. Hợp chất',
-        'Bài 6. Giới thiệu về liên kết hóa học', 'Bài 7. Hóa trị và công thức hóa học', 'Bài 8. Tốc độ chuyển động', 'Bài 9. Đồ thị quãng đường – thời gian', 'Bài 10. Đo tốc độ',
-        'Bài 11. Tốc độ và an toàn giao thông', 'Bài 12. Sóng âm', 'Bài 13. Độ cao và độ to của âm', 'Bài 14. Phản xạ âm, chống ô nhiễm tiếng ồn', 'Bài 15. Ánh sáng, tia sáng',
-        'Bài 16. Sự phản xạ ánh sáng', 'Bài 17. Ảnh của vật qua gương phẳng', 'Bài 18. Nam châm', 'Bài 19. Từ trường', 'Bài 20. Từ trường Trái Đất. Sử dụng la bàn',
-        'Bài 21. Nam châm điện', 'Bài 22. Vai trò của trao đổi chất và chuyển hóa năng lượng ở sinh vật', 'Bài 23. Quang hợp ở thực vật', 'Bài 24. Thực hành: Chứng minh quang hợp ở cây xanh', 'Bài 25. Hô hấp tế bào',
-        'Bài 26. Thực hành: Hô hấp ở hạt nảy mầm', 'Bài 27. Trao đổi khí ở sinh vật', 'Bài 28. Trao đổi nước và chất dinh dưỡng ở thực vật', 'Bài 29. Thực hành: Quan sát cấu tạo của cây và sự vận chuyển các chất trong cây', 'Bài 30. Trao đổi nước và chất dinh dưỡng ở động vật',
-        'Bài 31. Hãy bảo vệ sức khỏe của chúng ta', 'Bài 32. Cảm ứng ở sinh vật', 'Bài 33. Tập tính ở động vật', 'Bài 34. Sinh trưởng và phát triển ở sinh vật', 'Bài 35. Các nhân tố ảnh hưởng đến sinh trưởng và phát triển của sinh vật',
-        'Bài 36. Khái quát về sinh sản ở sinh vật', 'Bài 37. Sinh sản vô tính ở sinh vật', 'Bài 38. Sinh sản hữu tính ở sinh vật', 'Bài 39. Chứng minh cơ thể sinh vật là một thể thống nhất'
+        'Bài 1. Phương pháp và kĩ năng học tập môn khoa học tự nhiên', 'Bài 2. Nguyên tử', 'Bài 3. Nguyên tố hóa học', 'Bài 4. Sơ lược về bảng tuần hoàn các nguyên tố hóa học', 'Bài 5. Phân tử - Đơn chất - Hợp chất',
+        'Bài 6. Giới thiệu về liên kết hóa học', 'Bài 7. Hóa trị và công thức hóa học', 'Bài 8. Tốc độ chuyển động', 'Bài 9. Đo tốc độ', 'Bài 10. Đồ thị quãng đường - thời gian',
+        'Bài 11. Thảo luận về ảnh hưởng của tốc độ trong an toàn giao thông', 'Bài 12. Sóng âm', 'Bài 13. Độ to và độ cao của âm', 'Bài 14. Phản xạ âm, chống ô nhiễm tiếng ồn', 'Bài 15. Năng lượng ánh sáng. Tia sáng, vùng tối',
+        'Bài 16. Sự phản xạ ánh sáng', 'Bài 17. Ảnh của vật qua gương phẳng', 'Bài 18. Nam châm', 'Bài 19. Từ trường', 'Bài 20. Chế tạo nam châm điện đơn giản',
+        'Bài 21. Khái quát về trao đổi chất và chuyển hóa năng lượng', 'Bài 22. Quang hợp ở thực vật', 'Bài 23. Một số yếu tố ảnh hưởng đến quang hợp', 'Bài 24. Thực hành: Chứng minh quang hợp ở cây xanh', 'Bài 25. Hô hấp tế bào',
+        'Bài 26. Một số yếu tố ảnh hưởng đến hô hấp tế bào', 'Bài 27. Thực hành: Hô hấp ở thực vật', 'Bài 28. Trao đổi khí ở sinh vật', 'Bài 29. Vai trò của nước và chất dinh dưỡng đối với sinh vật', 'Bài 30. Trao đổi nước và chất dinh dưỡng ở thực vật',
+        'Bài 31. Trao đổi nước và chất dinh dưỡng ở động vật', 'Bài 32. Thực hành: Chứng minh thân vận chuyển nước và lá thoát hơi nước', 'Bài 33. Cảm ứng ở sinh vật và tập tính ở động vật', 'Bài 34. Vận dụng hiện tượng cảm ứng ở sinh vật vào thực tiễn', 'Bài 35. Thực hành: Cảm ứng ở sinh vật',
+        'Bài 36. Khái quát về sinh trưởng và phát triển ở sinh vật', 'Bài 37. Ứng dụng sinh trưởng và phát triển ở sinh vật vào thực tiễn', 'Bài 38. Thực hành: Quan sát, mô tả sự sinh trưởng và phát triển ở một số sinh vật', 'Bài 39. Sinh sản vô tính ở sinh vật', 'Bài 40. Sinh sản hữu tính ở sinh vật',
+        'Bài 41. Một số yếu tố ảnh hưởng và điều hòa, điều khiển sinh sản ở sinh vật', 'Bài 42. Cơ thể sinh vật là một thể thống nhất'
       ]
     },
     'Khối 8': {
       'Kết nối tri thức với cuộc sống': [
         'Bài 1. Sử dụng một số hóa chất, thiết bị cơ bản trong phòng thí nghiệm', 'Bài 2. Phản ứng hóa học', 'Bài 3. Mol và tỉ khối chất khí', 'Bài 4. Dung dịch và nồng độ', 'Bài 5. Định luật bảo toàn khối lượng và phương trình hóa học',
         'Bài 6. Tính theo phương trình hóa học', 'Bài 7. Tốc độ phản ứng và chất xúc tác', 'Bài 8. Acid', 'Bài 9. Base. Thang pH', 'Bài 10. Oxide',
-        'Bài 11. Muối', 'Bài 12. Phân bón hóa học', 'Bài 13. Khối lượng riêng', 'Bài 14. Thực hành: Xác định khối lượng riêng', 'Bài 15. Áp suất trên một bề mặt',
-        'Bài 16. Áp suất chất lỏng. Áp suất khí quyển', 'Bài 17. Lực đẩy Archimedes', 'Bài 18. Tác dụng làm quay của lực. Moment lực', 'Bài 19. Đòn bẩy', 'Bài 20. Hiện tượng nhiễm điện do cọ xát',
-        'Bài 21. Dòng điện, nguồn điện', 'Bài 22. Mạch điện đơn giản', 'Bài 23. Tác dụng của dòng điện', 'Bài 24. Cường độ dòng điện và hiệu điện thế', 'Bài 25. Thực hành: Đo cường độ dòng điện và hiệu điện thế',
-        'Bài 26. Năng lượng nhiệt và nội năng', 'Bài 27. Dẫn nhiệt, đối lưu, bức xạ nhiệt', 'Bài 28. Sự nở vì nhiệt', 'Bài 29. Khái quát về cơ thể người', 'Bài 30. Hệ vận động ở người',
-        'Bài 31. Hệ tiêu hóa ở người', 'Bài 32. Dinh dưỡng và tiêu hóa ở người', 'Bài 33. Hệ tuần hoàn ở người', 'Bài 34. Máu và hệ tuần hoàn của cơ thể người', 'Bài 35. Hệ hô hấp ở người',
-        'Bài 36. Hệ bài tiết ở người', 'Bài 37. Hệ thần kinh và các giác quan ở người', 'Bài 38. Hệ nội tiết ở người', 'Bài 39. Da và điều hòa thân nhiệt ở người', 'Bài 40. Hệ sinh sản ở người',
-        'Bài 41. Môi trường sống và các nhân tố sinh thái', 'Bài 42. Quần thể sinh vật', 'Bài 43. Quần xã sinh vật', 'Bài 44. Hệ sinh thái'
+        'Bài 11. Muối', 'Bài 12. Phân bón hóa học', 'Bài 13. Khối lượng riêng', 'Bài 14. Thực hành xác định khối lượng riêng', 'Bài 15. Áp suất trên một bề mặt',
+        'Bài 16. Áp suất chất lỏng. Áp suất khí quyển', 'Bài 17. Lực đẩy Archimedes', 'Bài 18. Tác dụng làm quay của lực. Moment lực', 'Bài 19. Đòn bẩy và ứng dụng', 'Bài 20. Hiện tượng nhiễm điện do cọ xát',
+        'Bài 21. Dòng điện, nguồn điện', 'Bài 22. Mạch điện đơn giản', 'Bài 23. Tác dụng của dòng điện', 'Bài 24. Cường độ dòng điện và hiệu điện thế', 'Bài 25. Thực hành đo cường độ dòng điện và hiệu điện thế',
+        'Bài 26. Năng lượng nhiệt và nội năng', 'Bài 27. Thực hành đo năng lượng nhiệt bằng joulemeter', 'Bài 28. Sự truyền nhiệt', 'Bài 29. Sự nở vì nhiệt', 'Bài 30. Khái quát về cơ thể người',
+        'Bài 31. Hệ vận động ở người', 'Bài 32. Dinh dưỡng và tiêu hóa ở người', 'Bài 33. Máu và hệ tuần hoàn của cơ thể người', 'Bài 34. Hệ hô hấp ở người', 'Bài 35. Hệ bài tiết ở người',
+        'Bài 36. Điều hòa môi trường trong của cơ thể người', 'Bài 37. Hệ thần kinh và các giác quan ở người', 'Bài 38. Hệ nội tiết ở người', 'Bài 39. Da và điều hòa thân nhiệt ở người', 'Bài 40. Sinh sản ở người',
+        'Bài 41. Môi trường và các nhân tố sinh thái', 'Bài 42. Quần thể sinh vật', 'Bài 43. Quần xã sinh vật', 'Bài 44. Hệ sinh thái', 'Bài 45. Sinh quyển',
+        'Bài 46. Cân bằng tự nhiên', 'Bài 47. Bảo vệ môi trường'
       ]
     },
     'Khối 9': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Nhận biết một số dụng cụ, hóa chất. Thuyết minh báo cáo thí nghiệm', 'Bài 2. Động năng. Thế năng', 'Bài 3. Cơ năng', 'Bài 4. Công và công suất', 'Bài 5. Khúc xạ ánh sáng',
-        'Bài 6. Phản xạ toàn phần', 'Bài 7. Lăng kính', 'Bài 8. Thấu kính', 'Bài 9. Thực hành: Đo tiêu cự của thấu kính hội tụ', 'Bài 10. Kính lúp. Bài tập thấu kính',
-        'Bài 11. Điện trở. Định luật Ohm', 'Bài 12. Đoạn mạch nối tiếp và song song', 'Bài 13. Năng lượng của dòng điện và công suất điện', 'Bài 14. Cảm ứng điện từ. Nguyên tắc tạo ra dòng điện xoay chiều', 'Bài 15. Tác dụng của dòng điện xoay chiều',
-        'Bài 16. Tính chất chung của kim loại', 'Bài 17. Dãy hoạt động hóa học của kim loại', 'Bài 18. Tách kim loại và việc sử dụng hợp kim', 'Bài 19. Sự khác nhau giữa phi kim và kim loại', 'Bài 20. Sơ lược về bảng tuần hoàn các nguyên tố hóa học',
-        'Bài 21. Hợp chất hữu cơ và hóa học hữu cơ', 'Bài 22. Ethane', 'Bài 23. Ethylene', 'Bài 24. Acetylene', 'Bài 25. Alcohol ethyl',
-        'Bài 26. Acetic acid', 'Bài 27. Lipid và chất béo', 'Bài 28. Protein', 'Bài 29. Polymer', 'Bài 30. Di truyền học Mendel. Cơ sở phân tử của hiện tượng di truyền',
-        'Bài 31. Nucleic acid và gene', 'Bài 32. Protein và tính trạng', 'Bài 33. Đột biến gene', 'Bài 34. Nhiễm sắc thể và đột biến nhiễm sắc thể', 'Bài 35. Di truyền học người',
-        'Bài 36. Ứng dụng công nghệ di truyền vào đời sống', 'Bài 37. Tiến hóa và sự hình thành loài', 'Bài 38. Các quy luật tiến hóa chủ yếu', 'Bài 39. Sinh vật và môi trường', 'Bài 40. Quản lí tài nguyên thiên nhiên và bảo vệ môi trường'
+        'Bài 1. Nhận biết một số dụng cụ, hoá chất. Thuyết trình một vấn đề khoa học', 'Bài 2. Động năng. Thế năng', 'Bài 3. Cơ năng', 'Bài 4. Công và công suất', 'Bài 5. Khúc xạ ánh sáng',
+        'Bài 6. Phản xạ toàn phần', 'Bài 7. Lăng kính', 'Bài 8. Thấu kính', 'Bài 9. Thực hành đo tiêu cự của thấu kính hội tụ', 'Bài 10. Kính lúp. Bài tập thấu kính',
+        'Bài 11. Điện trở. Định luật Ohm', 'Bài 12. Đoạn mạch nối tiếp, song song', 'Bài 13. Năng lượng của dòng diện và công suất điện', 'Bài 14. Cảm ứng điện từ. Nguyên tắc tạo ra dòng diện xoay chiều', 'Bài 15. Tác dụng của dòng diện xoay chiều',
+        'Bài 16. Vòng năng lượng trên Trái Đất. Năng lượng hoá thạch', 'Bài 17. Một số dạng năng lượng tái tạo', 'Bài 18. Tính chất chung của kim loại', 'Bài 19. Dãy hoạt động hoá học', 'Bài 20. Tách kim loại và việc sử dụng hợp kim',
+        'Bài 21. Sự khác nhau cơ bản giữa phi kim và kim loại', 'Bài 22. Giới thiệu về hợp chất hữu cơ', 'Bài 23. Alkane', 'Bài 24. Alkene', 'Bài 25. Nguồn nhiên liệu',
+        'Bài 26. Ethylic alcohol', 'Bài 27. Acetic acid', 'Bài 28. Lipid', 'Bài 29. Carbohydrate. Glucose và saccharose', 'Bài 30. Tinh bột và cellulose',
+        'Bài 31. Protein', 'Bài 32. Polymer', 'Bài 33. Sơ lược về hoá học vỏ Trái Đất và khai thác tài nguyên từ vỏ Trái Đất', 'Bài 34. Khai thác đá vôi. Công nghiệp silicate', 'Bài 35. Khai thác nhiên liệu hoá thạch. Nguồn carbon. Chu trình carbon và sự ấm lên toàn cầu',
+        'Bài 36. Khái quát về di truyền học', 'Bài 37. Các quy luật di truyền của Mendel', 'Bài 38. Nucleic acid và gene', 'Bài 39. Tái bản DNA và phiên mã tạo RNA', 'Bài 40. Dịch mã và mối quan hệ từ gene đến tính trạng',
+        'Bài 41. Đột biến gene', 'Bài 42. Nhiễm sắc thể và bộ nhiễm sắc thể', 'Bài 43. Nguyên phân và giảm phân', 'Bài 44. Nhiễm sắc thể giới tính và cơ chế xác định giới tính', 'Bài 45. Di truyền liên kết',
+        'Bài 46. Đột biến nhiễm sắc thể', 'Bài 47. Di truyền học với con người', 'Bài 48. Ứng dụng công nghệ di truyền vào đời sống', 'Bài 49. Khái niệm tiến hoá và các hình thức chọn lọc', 'Bài 50. Cơ chế tiến hoá',
+        'Bài 51. Sự phát sinh và phát triển sự sống trên Trái Đất'
       ]
     }
   },
@@ -410,28 +451,28 @@ export const LESSON_LIBRARY: Record<string, Record<string, Record<string, string
   'Giáo dục kinh tế và pháp luật': {
     'Khối 10': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Các hoạt động kinh tế cơ bản trong đời sống xã hội', 'Bài 2. Các chủ thể của nền kinh tế', 'Bài 3. Thị trường và cơ chế thị trường', 'Bài 4. Cơ chế thị trường', 'Bài 5. Ngân sách nhà nước',
-        'Bài 6. Thuế', 'Bài 7. Sản xuất kinh doanh và các mô hình sản xuất kinh doanh', 'Bài 8. Tín dụng và vai trò của tín dụng trong đời sống', 'Bài 9. Dịch vụ tín dụng', 'Bài 10. Lập kế hoạch tài chính cá nhân',
-        'Bài 11. Hệ thống chính trị nước Cộng hòa xã hội chủ nghĩa Việt Nam', 'Bài 12. Bộ máy nhà nước Cộng hòa xã hội chủ nghĩa Việt Nam', 'Bài 13. Chính quyền địa phương', 'Bài 14. Hiến pháp nước Cộng hòa xã hội chủ nghĩa Việt Nam', 'Bài 15. Nội dung cơ bản của Hiến pháp về chế độ chính trị',
-        'Bài 16. Nội dung cơ bản của Hiến pháp về quyền con người, quyền và nghĩa vụ cơ bản của công dân', 'Bài 17. Nội dung cơ bản của Hiến pháp về kinh tế, văn hóa, giáo dục, khoa học, công nghệ và môi trường', 'Bài 18. Nội dung cơ bản của Hiến pháp về bộ máy nhà nước', 'Bài 19. Đặc điểm, cấu trúc và nguồn của pháp luật Việt Nam', 'Bài 20. Hệ thống pháp luật và văn bản quy phạm pháp luật Việt Nam',
-        'Bài 21. Thực hiện pháp luật'
+        'Bài 1: Các hoạt động kinh tế cơ bản trong đời sống xã hội', 'Bài 2: Các chủ thể của nền kinh tế', 'Bài 3: Thị trường', 'Bài 4: Cơ chế thị trường', 'Bài 5: Ngân sách nhà nước',
+        'Bài 6: Thuế', 'Bài 7: Sản xuất kinh doanh và các mô hình sản xuất kinh doanh', 'Bài 8: Tín dụng và vai trò của tín dụng trong đời sống', 'Bài 9: Dịch vụ tín dụng', 'Bài 10: Lập kế hoạch tài chính cá nhân',
+        'Bài 11: Khái niệm, đặc điểm và vai trò của pháp luật', 'Bài 12: Hệ thống pháp luật và văn bản pháp luật Việt Nam', 'Bài 13: Thực hiện pháp luật', 'Bài 14: Giới thiệu về Hiến pháp nước Cộng hòa xã hội chủ nghĩa Việt Nam', 'Bài 15: Nội dung cơ bản của Hiến pháp Việt Nam về chế độ chính trị',
+        'Bài 16: Quyền con người, quyền và nghĩa vụ cơ bản của công dân trong Hiến pháp', 'Bài 17: Nội dung cơ bản của Hiến pháp về kinh tế, văn hóa, xã hội, giáo dục, khoa học, công nghệ, môi trường', 'Bài 18: Nội dung cơ bản của Hiến pháp về bộ máy nhà nước Cộng hòa xã hội chủ nghĩa Việt Nam', 'Bài 19: Đặc điểm, cấu trúc và nguyên tắc hoạt động của hệ thống chính trị Việt Nam', 'Bài 20: Đặc điểm, nguyên tắc tổ chức và hoạt động của bộ máy nhà nước Cộng hòa xã hội chủ nghĩa Việt Nam',
+        'Bài 21: Quốc hội, Chủ tịch nước, Chính phủ nước cộng hòa xã hội chủ nghĩa Việt Nam', 'Bài 22: Tòa án nhân dân và Viện kiểm sát nhân dân', 'Bài 23: Hội đồng nhân dân và Uỷ ban nhân dân'
       ]
     },
     'Khối 11': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Cạnh tranh trong nền kinh tế thị trường', 'Bài 2. Cung - cầu trong nền kinh tế thị trường', 'Bài 3. Lạm phát', 'Bài 4. Thất nghiệp', 'Bài 5. Thị trường lao động và việc làm',
-        'Bài 6. Ý tưởng, cơ hội kinh doanh và năng lực kinh doanh', 'Bài 7. Đạo đức kinh doanh', 'Bài 8. Văn hóa tiêu dùng', 'Bài 9. Quyền bình đẳng của công dân trước pháp luật', 'Bài 10. Bình đẳng trong các lĩnh vực của đời sống xã hội',
-        'Bài 11. Quyền bình đẳng giữa các dân tộc, tôn giáo', 'Bài 12. Quyền dân chủ trong tham gia quản lý nhà nước và xã hội', 'Bài 13. Quyền và nghĩa vụ cơ bản của công dân trong tham gia quản lý nhà nước và xã hội', 'Bài 14. Quyền và nghĩa vụ cơ bản của công dân về bầu cử và ứng cử', 'Bài 15. Quyền và nghĩa vụ cơ bản của công dân về khiếu nại, tố cáo',
-        'Bài 16. Quyền và nghĩa vụ cơ bản của công dân về bảo vệ Tổ quốc', 'Bài 17. Quyền bất khả xâm phạm về thân thể và quyền được pháp luật bảo hộ về tính mạng, sức khỏe, danh dự, nhân phẩm', 'Bài 18. Quyền bất khả xâm phạm về chỗ ở và quyền được bảo đảm bí mật thư tín, điện thoại, điện tín', 'Bài 19. Quyền tự do ngôn luận, báo chí và tiếp cận thông tin', 'Bài 20. Quyền tự do tín ngưỡng và tôn giáo',
-        'Bài 21. Một số hình thức vi phạm pháp luật và trách nhiệm pháp lý'
+        'Bài 1: Canh tranh trong nền kinh tế thị trường.', 'Bài 2: Cung – cầu trong nền kinh tế thị trường.', 'Bài 3: Lam phát.', 'Bài 4: Thất nghiệp.', 'Bài 5: Thị trường lao động và việc làm.',
+        'Bài 6: Ý tưởng, cơ hội kinh doanh và các năng lực cần thiết của người kinh doanh.', 'Bài 7: Đạo đức kinh doanh.', 'Bài 8: Văn hoá tiêu dùng.', 'Bài 9: Quyền bình đẳng của công dân trước pháp luật.', 'Bài 10: Bình đẳng giới trong các lĩnh vực.',
+        'Bài 11: Quyền bình đẳng giữa các dân tộc.', 'Bài 12: Quyền bình đẳng giữa các tôn giáo.', 'Bài 13: Quyền và nghĩa vụ của công dân trong tham gia quản lí nhà nước và xã hội.', 'Bài 14: Quyền và nghĩa vụ của công dân về bầu cử và ứng cử.', 'Bài 15: Quyền và nghĩa vụ của công dân về khiếu nại, tố cáo.',
+        'Bài 16: Quyền và nghĩa vụ của công dân về bảo vệ Tổ quốc.', 'Bài 17: Quyền bất khả xâm phạm về thân thể và quyền được pháp luật bảo hộ về tính mạng, sức khoẻ, danh dự, nhân phẩm của công dân.', 'Bài 18: Quyền bất khả xâm phạm về chỗ ở của công dân.', 'Bài 19: Quyền được bảo đảm an toàn và bí mật thư tín, điện thoại, điện tín của công dân.', 'Bài 20: Quyền và nghĩa vụ của công dân về tự do ngôn luận, báo chí và tiếp cận thông tin.',
+        'Bài 21: Quyền và nghĩa vụ của công dân về tự do tín ngưỡng và tôn giáo.'
       ]
     },
     'Khối 12': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Tăng trưởng và phát triển kinh tế', 'Bài 2. Hội nhập kinh tế quốc tế', 'Bài 3. Bảo hiểm', 'Bài 4. An sinh xã hội', 'Bài 5. Lập kế hoạch kinh doanh',
-        'Bài 6. Trách nhiệm xã hội của doanh nghiệp', 'Bài 7. Quản lý thu, chi trong gia đình', 'Bài 8. Quyền và nghĩa vụ của công dân về kinh doanh', 'Bài 9. Quyền và nghĩa vụ của công dân về nghĩa vụ nộp thuế', 'Bài 10. Quyền và nghĩa vụ của công dân trong bảo vệ, chăm sóc sức khỏe và an sinh xã hội',
-        'Bài 11. Quyền và nghĩa vụ của công dân về môi trường và tài nguyên thiên nhiên', 'Bài 12. Quyền và nghĩa vụ của công dân về giáo dục, khoa học và công nghệ', 'Bài 13. Quyền và nghĩa vụ của công dân trong hôn nhân và gia đình', 'Bài 14. Một số quy định cơ bản của pháp luật về sở hữu trí tuệ và chuyển giao công nghệ', 'Bài 15. Một số quy định cơ bản của pháp luật về hình sự',
-        'Bài 16. Một số quy định cơ bản của pháp luật về tố tụng hình sự', 'Bài 17. Một số quy định cơ bản của pháp luật về hành chính', 'Bài 18. Một số quy định cơ bản của pháp luật về tố tụng hành chính', 'Bài 19. Một số quy định cơ bản của pháp luật về dân sự', 'Bài 20. Một số quy định cơ bản của pháp luật về tố tụng dân sự'
+        'Bài 1: Tăng trưởng và phát triển kinh tế.', 'Bài 2: Hội nhập kinh tế quốc tế.', 'Bài 3: Bảo hiểm.', 'Bài 4: An sinh xã hội.', 'Bài 5: Lập kế hoạch kinh doanh.',
+        'Bài 6: Trách nhiệm xã hội của doanh nghiệp.', 'Bài 7: Quản lí thu, chi trong gia đình.', 'Bài 8: Quyền và nghĩa vụ của công dân về kinh doanh và nộp thuế.', 'Bài 9: Quyền và nghĩa vụ của công dân về sở hữu tài sản và tôn trọng tài sản của người khác.', 'Bài 10: Quyền và nghĩa vụ của công dân trong hôn nhân và gia đình.',
+        'Bài 11: Quyền và nghĩa vụ của công dân trong học tập.', 'Bài 12: Quyền và nghĩa vụ của công dân trong bảo vệ, chăm sóc sức khỏe và bảo đảm an sinh xã hội.', 'Bài 13: Quyền và nghĩa vụ của công dân trong bảo vệ di sản văn hoá, môi trường và tài nguyên thiên nhiên.', 'Bài 14: Một số vấn đề chung về pháp luật quốc tế.', 'Bài 15: Công pháp quốc tế về dân cư, lãnh thổ và chủ quyền quốc gia.',
+        'Bài 16: Nguyên tắc cơ bản của Tổ chức Thương mại thế giới và hiệp đồng thương mại quốc tế.'
       ]
     }
   },
@@ -439,24 +480,38 @@ export const LESSON_LIBRARY: Record<string, Record<string, Record<string, string
     'Khối 6': {
       'Kết nối tri thức với cuộc sống': [
         'Bài 1. Khái quát về nhà ở', 'Bài 2. Xây dựng nhà ở', 'Bài 3. Ngôi nhà thông minh', 'Bài 4. Thực phẩm và dinh dưỡng', 'Bài 5. Phương pháp bảo quản và chế biến thực phẩm',
-        'Bài 6. Dự án: Bữa ăn kết nối yêu thương', 'Bài 7. Trang phục và thời trang', 'Bài 8. Sử dụng và bảo dưỡng trang phục', 'Bài 9. Thời trang', 'Bài 10. Khái quát về đồ dùng điện trong gia đình',
+        'Bài 6. Dự án: Bữa ăn kết nối yêu thương', 'Bài 7. Trang phục trong đời sống', 'Bài 8. Sử dụng và bảo quản trang phục', 'Bài 9. Thời trang', 'Bài 10. Khái quát về đồ dùng điện trong gia đình',
         'Bài 11. Đèn điện', 'Bài 12. Nồi cơm điện', 'Bài 13. Bếp hồng ngoại', 'Bài 14. Dự án: An toàn và tiết kiệm điện trong gia đình'
       ]
     },
     'Khối 7': {
       'Kết nối tri thức với cuộc sống': [
         'Bài 1. Giới thiệu về trồng trọt', 'Bài 2. Làm đất trồng cây', 'Bài 3. Gieo trồng, chăm sóc và phòng trừ sâu, bệnh cho cây trồng', 'Bài 4. Thu hoạch sản phẩm trồng trọt', 'Bài 5. Nhân giống vô tính cây trồng',
-        'Bài 6. Dự án: Trồng cây trong cốc', 'Bài 7. Giới thiệu về rừng', 'Bài 8. Trồng, chăm sóc và bảo vệ rừng', 'Bài 9. Giới thiệu về chăn nuôi', 'Bài 10. Nuôi dưỡng và chăm sóc vật nuôi',
-        'Bài 11. Phòng và trị bệnh cho vật nuôi', 'Bài 12. Chăn nuôi gà thịt trong gia đình', 'Bài 13. Thực hành: Lập kế hoạch và tính toán chi phí chăn nuôi', 'Bài 14. Giới thiệu về thủy sản', 'Bài 15. Nuôi cá ao',
-        'Bài 16. Thực hành: Lập kế hoạch và tính toán chi phí nuôi cá ao'
+        'Bài 6. Dự án trồng rau an toàn', 'Bài 7. Giới thiệu về rừng', 'Bài 8. Trồng, chăm sóc và bảo vệ rừng', 'Bài 9. Giới thiệu về chăn nuôi', 'Bài 10. Nuôi dưỡng và chăm sóc vật nuôi',
+        'Bài 11. Phòng và trị bệnh cho vật nuôi', 'Bài 12. Chăn nuôi gà thịt trong nông hộ', 'Bài 13. Thực hành. Lập kế hoạch nuôi vật nuôi trọng gia đình', 'Bài 14. Giới thiệu về thủy sản', 'Bài 15. Nuôi cá ao',
+        'Bài 16. Thực hành. Lập kế hoạch nuôi cá cảnh'
       ]
     },
     'Khối 8': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Tiêu chuẩn trình bày bản vẽ kĩ thuật', 'Bài 2. Hình chiếu vuông góc', 'Bài 3. Bản vẽ chi tiết', 'Bài 4. Bản vẽ lắp', 'Bài 5. Bản vẽ nhà',
-        'Bài 6. Vật liệu cơ khí', 'Bài 7. Truyền và biến đổi chuyển động', 'Bài 8. Gia công cơ khí bằng tay', 'Bài 9. Ngành nghề phổ biến trong lĩnh vực cơ khí', 'Bài 10. Dự án: Gia công chi tiết bằng dụng cụ cầm tay',
-        'Bài 11. Tai nạn điện và biện pháp an toàn điện', 'Bài 12. Cấu trúc chung của mạng điện trong nhà', 'Bài 13. Thiết bị điện trong gia đình', 'Bài 14. Sơ đồ khối của mạch điện điều khiển đơn giản', 'Bài 15. Cảm biến và mô đun cảm biến',
-        'Bài 16. Mạch điện điều khiển sử dụng mô đun cảm biến', 'Bài 17. Ngành nghề phổ biến trong lĩnh vực kĩ thuật điện', 'Bài 18. Dự án: Thiết kế mạch điện điều khiển sử dụng mô đun cảm biến', 'Bài 19. Khái quát về thiết kế kĩ thuật', 'Bài 20. Quy trình thiết kế kĩ thuật'
+        'Bài 1. Một số tiêu chuẩn trình bày bản vẽ kĩ thuật', 'Bài 2. Hình chiếu vuông góc', 'Bài 3. Bản vẽ chi tiết', 'Bài 4. Bản vẽ lắp', 'Bài 5. Bản vẽ nhà',
+        'Bài 6. Vật liệu cơ khí', 'Bài 7. Truyền và biến đổi chuyển động', 'Bài 8. Gia công cơ khí bằng tay', 'Bài 9. Ngành nghề trong lĩnh vực cơ khí', 'Bài 10. Dự án: Gia công chi tiết bằng dụng cụ cầm tay',
+        'Bài 11. Tai nạn điện', 'Bài 12. Biện pháp an toàn điện', 'Bài 13. Sơ cứu người bị tai nạn điện', 'Bài 14. Khái quát về mạch điện', 'Bài 15. Cảm biến và mô đun cảm biến',
+        'Bài 16. Mạch điện điều khiển sử dụng mô đun cảm biến', 'Bài 17. Ngành nghề trong lĩnh vực kĩ thuật điện', 'Bài 18. Giới thiệu về thiết kế kĩ thuật', 'Bài 19. Các bước cơ bản trong thiết kế kĩ thuật', 'Bài 20. Dự án: Thiết kế hệ thống tưới cây tự động'
+      ]
+    },
+    'Khối 9': {
+      'Kết nối tri thức với cuộc sống (Lắp đặt mạng điện trong nhà)': [
+        'Bài 1. Thiết bị đóng cắt và lấy điện trong gia đình', 'Bài 2. Dụng cụ đo điện cơ bản', 'Bài 3. Thiết kế mạng điện trong nhà', 'Bài 4. Vật liệu, thiết bị và dụng cụ dùng cho lắp đặt mạng điện trong nhà', 'Bài 5. Tính toán chi phí mạng điện trong nhà', 'Bài 6. Thực hành: Lắp đặt mạng điện trong nhà', 'Bài 7. Một số ngành nghề liên quan đến lắp đặt mạng điện trong nhà'
+      ],
+      'Kết nối tri thức với cuộc sống (Trồng cây ăn quả)': [
+        'Bài 1. Giới thiệu chung về cây ăn quả', 'Bài 2. Nhân giống vô tính cây ăn quả', 'Bài 3. Kĩ thuật trồng và chăm sóc cây ăn quả có múi', 'Bài 4. Kĩ thuật trồng và chăm sóc cây nhãn', 'Bài 5. Kĩ thuật trồng và chăm sóc cây xoài', 'Bài 6. Kĩ thuật trồng và chăm sóc cây sầu riêng', 'Bài 7. Kĩ thuật trồng và chăm sóc cây chuối', 'Bài 8. Dự án: Trồng cây ăn quả'
+      ],
+      'Kết nối tri thức với cuộc sống (Định hướng nghề nghiệp)': [
+        'Bài 1. Nghề nghiệp trong lĩnh vực kĩ thuật và công nghệ', 'Bài 2. Cơ cấu hệ thống giáo dục quốc dân', 'Bài 3. Thị trường lao động kĩ thuật, công nghệ tại Việt Nam', 'Bài 4. Quy trình lựa chọn nghề nghiệp', 'Bài 5. Dự án: Tự đánh giá mức độ phù hợp của bản thân với một số ngành nghề trong lĩnh vực kĩ thuật, công nghệ'
+      ],
+      'Kết nối tri thức với cuộc sống (Chế biến thực phẩm)': [
+        'Bài 1. Thành phần dinh dưỡng trong thực phẩm', 'Bài 2. Lựa chọn và bảo quản thực phẩm', 'Bài 3. Một số ngành nghề liên quan đến chế biến thực phẩm', 'Bài 4. An toàn lao động và an toàn vệ sinh thực phẩm', 'Bài 5. Dự án: Tính toán chi phí bữa ăn theo thực đơn', 'Bài 6. Chế biến thực phẩm có sử dụng nhiệt', 'Bài 7. Chế biến thực phẩm không sử dụng nhiệt'
       ]
     }
   },
@@ -471,22 +526,19 @@ export const LESSON_LIBRARY: Record<string, Record<string, Record<string, string
     'Khối 7': {
       'Kết nối tri thức với cuộc sống': [
         'Bài 1. Tự hào về truyền thống quê hương', 'Bài 2. Quan tâm, cảm thông và chia sẻ', 'Bài 3. Học tập tự giác, tích cực', 'Bài 4. Giữ chữ tín', 'Bài 5. Bảo tồn di sản văn hóa',
-        'Bài 6. Ứng phó với tâm lí căng thẳng', 'Bài 7. Phòng chống bạo lực học đường', 'Bài 8. Quản lí tiền', 'Bài 9. Phòng, chống tệ nạn xã hội', 'Bài 10. Quyền tài sản và quyền sở hữu trí tuệ',
-        'Bài 11. Phòng, chống tai nạn vũ khí, cháy, nổ và các chất độc hại', 'Bài 12. Quyền và nghĩa vụ của công dân trong gia đình'
+        'Bài 6. Ứng phó với tâm lí căng thẳng', 'Bài 7. Phòng chống bạo lực học đường', 'Bài 8. Quản lí tiền', 'Bài 9. Phòng, chống tệ nạn xã hội', 'Bài 10. Quyền và nghĩa vụ của công dân trong gia đình'
       ]
     },
     'Khối 8': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Tôn trọng phù hợp với đạo đức và truyền thống', 'Bài 2. Tôn trọng sự đa dạng của các dân tộc', 'Bài 3. Lao động cần cù, sáng tạo', 'Bài 4. Bảo vệ lẽ phải', 'Bài 5. Bảo vệ môi trường và tài nguyên thiên nhiên',
-        'Bài 6. Xác định mục tiêu cá nhân', 'Bài 7. Phòng, chống bạo lực gia đình', 'Bài 8. Lập kế hoạch tài chính cá nhân', 'Bài 9. Phòng, chống tệ nạn xã hội', 'Bài 10. Quyền và nghĩa vụ của công dân trong gia đình',
-        'Bài 11. Quyền và nghĩa vụ của công dân về khiếu nại, tố cáo', 'Bài 12. Quyền và nghĩa vụ của công dân về sở hữu tài sản và tôn trọng tài sản của người khác'
+        'Bài 1. Tự hào về truyền thống dân tộc Việt Nam', 'Bài 2. Tôn trọng sự đa dạng của các dân tộc', 'Bài 3. Lao động cần cù, sáng tạo', 'Bài 4. Bảo vệ lẽ phải', 'Bài 5. Bảo vệ môi trường và tài nguyên thiên nhiên',
+        'Bài 6. Xác định mục tiêu cá nhân', 'Bài 7. Phòng, chống bạo lực gia đình', 'Bài 8. Lập kế hoạch chi tiêu', 'Bài 9. Phòng ngừa tai nạn vũ khí, cháy, nổ và các chất độc hại', 'Bài 10. Quyền và nghĩa vụ lao động của công dân'
       ]
     },
     'Khối 9': {
       'Kết nối tri thức với cuộc sống': [
-        'Bài 1. Sống có lí tưởng', 'Bài 2. Khoan dung', 'Bài 3. Tích cực tham gia các hoạt động xã hội', 'Bài 4. Khách quan và công bằng', 'Bài 5. Bảo vệ hòa bình',
-        'Bài 6. Quản lí thời gian hiệu quả', 'Bài 7. Thích ứng với thay đổi', 'Bài 8. Tiêu dùng thông minh', 'Bài 9. Vi phạm pháp luật và trách nhiệm pháp lý', 'Bài 10. Quyền và nghĩa vụ của công dân về lao động',
-        'Bài 11. Quyền và nghĩa vụ của công dân về hôn nhân và gia đình', 'Bài 12. Quyền và nghĩa vụ của công dân về kinh doanh và nghĩa vụ nộp thuế'
+        'Bài 1. Sống có lí tưởng', 'Bài 2. Khoan dung', 'Bài 3. Tích cực tham gia các hoạt động cộng đồng', 'Bài 4. Khách quan và công bằng', 'Bài 5. Bảo vệ hoà bình',
+        'Bài 6. Quản lí thời gian hiệu quả', 'Bài 7. Thích ứng với thay đổi', 'Bài 8. Tiêu dùng thông minh', 'Bài 9. Vi phạm pháp luật và trách nhiệm pháp lí', 'Bài 10. Quyền tự do kinh doanh và nghĩa vụ nộp thuế'
       ]
     }
   }

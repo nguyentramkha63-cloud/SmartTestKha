@@ -36,7 +36,8 @@ import {
   Download,
   FileArchive,
   Eye,
-  Sigma
+  Sigma,
+  Coffee
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import ReactMarkdown from 'react-markdown';
@@ -368,7 +369,6 @@ export default function App() {
   const [examData, setExamData] = useState<ExamData | null>(null);
   const [isGeneratingExam, setIsGeneratingExam] = useState(false);
   const [editingQuestionIndex, setEditingQuestionIndex] = useState<number | null>(null);
-  const [isGeneratingImage, setIsGeneratingImage] = useState<number | null>(null);
   const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
   
   // Step 4 State
@@ -1728,54 +1728,6 @@ export default function App() {
     setExamData({ ...examData, questions: newQuestions });
   };
 
-  const generateAIIllustration = async (index: number) => {
-    if (!examData || !apiKey) {
-      if (!apiKey) setShowApiKeyModal(true);
-      return;
-    }
-    setIsGeneratingImage(index);
-    try {
-      const ai = getAiInstance(apiKey);
-      const q = examData.questions[index];
-      const prompt = `Vẽ một hình ảnh minh họa cho câu hỏi sau đây trong đề thi ${subject} ${grade}:
-      Nội dung câu hỏi: ${q.content}
-      ${q.options ? `Các phương án: ${q.options.map(o => o.text).join(', ')}` : ''}
-      ${q.tfSubQuestions ? `Các ý đúng sai: ${q.tfSubQuestions.map(s => s.text).join(', ')}` : ''}
-      Yêu cầu: Ảnh minh họa rõ nét, mang tính giáo dục, có thể là sơ đồ, biểu đồ, hình vẽ vật thể hoặc đồ thị hàm số nếu phù hợp. Tuyệt đối KHÔNG ghi nội dung câu hỏi, KHÔNG ghi các phương án trả lời và KHÔNG chứa văn bản rườm rà vào trong ảnh.`;
-
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash-image',
-        contents: {
-          parts: [{ text: prompt }]
-        },
-        config: {
-          imageConfig: {
-            aspectRatio: "1:1",
-          }
-        }
-      });
-
-      let imageUrl = "";
-      for (const part of response.candidates?.[0]?.content?.parts || []) {
-        if (part.inlineData) {
-          imageUrl = `data:image/png;base64,${part.inlineData.data}`;
-          break;
-        }
-      }
-
-      if (imageUrl) {
-        const newQuestions = [...examData.questions];
-        newQuestions[index] = { ...newQuestions[index], imageUrl };
-        setExamData({ ...examData, questions: newQuestions });
-      }
-    } catch (error) {
-      console.error("Image Generation Error:", error);
-      showError("Lỗi tạo ảnh", "Không thể tạo ảnh minh họa lúc này do lỗi kết nối hoặc hết lượt. Thầy cô thử đăng xuất và dùng API khác trong Cài đặt API!");
-    } finally {
-      setIsGeneratingImage(null);
-    }
-  };
-
   const updateQuestion = (index: number, updatedFields: Partial<Question>) => {
     if (!examData) return;
     const newQuestions = [...examData.questions];
@@ -1825,7 +1777,18 @@ export default function App() {
   const getSuggestedTopics = (subj: string, grd: string, exm: string, subSubj?: string, bk?: string) => {
     // Try to find in library
     const bookKey = bk || 'Kết nối tri thức với cuộc sống';
-    const subjectLessons = LESSON_LIBRARY[subj]?.[grd]?.[bookKey];
+    
+    // For high school subjects with sub-subjects (ICT/CS), try to find specific key first
+    let subjectLessons = null;
+    if (subSubj) {
+      const subKey = `${bookKey} (${subSubj})`;
+      subjectLessons = LESSON_LIBRARY[subj]?.[grd]?.[subKey];
+    }
+    
+    // Fallback to generic bookKey if sub-subject specific key not found
+    if (!subjectLessons) {
+      subjectLessons = LESSON_LIBRARY[subj]?.[grd]?.[bookKey];
+    }
     
     if (!subjectLessons) {
       // Fallback for missing data: generate generic n=20 list
@@ -2020,7 +1983,11 @@ export default function App() {
         }
       `;
 
-      const response = await ai.models.generateContent({
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error("TIMEOUT_EXCEEDED")), 300000)
+      );
+
+      const responsePromise = ai.models.generateContent({
         model: "gemini-flash-latest",
         contents: [{ parts: [{ text: prompt }] }],
         config: {
@@ -2108,6 +2075,8 @@ export default function App() {
           }
         }
       });
+
+      const response = await Promise.race([responsePromise, timeoutPromise]) as any;
 
       let responseText = response.text || "{}";
       const data = safeJsonParse(responseText.trim());
@@ -2199,6 +2168,8 @@ export default function App() {
       
       if (msg.toLowerCase().includes("quota") || msg.toLowerCase().includes("429")) {
         userFriendlyMsg = "Tài khoản của thầy cô đã hết lượt sử dụng (Quota exceeded). Thầy cô thử đăng xuất và dùng API khác trong Cài đặt API!";
+      } else if (msg === "TIMEOUT_EXCEEDED") {
+        userFriendlyMsg = "Hệ thống đã chờ quá 5 phút nhưng chưa nhận được phản hồi từ AI. Vui lòng kích hoạt soạn đề AI lại!";
       } else if (msg.toLowerCase().includes("network") || msg.toLowerCase().includes("fetch")) {
         userFriendlyMsg = "Lỗi kết nối mạng: Không thể kết nối tới máy chủ AI. Thầy cô vui lòng kiểm tra lại đường truyền internet hoặc thử đăng xuất và dùng API khác trong Cài đặt API!";
       } else if (msg.toLowerCase().includes("api key") || msg.toLowerCase().includes("invalid")) {
@@ -2258,7 +2229,6 @@ export default function App() {
     setDataSource('none');
     setIsGeneratingExam(false);
     setEditingQuestionIndex(null);
-    setIsGeneratingImage(null);
     setIsShuffling(false);
     setIsExporting(false);
     setLoadingTopics(false);
@@ -2419,8 +2389,20 @@ export default function App() {
     'Công nghệ': ['Công nghệ công nghiệp', 'Công nghệ nông nghiệp']
   };
 
+  const getSubSubjects = (subj: string, grd: string) => {
+    if (subj === 'Công nghệ' && grd === 'Khối 9') {
+      return [
+        'Lắp đặt mạng điện trong nhà',
+        'Trồng cây ăn quả',
+        'Định hướng nghề nghiệp',
+        'Chế biến thực phẩm'
+      ];
+    }
+    return subSubjectsMap[subj] || [];
+  };
+
   const isHighSchool = ['Khối 10', 'Khối 11', 'Khối 12'].includes(grade);
-  const hasSubSubject = isHighSchool && subSubjectsMap[subject];
+  const hasSubSubject = (isHighSchool && subSubjectsMap[subject]) || (grade === 'Khối 9' && subject === 'Công nghệ');
 
   return (
     <div className="min-h-screen p-1 md:p-2 max-w-7xl mx-auto">
@@ -2589,7 +2571,7 @@ export default function App() {
                   </li>
                   <li className="flex gap-2">
                     <span className="text-blue-500">2.</span>
-                    <span>Nhấn 'Create API key' (màu xanh)</span>
+                    <span>Nhấn nút copy API key - Nếu chưa có API key, hãy "Create API key" để tạo mới API key</span>
                   </li>
                   <li className="flex gap-2">
                     <span className="text-blue-500">3.</span>
@@ -2670,7 +2652,7 @@ export default function App() {
             
             <div className="mb-10 relative">
               <div className="w-32 h-32 bg-emerald-50 rounded-full flex items-center justify-center border-4 border-emerald-100 shadow-inner">
-                <Sparkles className="w-16 h-16 text-emerald-600 animate-pulse" />
+                <Coffee className="w-16 h-16 text-emerald-600 animate-pulse" />
               </div>
               <div className="absolute -top-2 -right-2">
                  <div className="w-10 h-10 bg-emerald-500 rounded-2xl flex items-center justify-center shadow-xl animate-bounce">
@@ -2857,7 +2839,7 @@ export default function App() {
                     className="input-field font-bold appearance-none border-emerald-200 bg-white focus:ring-emerald-500/20 focus:border-emerald-500"
                   >
                     <option value="">-- Chọn phân môn --</option>
-                    {subSubjectsMap[subject].map(sub => <option key={sub} value={sub}>{sub}</option>)}
+                    {getSubSubjects(subject, grade).map(sub => <option key={sub} value={sub}>{sub}</option>)}
                   </select>
                 </motion.div>
               )}
@@ -3394,12 +3376,12 @@ export default function App() {
               {/* Exam Header (Paper Style) */}
               <div className="text-center mb-12 space-y-2">
                 <h2 className="text-3xl font-black text-slate-900 uppercase tracking-widest">{examData?.title}</h2>
-                <div className="flex justify-center items-center gap-6 text-slate-500 font-bold uppercase text-xs tracking-widest">
-                  <span>MÔN: {subject}</span>
+                <div className="flex justify-center items-center gap-6 font-bold uppercase text-xs tracking-widest">
+                  <span className="text-emerald-600">MÔN: {subject}</span>
                   <span className="w-1.5 h-1.5 bg-slate-300 rounded-full" />
-                  <span>LỚP: {grade}</span>
+                  <span className="text-blue-600">LỚP: {grade}</span>
                   <span className="w-1.5 h-1.5 bg-slate-300 rounded-full" />
-                  <span>THỜI GIAN: {duration} PHÚT</span>
+                  <span className="text-orange-600">THỜI GIAN: {duration} PHÚT</span>
                 </div>
                 <div className="w-24 h-1 bg-emerald-600 mx-auto mt-6 rounded-full" />
               </div>
@@ -3411,12 +3393,28 @@ export default function App() {
                   const sectionStartIndex = (examData?.questions || []).findIndex(question => question.type === q.type);
                   const questionNumber = idx - sectionStartIndex + 1;
                   let headerText = "";
+                  let sectionPoints = 0;
                   if (showHeader) {
                     switch (q.type) {
-                      case 'MCQ': headerText = "PHẦN I. CÂU HỎI TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN LỰA CHỌN"; break;
-                      case 'TF': headerText = "PHẦN II. CÂU HỎI TRẮC NGHIỆM ĐÚNG SAI"; break;
-                      case 'SA': headerText = "PHẦN III. CÂU HỎI TRẮC NGHIỆM TRẢ LỜI NGẮN"; break;
-                      case 'TL': headerText = "PHẦN IV. CÂU HỎI TỰ LUẬN"; break;
+                      case 'MCQ': 
+                        headerText = "PHẦN I. CÂU HỎI TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN LỰA CHỌN"; 
+                        sectionPoints = Number(mcqCount) * Number(mcqPoints);
+                        break;
+                      case 'TF': 
+                        headerText = "PHẦN II. CÂU HỎI TRẮC NGHIỆM ĐÚNG SAI"; 
+                        sectionPoints = Number(tfCount) * Number(tfPoints);
+                        break;
+                      case 'SA': 
+                        headerText = "PHẦN III. CÂU HỎI TRẮC NGHIỆM TRẢ LỜI NGẮN"; 
+                        sectionPoints = Number(saCount) * Number(saPoints);
+                        break;
+                      case 'TL': 
+                        headerText = "PHẦN IV. CÂU HỎI TỰ LUẬN"; 
+                        sectionPoints = essays.filter(e => Number(e.points) > 0).reduce((sum, e) => sum + Number(e.points), 0);
+                        break;
+                    }
+                    if (sectionPoints > 0) {
+                      headerText += ` (${sectionPoints.toFixed(2).replace(/\.00$/, '').replace(/\.([1-9])0$/, '.$1')} ĐIỂM)`;
                     }
                   }
 
@@ -3462,18 +3460,6 @@ export default function App() {
                             >
                               <RotateCcw className={`w-4 h-4 transition-transform ${q.isLocked ? 'rotate-180' : ''}`} />
                             </button>
-                            <button 
-                              onClick={() => generateAIIllustration(idx)}
-                              disabled={isGeneratingImage === idx}
-                              className="flex items-center gap-2 px-4 py-2.5 bg-white text-emerald-600 rounded-xl border-2 border-emerald-500/30 font-black text-[10px] uppercase tracking-wider hover:bg-emerald-50 transition-all disabled:opacity-50"
-                            >
-                              {isGeneratingImage === idx ? (
-                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                              ) : (
-                                <Sparkles className="w-3.5 h-3.5" />
-                              )}
-                              MINH HỌA AI
-                            </button>
                             {editingQuestionIndex === idx ? (
                               <button 
                                 onClick={() => setEditingQuestionIndex(null)}
@@ -3506,23 +3492,11 @@ export default function App() {
                             <div className="relative w-full max-w-2xl mx-auto aspect-square rounded-[32px] overflow-hidden border-4 border-emerald-100 shadow-2xl group/img">
                               <img 
                                 src={q.imageUrl} 
-                                alt="Minh họa AI" 
+                                alt="Hình ảnh minh họa" 
                                 className="w-full h-full object-cover"
                                 referrerPolicy="no-referrer"
                               />
                               <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover/img:opacity-100 transition-all">
-                                <button 
-                                  onClick={() => generateAIIllustration(idx)}
-                                  disabled={isGeneratingImage === idx}
-                                  className="p-2 bg-emerald-600 text-white rounded-full shadow-lg hover:bg-emerald-700 transition-all disabled:opacity-50"
-                                  title="Vẽ lại"
-                                >
-                                  {isGeneratingImage === idx ? (
-                                    <Loader2 className="w-4 h-4 animate-spin" />
-                                  ) : (
-                                    <RotateCcw className="w-4 h-4" />
-                                  )}
-                                </button>
                                 <button 
                                   onClick={() => updateQuestion(idx, { imageUrl: undefined })}
                                   className="p-2 bg-rose-600 text-white rounded-full shadow-lg hover:bg-rose-700 transition-all"
@@ -4017,12 +3991,12 @@ export default function App() {
                   {examData?.title}
                   {examData?.code && ` - MÃ ĐỀ: ${examData.code}`}
                 </h2>
-                <div className="flex justify-center items-center gap-6 text-slate-500 font-bold uppercase text-xs tracking-widest">
-                  <span>MÔN: {subject}</span>
+                <div className="flex justify-center items-center gap-6 font-bold uppercase text-xs tracking-widest">
+                  <span className="text-emerald-600">MÔN: {subject}</span>
                   <span className="w-1.5 h-1.5 bg-slate-300 rounded-full" />
-                  <span>LỚP: {grade}</span>
+                  <span className="text-blue-600">LỚP: {grade}</span>
                   <span className="w-1.5 h-1.5 bg-slate-300 rounded-full" />
-                  <span>THỜI GIAN: {duration} PHÚT</span>
+                  <span className="text-orange-600">THỜI GIAN: {duration} PHÚT</span>
                 </div>
                 <div className="w-24 h-1 bg-emerald-600 mx-auto mt-6 rounded-full" />
               </div>
@@ -4034,12 +4008,28 @@ export default function App() {
                   const sectionStartIndex = (examData?.questions || []).findIndex(question => question.type === q.type);
                   const questionNumber = idx - sectionStartIndex + 1;
                   let headerText = "";
+                  let sectionPoints = 0;
                   if (showHeader) {
                     switch (q.type) {
-                      case 'MCQ': headerText = "PHẦN I. CÂU HỎI TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN LỰA CHỌN"; break;
-                      case 'TF': headerText = "PHẦN II. CÂU HỎI TRẮC NGHIỆM ĐÚNG SAI"; break;
-                      case 'SA': headerText = "PHẦN III. CÂU HỎI TRẮC NGHIỆM TRẢ LỜI NGẮN"; break;
-                      case 'TL': headerText = "PHẦN IV. CÂU HỎI TỰ LUẬN"; break;
+                      case 'MCQ': 
+                        headerText = "PHẦN I. CÂU HỎI TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN LỰA CHỌN"; 
+                        sectionPoints = Number(mcqCount) * Number(mcqPoints);
+                        break;
+                      case 'TF': 
+                        headerText = "PHẦN II. CÂU HỎI TRẮC NGHIỆM ĐÚNG SAI"; 
+                        sectionPoints = Number(tfCount) * Number(tfPoints);
+                        break;
+                      case 'SA': 
+                        headerText = "PHẦN III. CÂU HỎI TRẮC NGHIỆM TRẢ LỜI NGẮN"; 
+                        sectionPoints = Number(saCount) * Number(saPoints);
+                        break;
+                      case 'TL': 
+                        headerText = "PHẦN IV. CÂU HỎI TỰ LUẬN"; 
+                        sectionPoints = essays.filter(e => Number(e.points) > 0).reduce((sum, e) => sum + Number(e.points), 0);
+                        break;
+                    }
+                    if (sectionPoints > 0) {
+                      headerText += ` (${sectionPoints.toFixed(2).replace(/\.00$/, '').replace(/\.([1-9])0$/, '.$1')} ĐIỂM)`;
                     }
                   }
 
@@ -4079,7 +4069,7 @@ export default function App() {
                             <div className="relative w-full max-w-2xl mx-auto aspect-square rounded-[32px] overflow-hidden border-4 border-emerald-100 shadow-2xl">
                               <img 
                                 src={q.imageUrl} 
-                                alt="Minh họa AI" 
+                                alt="Hình ảnh minh họa" 
                                 className="w-full h-full object-cover"
                                 referrerPolicy="no-referrer"
                               />
