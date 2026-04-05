@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Analytics } from '@vercel/analytics/react';
 import { useState, useEffect, Fragment, useRef } from 'react';
 import { GoogleGenAI, Type } from "@google/genai";
+import * as pdfjsLib from 'pdfjs-dist';
 import { 
   Plus, 
   FolderOpen, 
@@ -310,6 +312,12 @@ interface ExamData {
   code?: string;
   isSimpleExport?: boolean;
 }
+
+const getRomanSection = (type: string, allQuestions: Question[]) => {
+  const activeTypes = ['MCQ', 'TF', 'SA', 'TL'].filter(t => allQuestions.some(q => q.type === t));
+  const sectionNum = activeTypes.indexOf(type as any) + 1;
+  return ["I", "II", "III", "IV"][sectionNum - 1] || sectionNum.toString();
+};
 
 const MathRenderer = ({ content }: { content: string }) => {
   return (
@@ -1163,12 +1171,15 @@ export default function App() {
               let headerText = "";
               const typeQuestions = questions.filter(question => question.type === q.type);
               const totalPoints = typeQuestions.reduce((sum, question) => sum + (Number(question.points) || 0), 0);
+              const roman = getRomanSection(q.type, questions);
+              const uniqueTypes = Array.from(new Set(questions.map(item => item.type)));
+              const prefix = uniqueTypes.length > 1 ? `PHẦN ${roman}. ` : "";
 
               switch (q.type) {
-                case 'MCQ': headerText = `PHẦN I. CÂU HỎI TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN LỰA CHỌN (${totalPoints} điểm)`; break;
-                case 'TF': headerText = `PHẦN II. CÂU HỎI TRẮC NGHIỆM ĐÚNG SAI (${totalPoints} điểm)`; break;
-                case 'SA': headerText = `PHẦN III. CÂU HỎI TRẮC NGHIỆM TRẢ LỜI NGẮN (${totalPoints} điểm)`; break;
-                case 'TL': headerText = `PHẦN IV. CÂU HỎI TỰ LUẬN (${totalPoints} điểm)`; break;
+                case 'MCQ': headerText = `${prefix}CÂU HỎI TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN LỰA CHỌN (${totalPoints} điểm)`; break;
+                case 'TF': headerText = `${prefix}CÂU HỎI TRẮC NGHIỆM ĐÚNG SAI (${totalPoints} điểm)`; break;
+                case 'SA': headerText = `${prefix}CÂU HỎI TRẮC NGHIỆM TRẢ LỜI NGẮN (${totalPoints} điểm)`; break;
+                case 'TL': headerText = `${prefix}CÂU HỎI TỰ LUẬN (${totalPoints} điểm)`; break;
               }
               paragraphs.push(new Paragraph({
                 children: [new TextRun({ text: headerText, bold: true, size: 26 })],
@@ -1429,25 +1440,26 @@ export default function App() {
             let headerText = "";
             let instructionText = "";
             const totalPoints = typeQuestions.reduce((sum, q) => sum + (Number(q.points) || 0), 0);
+            const roman = getRomanSection(type, questions);
 
             switch (type) {
               case 'MCQ': 
                 const mcqPointsPerQuestion = typeQuestions.length > 0 ? (totalPoints / typeQuestions.length) : 0;
-                headerText = `PHẦN I. CÂU HỎI TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN LỰA CHỌN (${totalPoints} điểm)`;
+                headerText = `PHẦN ${roman}. CÂU HỎI TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN LỰA CHỌN (${totalPoints} điểm)`;
                 instructionText = `Hướng dẫn: Học sinh chọn đúng một phương án đạt ${mcqPointsPerQuestion.toFixed(2).replace(/\.00$/, '')} điểm`;
                 break;
               case 'TF': 
                 const tfPointsPerSub = typeQuestions.length > 0 ? (totalPoints / (typeQuestions.length * 4)) : 0;
-                headerText = `PHẦN II. CÂU HỎI TRẮC NGHIỆM ĐÚNG SAI (${totalPoints} điểm)`;
+                headerText = `PHẦN ${roman}. CÂU HỎI TRẮC NGHIỆM ĐÚNG SAI (${totalPoints} điểm)`;
                 instructionText = `Hướng dẫn: Học sinh xác định đúng một ý thành phần đạt ${tfPointsPerSub.toFixed(2).replace(/\.00$/, '')} điểm`;
                 break;
               case 'SA': 
                 const saPointsPerSub = typeQuestions.length > 0 ? (totalPoints / (typeQuestions.length * 4)) : 0;
-                headerText = `PHẦN III. CÂU HỎI TRẮC NGHIỆM TRẢ LỜI NGẮN (${totalPoints} điểm)`;
+                headerText = `PHẦN ${roman}. CÂU HỎI TRẮC NGHIỆM TRẢ LỜI NGẮN (${totalPoints} điểm)`;
                 instructionText = `Hướng dẫn: Học sinh trả lời đúng một ý thành phần đạt ${saPointsPerSub.toFixed(2).replace(/\.00$/, '')} điểm`;
                 break;
               case 'TL': 
-                headerText = `PHẦN IV. CÂU HỎI TỰ LUẬN (${totalPoints} điểm)`;
+                headerText = `PHẦN ${roman}. CÂU HỎI TỰ LUẬN (${totalPoints} điểm)`;
                 instructionText = "";
                 break;
             }
@@ -1989,9 +2001,11 @@ export default function App() {
         setTimeout(() => reject(new Error("TIMEOUT_EXCEEDED")), 300000)
       );
 
+      const contents: any[] = [{ parts: [{ text: prompt }] }];
+      
       const responsePromise = ai.models.generateContent({
         model: "gemini-flash-latest",
-        contents: [{ parts: [{ text: prompt }] }],
+        contents,
         config: {
           systemInstruction: `Bạn là một chuyên gia khảo thí Việt Nam. Hãy soạn đề thi chuẩn GDPT 2018, nội dung khoa học, chính xác. Trả về JSON chuẩn. QUAN TRỌNG: Phải đếm kỹ số lượng câu hỏi trước khi kết thúc phản hồi để đảm bảo khớp 100% với yêu cầu. ${subject === 'Tin học' && ['Khối 6', 'Khối 7', 'Khối 8', 'Khối 9'].includes(grade) ? 'Lưu ý: Với môn Tin học cấp THCS (lớp 6-9), phần lập trình chỉ sử dụng ngôn ngữ Scratch.' : ''}`,
           responseMimeType: "application/json",
@@ -2163,7 +2177,7 @@ export default function App() {
       } else {
         throw new Error("Không thể trích xuất được câu hỏi từ phản hồi của AI.");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Exam Generation Error:", error);
       const msg = error.message || "";
       let userFriendlyMsg = "Có lỗi xảy ra khi soạn đề AI. Vui lòng thử lại.";
@@ -3128,7 +3142,7 @@ export default function App() {
                 <h2 className="text-xl font-black tracking-tight uppercase">Cấu trúc đề thi</h2>
               </div>
               <div className={`px-4 py-2 rounded-xl font-bold text-sm transition-all ${Math.abs(totalPoints - 10) < 0.01 ? 'bg-slate-900 text-emerald-400' : 'bg-rose-100 text-rose-700'}`}>
-                TỔNG ĐIỂM: {totalPoints.toFixed(1)}
+                TỔNG ĐIỂM: {totalPoints.toFixed(2).replace(/\.00$/, '').replace(/\.([1-9])0$/, '.$1')}
               </div>
             </div>
 
@@ -3177,6 +3191,7 @@ export default function App() {
                 <div className="flex justify-center">
                   <input 
                     type="number" 
+                    step="0.2"
                     value={tfPoints} 
                     onChange={(e) => handleNumericInput(e.target.value, setTfPoints)}
                     className="w-20 p-1.5 bg-white border border-emerald-100 rounded-xl text-center font-bold text-sm outline-none focus:border-emerald-500"
@@ -3199,6 +3214,7 @@ export default function App() {
                 <div className="flex justify-center">
                   <input 
                     type="number" 
+                    step="0.2"
                     value={saPoints} 
                     onChange={(e) => handleNumericInput(e.target.value, setSaPoints)}
                     className="w-20 p-1.5 bg-white border border-emerald-100 rounded-xl text-center font-bold text-sm outline-none focus:border-emerald-500"
@@ -3217,7 +3233,7 @@ export default function App() {
                   >
                     <Plus className="w-3 h-3" /> THÊM CÂU TL
                   </button>
-                  <div className="text-right font-black text-slate-900">{essays.reduce((sum, e) => sum + Number(e.points), 0).toFixed(2)}</div>
+                  <div className="text-right font-black text-slate-900">{essays.reduce((sum, e) => sum + Number(e.points), 0).toFixed(2).replace(/\.00$/, '').replace(/\.([1-9])0$/, '.$1')}</div>
                 </div>
 
                 <div className="space-y-1.5">
@@ -3229,6 +3245,7 @@ export default function App() {
                           <span className="text-[10px] font-bold text-slate-400">ĐIỂM:</span>
                           <input 
                             type="number" 
+                            step="0.25"
                             value={essay.points} 
                             onChange={(e) => updateEssayPoints(essay.id, e.target.value)}
                             className="w-12 p-1 bg-white border border-emerald-100 rounded-lg text-center font-bold text-xs outline-none focus:border-emerald-500"
@@ -3355,12 +3372,20 @@ export default function App() {
                 onClick={generateExam}
                 disabled={Math.abs(totalPoints - 10) >= 0.01 || isGeneratingExam}
                 className={`flex-[2] py-4 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all shadow-xl active:scale-95 ${
-                  Math.abs(totalPoints - 10) < 0.01 
+                  Math.abs(totalPoints - 10) < 0.01
                     ? 'bg-emerald-900 text-white hover:bg-emerald-950 shadow-emerald-900/20 cursor-pointer' 
                     : 'bg-slate-200 text-slate-400 shadow-none cursor-not-allowed'
                 }`}
               >
-                <Sparkles className="w-5 h-5" /> Kích hoạt soạn đề AI
+                {isGeneratingExam ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" /> Đang soạn đề...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-5 h-5" /> Kích hoạt soạn đề AI
+                  </>
+                )}
               </button>
             </div>
           </motion.div>
@@ -3396,21 +3421,25 @@ export default function App() {
                   let headerText = "";
                   let sectionPoints = 0;
                   if (showHeader) {
+                    const roman = getRomanSection(q.type, examData?.questions || []);
+                    const uniqueTypes = Array.from(new Set((examData?.questions || []).map(item => item.type)));
+                    const prefix = uniqueTypes.length > 1 ? `PHẦN ${roman}. ` : "";
+
                     switch (q.type) {
                       case 'MCQ': 
-                        headerText = "PHẦN I. CÂU HỎI TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN LỰA CHỌN"; 
+                        headerText = `${prefix}CÂU HỎI TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN LỰA CHỌN`; 
                         sectionPoints = Number(mcqCount) * Number(mcqPoints);
                         break;
                       case 'TF': 
-                        headerText = "PHẦN II. CÂU HỎI TRẮC NGHIỆM ĐÚNG SAI"; 
+                        headerText = `${prefix}CÂU HỎI TRẮC NGHIỆM ĐÚNG SAI`; 
                         sectionPoints = Number(tfCount) * Number(tfPoints);
                         break;
                       case 'SA': 
-                        headerText = "PHẦN III. CÂU HỎI TRẮC NGHIỆM TRẢ LỜI NGẮN"; 
+                        headerText = `${prefix}CÂU HỎI TRẮC NGHIỆM TRẢ LỜI NGẮN`; 
                         sectionPoints = Number(saCount) * Number(saPoints);
                         break;
                       case 'TL': 
-                        headerText = "PHẦN IV. CÂU HỎI TỰ LUẬN"; 
+                        headerText = `${prefix}CÂU HỎI TỰ LUẬN`; 
                         sectionPoints = essays.filter(e => Number(e.points) > 0).reduce((sum, e) => sum + Number(e.points), 0);
                         break;
                     }
@@ -4011,21 +4040,25 @@ export default function App() {
                   let headerText = "";
                   let sectionPoints = 0;
                   if (showHeader) {
+                    const roman = getRomanSection(q.type, examData?.questions || []);
+                    const uniqueTypes = Array.from(new Set((examData?.questions || []).map(item => item.type)));
+                    const prefix = uniqueTypes.length > 1 ? `PHẦN ${roman}. ` : "";
+
                     switch (q.type) {
                       case 'MCQ': 
-                        headerText = "PHẦN I. CÂU HỎI TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN LỰA CHỌN"; 
+                        headerText = `${prefix}CÂU HỎI TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN LỰA CHỌN`; 
                         sectionPoints = Number(mcqCount) * Number(mcqPoints);
                         break;
                       case 'TF': 
-                        headerText = "PHẦN II. CÂU HỎI TRẮC NGHIỆM ĐÚNG SAI"; 
+                        headerText = `${prefix}CÂU HỎI TRẮC NGHIỆM ĐÚNG SAI`; 
                         sectionPoints = Number(tfCount) * Number(tfPoints);
                         break;
                       case 'SA': 
-                        headerText = "PHẦN III. CÂU HỎI TRẮC NGHIỆM TRẢ LỜI NGẮN"; 
+                        headerText = `${prefix}CÂU HỎI TRẮC NGHIỆM TRẢ LỜI NGẮN`; 
                         sectionPoints = Number(saCount) * Number(saPoints);
                         break;
                       case 'TL': 
-                        headerText = "PHẦN IV. CÂU HỎI TỰ LUẬN"; 
+                        headerText = `${prefix}CÂU HỎI TỰ LUẬN`; 
                         sectionPoints = essays.filter(e => Number(e.points) > 0).reduce((sum, e) => sum + Number(e.points), 0);
                         break;
                     }
@@ -4294,6 +4327,30 @@ export default function App() {
           </motion.div>
         </div>
       )}
+      <Analytics />
+      
+      {/* Footer with Visitor Counter */}
+      <footer className="mt-12 pb-8 border-t border-slate-100 pt-8 flex flex-col items-center gap-4">
+        <div className="flex items-center gap-3 px-6 py-3 bg-slate-50 rounded-2xl border border-slate-200 shadow-sm">
+          <div className="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center shadow-inner">
+            <Eye className="w-6 h-6" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Số lượt truy cập</span>
+            <div className="flex items-center gap-2">
+              <img 
+                src="https://hits.dwyl.com/nguyentramkha63/smart-test-ai.svg?style=flat-square&show=true" 
+                alt="Visitor Counter" 
+                className="h-5 rounded"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+          </div>
+        </div>
+        <p className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">
+          © 2026 SmartTest AI PRO • Vercel Analytics Enabled
+        </p>
+      </footer>
     </div>
   );
 }

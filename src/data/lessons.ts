@@ -1,6 +1,6 @@
 /**
  * Thư viện dữ liệu bài học (Sách giáo khoa chương trình GDPT 2018)
- * Bao gồm các bộ sách: Kết nối tri thức (KNTT), Cánh diều (CD), Chân trời sáng tạo (CTST)
+ * Bao gồm các bộ sách: Kết nối tri thức (KNTT), Cánh diều (CD)
  */
 
 export const LESSON_LIBRARY: Record<string, Record<string, Record<string, string[]>>> = {
@@ -11,14 +11,6 @@ export const LESSON_LIBRARY: Record<string, Record<string, Record<string, string
         'Bài 6. Vectơ trong không gian.', 'Bài 7. Hệ trục toạ độ trong không gian.', 'Bài 8. Biểu thức toạ độ của các phép toán vectơ.', 'Bài 9. Khoảng biến thiên và khoảng tứ phân vị.', 'Bài 10. Phương sai và độ lệch chuẩn.',
         'Bài 11. Nguyên hàm.', 'Bài 12. Tích phân.', 'Bài 13. Ứng dụng hình học của tích phân.', 'Bài 14. Phương trình mặt phẳng.', 'Bài 15. Phương trình đường thẳng trong không gian.',
         'Bài 16. Công thức tính góc trong không gian.', 'Bài 17. Phương trình mặt cầu.', 'Bài 18. Xác suất có điều kiện.', 'Bài 19. Công thức xác suất toàn phần và công thức Bayes.'
-      ],
-      'Cánh diều': [
-        'Bài 1. Tính đơn điệu của hàm số', 'Bài 2. Giá trị lớn nhất và giá trị nhỏ nhất của hàm số', 'Bài 3. Đường tiệm cận của đồ thị hàm số', 'Bài 4. Khảo sát sự biến thiên và vẽ đồ thị của hàm số',
-        'Bài 1. Vectơ và các phép toán vectơ trong không gian', 'Bài 2. Tọa độ của vectơ trong không gian', 'Bài 3. Biểu thức tọa độ của các phép toán vectơ',
-        'Bài 1. Nguyên hàm', 'Bài 2. Tích phân', 'Bài 3. Ứng dụng hình học của tích phân',
-        'Bài 1. Phương trình mặt phẳng', 'Bài 2. Phương trình đường thẳng', 'Bài 3. Phương trình mặt cầu',
-        'Bài 1. Các khái niệm cơ bản về xác suất có điều kiện', 'Bài 2. Công thức xác suất toàn phần và công thức Bayes',
-        'Bài 1. Khoảng biến thiên. Khoảng tứ phân vị', 'Bài 2. Phương sai. Độ lệch chuẩn'
       ]
     },
     'Khối 11': {
@@ -313,6 +305,14 @@ export const LESSON_LIBRARY: Record<string, Record<string, Record<string, string
         'Bài 6. Sắp xếp và lọc dữ liệu', 'Bài 7. Trực quan hoá dữ liệu', 'Bài 8a. Làm việc với danh sách dạng liệt kê và hình ảnh trong văn bản', 'Bài 9a. Tạo đầu trang, chân trang cho văn bản', 'Bài 10a. Định dạng nâng cao cho trang chiếu',
         'Bài 11a. Sử dụng bản mẫu tạo bài trình chiếu', 'Bài 8b. Phần mềm chỉnh sửa ảnh', 'Bài 9b. Thay đổi khung hình, kích thước ảnh', 'Bài 10b. Thêm văn bản, tạo hiệu ứng cho ảnh', 'Bài 11b. Thực hành tổng hợp',
         'Bài 12. Từ thuật toán đến chương trình', 'Bài 13. Biểu diễn dữ liệu', 'Bài 14. Cấu trúc điều khiển', 'Bài 15. Gỡ lỗi', 'Bài 16. Tin học với nghề nghiệp'
+      ],
+      'Cánh diều': [
+        'Bài 1. Vài nét lịch sử phát triển máy tính', 'Bài 2. Vài nét lịch sử phát triển máy tính (tt)', 'Bài 1. Dữ liệu số trong thời đại thông tin', 'Bài 2. Khai thác thông tin số trong các hoạt động kinh tế xã hội', 'Bài học. Sử dụng công nghệ kĩ thuật số có đạo đức và văn hóa',
+        'Bài 1. Lọc dữ liệu', 'Bài 2. Sắp xếp dữ liệu', 'Bài 3. Biểu đồ trong phần mềm bảng tính', 'Bài 4. Thực hành tạo biểu đồ', 'Bài 5. Các kiểu địa chỉ trong Excel',
+        'Bài 6. Thực hành tổng hợp', 'Bài 1. Xử lí đồ họa trong văn bản', 'Bài 2. Thực hành xử lí đồ họa trong văn bản', 'Bài 3. Danh sách liệt kê và tiêu đề trang', 'Bài 4. Thực hành tạo danh sách liệt kê và tiêu đề trang',
+        'Bài 5. Thực hành tổng hợp', 'Bài 6. Sử dụng các bản mẫu trong tạo bài trình chiếu', 'Bài 7. Thực hành sử dụng bản mẫu', 'Bài 8. Kết nối đa phương tiện và hoàn thiện trang chiếu', 'Bài 9. Thực hành tổng hợp',
+        'Bài 1. Thể hiện cấu trúc tuần tự trong chương trình', 'Bài 2. Sử dụng biến trong chương trình', 'Bài 3. Sử dụng biểu thức trong chương trình', 'Bài 4. Thể hiện cấu trúc rẽ nhánh trong chương trình', 'Bài 5. Thể hiện cấu trúc lặp trong chương trình',
+        'Bài 6. Thực hành tìm và sửa lỗi', 'Bài 7. Thực hành tổng hợp', 'Bài 1. Tin học và ứng dụng', 'Bài 2. Tin học và các ngành nghề'
       ]
     },
     'Khối 7': {
@@ -321,6 +321,14 @@ export const LESSON_LIBRARY: Record<string, Record<string, Record<string, string
         'Bài 6. Làm quen với phần mềm bảng tính', 'Bài 7. Tính toán tự động trên bảng tính', 'Bài 8. Công cụ hỗ trợ tính toán', 'Bài 9. Trình bày bảng tính', 'Bài 10. Hoàn thiện bảng tính',
         'Bài 11. Tạo bài trình chiếu', 'Bài 12. Định dạng đối tượng trên trang chiếu', 'Bài 13. Thực hành tổng hợp: Hoàn thiện bài trình chiếu', 'Bài 14. Thuật toán tìm kiếm tuần tự', 'Bài 15. Thuật toán tìm kiếm nhị phân',
         'Bài 16. Thuật toán sắp xếp'
+      ],
+      'Cánh diều': [
+        'Bài 1. Thiết bị vào - ra cơ bản cho máy tính cá nhân', 'Bài 2+3. Các thiết bị vào - ra + Thực hành với các thiết bị vào ra', 'Bài 4. Một số chức năng hệ điều hành', 'Bài 5. Thực hành khám phá trình quản lí hệ thống tệp', 'Bài 6. Thực hành thao tác với tệp và thư mục',
+        'Bài 1. Giới thiệu mạng xã hội', 'Bài 2. Thực hành sử dụng mạng xã hội', 'Bài 3. Trao đổi thông tin trên mạng xã hội', 'Bài 1. Ứng xử có văn hóa khi giao tiếp qua mạng.', 'Bài 2. Ứng xử tránh rủi ro trên mạng',
+        'Bài 1. Làm quen với bảng tính điện tử', 'Bài 2. Làm quen với trang tính', 'Bài 3. Làm quen với trang tính ( tiếp)', 'Bài 4. Định dạng hiển thị dữ liệu số', 'Bài 5. Định dạng số tiền và ngày tháng',
+        'Bài 6. Thực hành lập sổ theo dõi thu chi cá nhân', 'Bài 7. Công thức tính toán dùng địa chỉ của các ô dữ liệu', 'Bài 8. Sử dụng một số hàm có sẵn', 'Bài 9. Định dạng trang tính và in', 'Bài 10. Thực hành tổng hợp',
+        'Bài 11. Luyện tập sử dụng phần mềm bảng tính', 'Bài 12. Tạo bài trình chiếu', 'Bài 13. Thực hành định dạng trang chiếu', 'Bài 14. Thêm hiệu ứng cho trang chiếu', 'Bài 15. Thực hành tổng hợp tạo bài trình chiếu',
+        'Bài 1. Tìm kiếm tuần tự', 'Bài 2. Tìm kiếm nhị phân', 'Bài 3. Sắp xếp chọn', 'Bài 4. Sắp xếp nổi bọt', 'Bài 5. Thực hành mô phỏng các thuật toán tìm kiếm và sắp xếp.'
       ]
     },
     'Khối 6': {
@@ -329,6 +337,14 @@ export const LESSON_LIBRARY: Record<string, Record<string, Record<string, string
         'Bài 6. Mạng thông tin toàn cầu World Wide Web', 'Bài 7. Tìm kiếm thông tin trên Internet', 'Bài 8. Thư điện tử', 'Bài 9. An toàn thông tin trên Internet', 'Bài 10. Sơ đồ tư duy',
         'Bài 11. Định dạng văn bản và trình bày trang văn bản', 'Bài 12. Trình bày thông tin ở dạng bảng', 'Bài 13. Thực hành: Tìm kiếm và thay thế', 'Bài 14. Thực hành: Tổng hợp nội dung dự án', 'Bài 15. Thuật toán',
         'Bài 16. Các cấu trúc điều khiển', 'Bài 17. Chương trình máy tính'
+      ],
+      'Cánh diều': [
+        'Bài 1. Thông tin – Thu nhận và xử lí thông tin', 'Bài 2. Lưu trữ và trao đổi thông tin', 'Bài 3. Máy tính trong hoạt động thông tin', 'Bài 4. Biểu diễn văn bản, hình ảnh, âm thanh trong máy tính', 'Bài 5. Dữ liệu trong máy tính',
+        'Bài 1. Khái niệm và lợi ích của mạng máy tính', 'Bài 2. Các thành phần của mạng máy tính', 'Bài 3. Mạng có dây và mạng không dây', 'Bài 1. Thông tin trên web', 'Bài 2. Truy cập thông tin trên Internet',
+        'Bài 3. Giới thiệu máy tìm kiếm', 'Bài 4. TH tìm kiếm thông tin trên Internet', 'Bài 5. Giới thiệu thư điện tử', 'Bài 6. Thực hành sử dụng thư điện tử', 'Bài 1. Mặt trái của Internet',
+        'Bài 2. Sự an toàn và hợp pháp khi sử dụng thông tin', 'Bài 1. Tìm kiếm và thay thế trong soạn thảo văn bản', 'Bài 2. Trình bày trang, định dạng và in văn bản', 'Bài 3. Thực hành tìm kiếm, thay thế và định dạng văn bản', 'Bài 4. Trình bày thông tin ở dạng bảng',
+        'Bài 5. Thực hành tổng hợp về soạn thảo văn bản', 'Bài 6. Sơ đồ tư duy', 'Bài 7. Thực hành khám phá phần mềm sơ đồ tư duy', 'Bài 8. Dự án nhỏ: Lợi ích của sơ đồ tư duy', 'Bài 1. Khái niệm thuật toán',
+        'Bài 2. Mô tả thuật toán. Cấu trúc tuần tự trong thuật toán', 'Bài 3. Cấu trúc rẽ nhánh trong thuật toán', 'Bài 4: Cấu trúc lặp trong thuật toán.', 'Bài 5. Thực hành về mô tả thuật toán'
       ]
     },
     'Khối 9': {
@@ -337,6 +353,14 @@ export const LESSON_LIBRARY: Record<string, Record<string, Record<string, string
         'Bài 6. Thực hành: Khai thác phần mềm mô phỏng', 'Bài 7. Trình bày thông tin trong trao đổi và hợp tác', 'Bài 8. Thực hành: Sử dụng công cụ trực quan trình bày', 'Bài 9a. Sử dụng công cụ xác thực dữ liệu', 'Bài 10a. Sử dụng hàm Countif',
         'Bài 11a. Sử dụng hàm Sumif', 'Bài 12a. Sử dụng hàm If', 'Bài 13a. Hoàn thiện bảng tính quản lí tài chính gia đình', 'Bài 14. Giải quyết vấn đề', 'Bài 15. Bài toán tin học',
         'Bài 16. Thực hành: Lập chương trình máy tính', 'Bài 17. Tin học và thế giới nghề nghiệp'
+      ],
+      'Cánh diều': [
+        'Bài 1. Bộ xử lí thông tin ở quanh ta', 'Bài 2. Khả năng và ứng dụng thực tế của máy tính', 'Bài 1. Một số đặc điểm quan trọng của thông tin trong giải quyết vấn đề', 'Bài 2. Chất lượng thông tin khi tìm kiếm, tiếp nhận và trao đổi thông tin', 'Bài 1. Một số tác động tiêu cực của công nghệ kĩ thuật số',
+        'Bài 2. Khía cạnh pháp lí, đạo đức, văn hóa của việc trao đổi thông tin qua mạng', 'Bài 1. Phần mềm mô phỏng và ứng dụng', 'Bài 2. Thực hành sử dụng phần mềm mô phỏng', 'Bài 1. Sử dụng bài trình chiếu trong trao đổi thông tin', 'Bài 2. Sử dụng sơ đồ tư duy trình bày thông tin trong trao đổi và hợp tác',
+        'Bài 3. Thực hành trình bày thông tin đa phương tiện trong trao đổi và hợp tác', 'Bài 1. Xác thực dữ liệu nhập vào bảng tính', 'Bài 2. Hàm điều kiện IF', 'Bài 3. Hàm điều kiện IF (tiếp theo)', 'Bài 4. Một số hàm thống kê có điều kiện',
+        'Bài 5. Thực hành tổng hợp', 'Bài 5. Thực hành tổng hợp (tt)', 'Dự án học tập', 'Bài 1. Các bước giải bài toán bằng máy tính', 'Bài 2. Thực hành xác định bài toán và tìm thuật toán',
+        'Bài 3. Thực hành tạo và chạy thử chương trình', 'Bài 4. Dùng máy tính để giải quyết bài toán (Bài tập nhóm)', 'Bài 4. Dùng máy tính để giải quyết bài toán (Bài tập nhóm) (tt)', 'Bài 1. Nhóm nghề phân tích và phát triển phần mềm và các ứng dụng', 'Bài 2. Nhóm nghề Đa phương tiện và nhóm nghề Vận hành hệ thống thông tin',
+        'Bài 3. Thực hành tìm hiểu thông tin về các nhóm nghề'
       ]
     }
   },
