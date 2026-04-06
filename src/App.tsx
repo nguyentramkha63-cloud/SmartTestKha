@@ -2712,7 +2712,7 @@ export default function App() {
             className="mt-12 max-w-3xl text-center px-4"
           >
             <p className="text-slate-300 text-base font-bold leading-relaxed italic">
-              "Ứng dụng không thể đáp ứng 100% nhu cầu của thầy cô cũng như không biết trung bình học sinh của thầy cô ở mức độ năng lực nào để ra đề cho phù hợp. Hãy kiểm tra lại đề trước khi tổ chức kiểm tra. Trân trọng!"
+              "Ứng dụng không thể đáp ứng 100% nhu cầu của thầy cô cũng như không biết trung bình học sinh của thầy cô ở mức độ năng lực nào để ra đề cho phù hợp. Hãy kiểm tra lại đề trước khi tổ chức thi/kiểm tra; đề soạn ra chỉ mang tính THAM KHẢO. Trân trọng!"
             </p>
           </motion.div>
         </div>
