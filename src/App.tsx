@@ -2986,7 +2986,7 @@ export default function App() {
                       value={knowledge} 
                       onChange={(e) => setKnowledge(Number(e.target.value))}
                       className="text-2xl font-black text-slate-900 w-16 text-right bg-transparent outline-none"
-                      min="0" max="100"
+                      min="0" max="100" step="5"
                     />
                     <span className="text-2xl font-black text-slate-900">%</span>
                   </div>
@@ -3006,7 +3006,7 @@ export default function App() {
                   <input 
                     type="range" 
                     min="0" max="100" 
-                    step="1"
+                    step="5"
                     value={knowledge} 
                     onChange={(e) => setKnowledge(parseInt(e.target.value))}
                     className="absolute w-full bg-transparent appearance-none cursor-pointer z-10 
@@ -3039,7 +3039,7 @@ export default function App() {
                       value={comprehension} 
                       onChange={(e) => setComprehension(Number(e.target.value))}
                       className="text-2xl font-black text-slate-900 w-16 text-right bg-transparent outline-none"
-                      min="0" max="100"
+                      min="0" max="100" step="5"
                     />
                     <span className="text-2xl font-black text-slate-900">%</span>
                   </div>
@@ -3059,7 +3059,7 @@ export default function App() {
                   <input 
                     type="range" 
                     min="0" max="100" 
-                    step="1"
+                    step="5"
                     value={comprehension} 
                     onChange={(e) => setComprehension(parseInt(e.target.value))}
                     className="absolute w-full bg-transparent appearance-none cursor-pointer z-10 
@@ -3092,7 +3092,7 @@ export default function App() {
                       value={application} 
                       onChange={(e) => setApplication(Number(e.target.value))}
                       className="text-2xl font-black text-slate-900 w-16 text-right bg-transparent outline-none"
-                      min="0" max="100"
+                      min="0" max="100" step="5"
                     />
                     <span className="text-2xl font-black text-slate-900">%</span>
                   </div>
@@ -3112,7 +3112,7 @@ export default function App() {
                   <input 
                     type="range" 
                     min="0" max="100" 
-                    step="1"
+                    step="5"
                     value={application} 
                     onChange={(e) => setApplication(parseInt(e.target.value))}
                     className="absolute w-full bg-transparent appearance-none cursor-pointer z-10 
