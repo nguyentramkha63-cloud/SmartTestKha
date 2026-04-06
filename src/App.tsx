@@ -2384,6 +2384,25 @@ export default function App() {
   ];
 
   const grades = Array.from({ length: 7 }, (_, i) => `Khối ${i + 6}`);
+
+  const highSchoolSubjects = ['Vật lí', 'Hóa học', 'Sinh học', 'Giáo dục kinh tế và pháp luật', 'Lịch sử', 'Địa lí'];
+  const middleSchoolSubjects = ['Khoa học tự nhiên', 'Lịch sử và Địa lí', 'Giáo dục công dân'];
+
+  const filteredGrades = grades.filter(g => {
+    if (highSchoolSubjects.includes(subject)) {
+      return ['Khối 10', 'Khối 11', 'Khối 12'].includes(g);
+    }
+    if (middleSchoolSubjects.includes(subject)) {
+      return ['Khối 6', 'Khối 7', 'Khối 8', 'Khối 9'].includes(g);
+    }
+    return true;
+  });
+
+  useEffect(() => {
+    if (!filteredGrades.includes(grade)) {
+      setGrade(filteredGrades[0]);
+    }
+  }, [subject, filteredGrades, grade]);
   
   const exams = [
     'Kiểm tra giữa học kì 1',
@@ -2836,7 +2855,7 @@ export default function App() {
                     }}
                     className="input-field font-bold appearance-none"
                   >
-                    {grades.map(g => <option key={g} value={g}>{g}</option>)}
+                    {filteredGrades.map(g => <option key={g} value={g}>{g}</option>)}
                   </select>
                 </div>
               </div>
