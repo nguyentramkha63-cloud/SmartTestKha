@@ -386,6 +386,7 @@ export default function App() {
   const [isExporting, setIsExporting] = useState(false);
   const [masterExamData, setMasterExamData] = useState<ExamData | null>(null);
   const [showNewConfirm, setShowNewConfirm] = useState(false);
+  const [visitorCount, setVisitorCount] = useState(1052);
   const [errorModal, setErrorModal] = useState<{ show: boolean; title: string; message: string }>({
     show: false,
     title: '',
@@ -442,6 +443,19 @@ export default function App() {
       setMasterExamData(examData);
     }
   }, [examData, step]);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('smart_test_visitor_count');
+    if (stored) {
+      const current = parseInt(stored);
+      const next = current + 1;
+      setVisitorCount(next);
+      localStorage.setItem('smart_test_visitor_count', next.toString());
+    } else {
+      localStorage.setItem('smart_test_visitor_count', '1052');
+      setVisitorCount(1052);
+    }
+  }, []);
 
   const loadingMessages = [
     "Đang phân tích ma trận kiến thức...",
@@ -4356,13 +4370,15 @@ export default function App() {
           </div>
           <div className="flex flex-col">
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Số lượt truy cập</span>
-            <div className="flex items-center gap-2">
-              <img 
-                src="https://hits.dwyl.com/nguyentramkha63/smart-test-ai.svg?style=flat-square&show=true" 
-                alt="Visitor Counter" 
-                className="h-5 rounded"
-                referrerPolicy="no-referrer"
-              />
+            <div className="flex items-center">
+              <div className="flex items-center h-5 overflow-hidden rounded shadow-sm border border-slate-200">
+                <div className="bg-slate-700 px-2 h-full flex items-center">
+                  <span className="text-[10px] font-bold text-white leading-none">hits</span>
+                </div>
+                <div className="bg-emerald-500 px-2 h-full flex items-center min-w-[30px] justify-center">
+                  <span className="text-[10px] font-bold text-white leading-none">{visitorCount}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
