@@ -312,6 +312,7 @@ interface ExamData {
   specifications?: Specification[];
   code?: string;
   isSimpleExport?: boolean;
+  contexts?: { topic: string; content: string }[];
 }
 
 const getRomanSection = (type: string, allQuestions: Question[]) => {
@@ -1200,6 +1201,20 @@ export default function App() {
           ] : []),
           new Paragraph({ text: "", spacing: { before: 200 } }),
 
+          // Contexts Section
+          ...((data.contexts || []).flatMap((ctx) => [
+            new Paragraph({
+              children: [new TextRun({ text: `NGỮ CẢNH: ${ctx.topic.toUpperCase()}`, bold: true, size: 24 })],
+              spacing: { before: 300, after: 100 }
+            }),
+            new Paragraph({
+              alignment: AlignmentType.JUSTIFIED,
+              children: renderTextWithMath(ctx.content, { italics: true, size: 24 }),
+              spacing: { after: 200 },
+              shading: { type: ShadingType.CLEAR, fill: "F8F9FA" }
+            })
+          ])),
+
           // Questions
           ...questions.flatMap((q, idx) => {
             const sectionStartIndex = questions.findIndex(question => question.type === q.type);
@@ -1993,6 +2008,7 @@ export default function App() {
         - Với các bài học có kèm theo "Ngữ cảnh", bạn PHẢI ưu tiên lồng ghép tình huống đó vào các câu hỏi mức độ Thông hiểu và Vận dụng.
         - Các câu hỏi mức độ Nhận biết có thể giữ nguyên tính trực diện hoặc lồng ghép nhẹ nhàng.
         - Đảm bảo tình huống thực tế giúp học sinh thấy được tính ứng dụng của kiến thức.
+        - Sử dụng tên các nhân vật là: Minh, Khoa và An trong các tình huống thực tế.
 
         LƯU Ý QUAN TRỌNG VỀ MỨC ĐỘ NHẬN THỨC:
         - Phân bổ các mức độ nhận thức (NHẬN BIẾT, THÔNG HIỂU, VẬN DỤNG) linh hoạt cho TẤT CẢ các loại câu hỏi (MCQ, TF, SA, TL) để đảm bảo tổng điểm khớp với tỷ lệ yêu cầu.
@@ -2032,6 +2048,7 @@ export default function App() {
         {
           "title": "...", "subject": "...", "grade": "...", "bookSeries": "...",
           "specifications": [{"topic": "...", "level": "...", "criteria": "..."}],
+          "contexts": [{"topic": "...", "content": "..."}],
           "questions": [
             { "type": "MCQ", "level": "...", "topic": "...", "content": "...", "points": 0, "options": [{"id": "A", "text": "...", "isCorrect": false}] },
             { "type": "TF", "level": "...", "topic": "...", "content": "...", "points": 0, "tfSubQuestions": [{"id": "a", "text": "...", "isCorrect": false}] },
@@ -2039,6 +2056,12 @@ export default function App() {
             { "type": "TL", "level": "...", "topic": "...", "content": "...", "points": 0, "solution": "..." }
           ]
         }
+
+        LƯU Ý VỀ MỤC "contexts" (CỰC KỲ QUAN TRỌNG):
+        - Bạn PHẢI đưa tất cả các ngữ cảnh đã được cung cấp trong danh sách bài học vào mảng "contexts" này.
+        - Nếu bài học có ngữ cảnh, hãy đưa nó vào đây. Nếu không có, có thể bỏ qua bài đó trong mảng này.
+        - "topic" là tên bài học, "content" là nội dung ngữ cảnh đầy đủ.
+        - Nội dung ngữ cảnh này sẽ được hiển thị ở đầu đề thi để học sinh đọc.
       `;
 
       const timeoutPromise = new Promise((_, reject) => 
@@ -2141,7 +2164,17 @@ export default function App() {
       let responseText = response.text || "{}";
       const data = safeJsonParse(responseText.trim());
       data.duration = duration;
-      data.topics = topics;
+      data.topics = topics.map(t => t.name);
+
+      // Fallback: If AI didn't return contexts in JSON, use the ones from Step 2
+      if (!data.contexts || data.contexts.length === 0) {
+        const manualContexts = topics
+          .filter(t => t.context && t.context.trim() !== "")
+          .map(t => ({ topic: t.name, content: t.context! }));
+        if (manualContexts.length > 0) {
+          data.contexts = manualContexts;
+        }
+      }
 
       if (data.questions && data.questions.length > 0) {
         // Strict validation of question counts
@@ -2456,7 +2489,8 @@ export default function App() {
         YÊU CẦU:
         1. Tình huống phải gần gũi với đời sống học sinh.
         2. Ngôn ngữ tự nhiên, lôi cuốn.
-        3. Chỉ trả về nội dung tình huống, không thêm lời dẫn.
+        3. Sử dụng tên các nhân vật là: Minh, Khoa hoặc An nếu có nhắc đến tên người.
+        4. Chỉ trả về nội dung tình huống, không thêm lời dẫn.
       `;
 
       const response = await ai.models.generateContent({
@@ -3568,6 +3602,27 @@ export default function App() {
                 </div>
                 <div className="w-24 h-1 bg-emerald-600 mx-auto mt-6 rounded-full" />
               </div>
+
+              {/* Contexts Section */}
+              {examData?.contexts && examData.contexts.length > 0 && (
+                <div className="mb-12 space-y-6">
+                  {examData.contexts.map((ctx, cIdx) => (
+                    <motion.div 
+                      key={cIdx}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="bg-slate-50 border-l-4 border-emerald-500 p-6 rounded-r-3xl shadow-sm"
+                    >
+                      <h4 className="text-xs font-black text-emerald-700 uppercase tracking-widest mb-2 flex items-center gap-2">
+                        <Zap className="w-4 h-4 fill-emerald-500" /> Ngữ cảnh: {ctx.topic}
+                      </h4>
+                      <div className="text-slate-700 font-medium italic leading-relaxed">
+                        <MathRenderer content={ctx.content} />
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
 
               {/* Questions List */}
               <div className="space-y-12">
