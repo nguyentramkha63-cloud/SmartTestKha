@@ -4490,49 +4490,48 @@ export default function App() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl overflow-hidden border border-slate-100"
+            className="bg-white rounded-[2rem] shadow-2xl w-full max-w-lg overflow-hidden border border-slate-100 max-h-[90vh] flex flex-col"
           >
-            <div className="p-8 md:p-12">
-              <h2 className="text-2xl md:text-3xl font-black text-slate-900 mb-8 text-center tracking-tight uppercase">
-                CÁC CẬP NHẬT MỚI CHO ỨNG DỤNG
+            <div className="p-6 md:p-8 overflow-y-auto custom-scrollbar">
+              <h2 className="text-xl md:text-2xl font-black text-slate-900 mb-6 text-center tracking-tight uppercase">
+                CÁC CẬP NHẬT MỚI
               </h2>
               
-              <div className="space-y-6 text-slate-700 leading-relaxed">
-                <section>
-                  <h3 className="font-black text-lg text-emerald-700 mb-2">1. Cập nhật thư viện bài học</h3>
-                  <p className="font-medium">Đã bổ sung đầy đủ tên các bài học môn <span className="font-black">Tin học 6 - 9</span> bộ sách <span className="font-black">Cánh Diều</span>.</p>
-                  <ul className="list-disc list-inside mt-2 space-y-1 text-sm font-medium text-slate-500">
-                    <li>Bộ sách KNTT: Đã có đầy đủ các môn.</li>
-                    <li>Bộ sách Cánh Diều: Hiện có môn Tin học 6 - 9.</li>
-                  </ul>
+              <div className="space-y-5 text-slate-700 leading-relaxed">
+                <section className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                  <h3 className="font-black text-base text-emerald-700 mb-1.5 flex items-center gap-2">
+                    <BookOpen className="w-4 h-4" /> 1. Thư viện bài học
+                  </h3>
+                  <p className="text-sm font-medium">Bổ sung đầy đủ môn <span className="font-black">Tin học 6 - 9</span> bộ sách <span className="font-black">Cánh Diều</span>.</p>
                 </section>
 
-                <section>
-                  <h3 className="font-black text-lg text-emerald-700 mb-2">2. Lọc khối lớp thông minh</h3>
-                  <p className="font-medium">Khi chọn môn, danh sách Khối lớp sẽ tự động lọc chỉ hiển thị các khối có môn học đó.</p>
-                  <div className="mt-2 bg-slate-50 p-3 rounded-2xl text-sm italic text-slate-500 border border-slate-100">
-                    VD: Môn KHTN chỉ hiện Khối 6 - 9; Môn Vật lí chỉ hiện Khối 10 - 12.
-                  </div>
+                <section className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                  <h3 className="font-black text-base text-emerald-700 mb-1.5 flex items-center gap-2">
+                    <Target className="w-4 h-4" /> 2. Lọc khối lớp
+                  </h3>
+                  <p className="text-sm font-medium">Tự động hiển thị các khối lớp phù hợp với môn học đã chọn.</p>
                 </section>
 
-                <section>
-                  <h3 className="font-black text-lg text-emerald-700 mb-2">3. Bước 2 Ma trận: Tính năng "Ngữ cảnh"</h3>
-                  <p className="font-medium">Cập nhật nút <span className="font-black text-emerald-600 uppercase">“Ngữ cảnh”</span> sau mỗi tên bài. AI sẽ soạn câu hỏi tình huống thực tế phù hợp mục tiêu đổi mới giáo dục.</p>
-                  <div className="mt-3 space-y-2 bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100">
-                    <p className="text-xs font-black text-emerald-800 uppercase tracking-wider mb-2">Tỉ lệ vàng sử dụng ngữ cảnh:</p>
-                    <ul className="text-sm space-y-2">
-                      <li className="flex gap-2"><span className="text-emerald-500">•</span> <span><span className="font-bold">Mức Nhận biết (0-20% ngữ cảnh):</span> Giữ nguyên sự ngắn gọn, trực tiếp.</span></li>
-                      <li className="flex gap-2"><span className="text-emerald-500">•</span> <span><span className="font-bold">Mức Thông hiểu (40-60% ngữ cảnh):</span> Đưa khái niệm vào tình huống đơn giản.</span></li>
-                      <li className="flex gap-2"><span className="text-emerald-500">•</span> <span><span className="font-bold">Mức Vận dụng (80-100% ngữ cảnh):</span> "Đất diễn" chính, giải quyết vấn đề thực tế.</span></li>
+                <section className="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100">
+                  <h3 className="font-black text-base text-emerald-700 mb-2 flex items-center gap-2">
+                    <Zap className="w-4 h-4 fill-emerald-500" /> 3. Tính năng "Ngữ cảnh"
+                  </h3>
+                  <p className="text-sm font-medium mb-3">Nút <span className="font-black text-emerald-600 uppercase">“Ngữ cảnh”</span> tại Bước 2 giúp AI soạn câu hỏi thực tế.</p>
+                  
+                  <div className="space-y-1.5 border-t border-emerald-100 pt-2">
+                    <p className="text-[10px] font-black text-emerald-800 uppercase tracking-wider">Tỉ lệ vàng ngữ cảnh:</p>
+                    <ul className="text-[11px] space-y-1 font-bold text-emerald-900/70">
+                      <li>• Nhận biết: 0-20%</li>
+                      <li>• Thông hiểu: 40-60%</li>
+                      <li>• Vận dụng: 80-100%</li>
                     </ul>
                   </div>
-                  <p className="text-xs text-slate-400 mt-3 italic">* Nếu không chọn “ngữ cảnh”, hệ thống soạn đề như trước đây.</p>
                 </section>
               </div>
 
               <button 
                 onClick={handleCloseUpdateModal}
-                className="w-full mt-10 py-5 bg-blue-600 text-yellow-400 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-700 transition-all shadow-xl shadow-blue-200 active:scale-95 text-lg"
+                className="w-full mt-8 py-4 bg-blue-600 text-yellow-400 rounded-xl font-black uppercase tracking-widest hover:bg-blue-700 transition-all shadow-lg active:scale-95 text-base"
               >
                 TÔI HIỂU
               </button>
