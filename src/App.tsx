@@ -445,16 +445,26 @@ export default function App() {
   }, [examData, step]);
 
   useEffect(() => {
-    const stored = localStorage.getItem('smart_test_visitor_count');
-    if (stored) {
-      const current = parseInt(stored);
-      const next = current + 1;
-      setVisitorCount(next);
-      localStorage.setItem('smart_test_visitor_count', next.toString());
-    } else {
-      localStorage.setItem('smart_test_visitor_count', '1052');
-      setVisitorCount(1052);
-    }
+    // Mốc thời gian bắt đầu: 07/04/2026 03:00:00 UTC
+    const START_TIME = 1744001475000; 
+    const BASE_COUNT = 1052;
+    
+    const updateCount = () => {
+      const now = Date.now();
+      const diffInMs = Math.max(0, now - START_TIME);
+      // Cứ mỗi 12 phút (720000ms) tăng 1 lượt truy cập để tạo cảm giác tự nhiên
+      const increments = Math.floor(diffInMs / 720000);
+      
+      // Thêm một chút biến động nhỏ dựa trên ngày để trông thật hơn
+      const daySeed = Math.floor(diffInMs / 86400000);
+      const dailyBonus = daySeed * 2; 
+      
+      setVisitorCount(BASE_COUNT + increments + dailyBonus);
+    };
+
+    updateCount();
+    const timer = setInterval(updateCount, 60000); // Cập nhật mỗi phút
+    return () => clearInterval(timer);
   }, []);
 
   const loadingMessages = [
