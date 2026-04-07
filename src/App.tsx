@@ -39,7 +39,8 @@ import {
   FileArchive,
   Eye,
   Sigma,
-  Coffee
+  Coffee,
+  Zap
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import ReactMarkdown from 'react-markdown';
@@ -370,9 +371,10 @@ export default function App() {
     { id: 1, name: 'Câu tự luận 1', points: 1 },
     { id: 2, name: 'Câu tự luận 2', points: 1 },
   ]);
-  const [topics, setTopics] = useState<string[]>([]);
+  const [topics, setTopics] = useState<{ name: string; context?: string; showContext?: boolean }[]>([]);
   const [newTopic, setNewTopic] = useState('');
   const [loadingTopics, setLoadingTopics] = useState(false);
+  const [loadingContextIndex, setLoadingContextIndex] = useState<number | null>(null);
   const [dataSource, setDataSource] = useState<'library' | 'ai' | 'none'>('none');
   const [examData, setExamData] = useState<ExamData | null>(null);
   const [isGeneratingExam, setIsGeneratingExam] = useState(false);
@@ -386,12 +388,25 @@ export default function App() {
   const [isExporting, setIsExporting] = useState(false);
   const [masterExamData, setMasterExamData] = useState<ExamData | null>(null);
   const [showNewConfirm, setShowNewConfirm] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [visitorCount, setVisitorCount] = useState(1052);
   const [errorModal, setErrorModal] = useState<{ show: boolean; title: string; message: string }>({
     show: false,
     title: '',
     message: ''
   });
+
+  useEffect(() => {
+    const hasSeenUpdate = localStorage.getItem('has_seen_update_2026_04_07');
+    if (!hasSeenUpdate) {
+      setShowUpdateModal(true);
+    }
+  }, []);
+
+  const handleCloseUpdateModal = () => {
+    localStorage.setItem('has_seen_update_2026_04_07', 'true');
+    setShowUpdateModal(false);
+  };
 
   const showError = (title: string, message: string) => {
     setErrorModal({ show: true, title, message });
@@ -614,16 +629,18 @@ export default function App() {
   const generateWordBlob = async (data: ExamData & { code?: string }) => {
     const isFullExport = !data.code && 
                          !data.title?.toLowerCase().includes("thường xuyên");
-    const normalizeTopic = (t: string) => 
-      t?.trim()?.toLowerCase()
-       .replace(/^bài\s+\d+[\s.:]*/i, '')
-       .replace(/[:.]/g, '')
-       .trim() || "";
+    const normalizeTopic = (t: any) => {
+      const text = typeof t === 'string' ? t : (t?.name || "");
+      return text.trim().toLowerCase()
+        .replace(/^bài\s+\d+[\s.:]*/i, '')
+        .replace(/[:.]/g, '')
+        .trim();
+    };
 
     const normalizeLevel = (l: string) => l?.trim()?.toUpperCase() || "";
 
     const questions = data.questions || [];
-    const topicsList = data.topics || topics || [];
+    const topicsList = (data.topics || topics || []).map((t: any) => typeof t === 'string' ? t : t.name);
     const matrixRows = topicsList.map(topic => {
       const normalizedTopic = normalizeTopic(topic);
       const qInTopic = questions.filter(q => 
@@ -1878,7 +1895,7 @@ export default function App() {
       const { lessons: libraryLessons, source } = getSuggestedTopics(subject, grade, exam, subSubject, bookSeries);
       
       if (source === 'library' && !forceAI) {
-        setTopics(libraryLessons);
+        setTopics(libraryLessons.map(name => ({ name })));
         setDataSource('library');
         setLoadingTopics(false);
         return;
@@ -1930,16 +1947,16 @@ export default function App() {
 
       const aiTopics = safeJsonParse(response.text || "[]");
       if (aiTopics && aiTopics.length > 0) {
-        setTopics(aiTopics);
+        setTopics(aiTopics.map((name: string) => ({ name })));
         setDataSource('ai');
       } else {
-        setTopics(libraryLessons);
+        setTopics(libraryLessons.map(name => ({ name })));
         setDataSource('none');
       }
     } catch (error) {
       console.error("AI Generation Error:", error);
       const { lessons } = getSuggestedTopics(subject, grade, exam, subSubject, bookSeries);
-      setTopics(lessons);
+      setTopics(lessons.map(name => ({ name })));
       setDataSource('none');
     } finally {
       setLoadingTopics(false);
@@ -1970,9 +1987,12 @@ export default function App() {
         - Khối lớp: ${grade}
         - Bộ sách: ${bookSeries}
         - Mức độ phân bổ điểm số: Nhận biết ${knowledge}%, Thông hiểu ${comprehension}%, Vận dụng ${application}%
-        - Danh sách các chủ đề/bài học: ${topics.join(', ')}
+        - Danh sách các chủ đề/bài học: ${topics.map(t => t.name + (t.context ? ` (Ngữ cảnh: ${t.context})` : '')).join(', ')}
 
-        ${subject === 'Tin học' && ['Khối 6', 'Khối 7', 'Khối 8', 'Khối 9'].includes(grade) ? `LƯU Ý RIÊNG CHO MÔN TIN HỌC: Với các nội dung liên quan đến lập trình, thuật toán, cấu trúc điều khiển, bạn PHẢI sử dụng ngôn ngữ lập trình Scratch để minh họa và đặt câu hỏi. TUYỆT ĐỐI KHÔNG sử dụng Python hay ngôn ngữ khác cho khối lớp này.` : ''}
+        HƯỚNG DẪN VỀ NGỮ CẢNH THỰC TẾ:
+        - Với các bài học có kèm theo "Ngữ cảnh", bạn PHẢI ưu tiên lồng ghép tình huống đó vào các câu hỏi mức độ Thông hiểu và Vận dụng.
+        - Các câu hỏi mức độ Nhận biết có thể giữ nguyên tính trực diện hoặc lồng ghép nhẹ nhàng.
+        - Đảm bảo tình huống thực tế giúp học sinh thấy được tính ứng dụng của kiến thức.
 
         LƯU Ý QUAN TRỌNG VỀ MỨC ĐỘ NHẬN THỨC:
         - Phân bổ các mức độ nhận thức (NHẬN BIẾT, THÔNG HIỂU, VẬN DỤNG) linh hoạt cho TẤT CẢ các loại câu hỏi (MCQ, TF, SA, TL) để đảm bảo tổng điểm khớp với tỷ lệ yêu cầu.
@@ -2357,7 +2377,12 @@ export default function App() {
           if (state.saCount !== undefined) setSaCount(state.saCount);
           if (state.saPoints !== undefined) setSaPoints(state.saPoints);
           if (state.essays !== undefined) setEssays(state.essays);
-          if (state.topics !== undefined) setTopics(state.topics);
+          if (state.topics !== undefined) {
+            const normalizedTopics = state.topics.map((t: any) => 
+              typeof t === 'string' ? { name: t } : t
+            );
+            setTopics(normalizedTopics);
+          }
           if (state.dataSource !== undefined) setDataSource(state.dataSource);
           if (state.examData !== undefined) setExamData(state.examData);
         } catch (error) {
@@ -2392,13 +2417,60 @@ export default function App() {
 
   const addTopic = () => {
     if (newTopic.trim()) {
-      setTopics([...topics, newTopic.trim()]);
+      setTopics([...topics, { name: newTopic.trim() }]);
       setNewTopic('');
     }
   };
 
   const removeTopic = (index: number) => {
     setTopics(topics.filter((_, i) => i !== index));
+  };
+
+  const updateTopicContext = (index: number, context: string) => {
+    const updated = [...topics];
+    updated[index].context = context;
+    setTopics(updated);
+  };
+
+  const toggleTopicContext = (index: number) => {
+    const updated = [...topics];
+    updated[index].showContext = !updated[index].showContext;
+    setTopics(updated);
+  };
+
+  const suggestContext = async (index: number) => {
+    if (!apiKey) {
+      setShowApiKeyModal(true);
+      return;
+    }
+    setLoadingContextIndex(index);
+    try {
+      const ai = getAiInstance(apiKey);
+      const topic = topics[index].name;
+      const prompt = `
+        Bạn là một chuyên gia giáo dục. Hãy đề xuất một tình huống thực tế hoặc ngữ cảnh thực tiễn ngắn gọn (khoảng 1-2 câu) liên quan đến bài học sau để dùng làm ngữ cảnh cho các câu hỏi kiểm tra đánh giá năng lực:
+        - Môn học: ${subject}
+        - Khối lớp: ${grade}
+        - Bài học: ${topic}
+        
+        YÊU CẦU:
+        1. Tình huống phải gần gũi với đời sống học sinh.
+        2. Ngôn ngữ tự nhiên, lôi cuốn.
+        3. Chỉ trả về nội dung tình huống, không thêm lời dẫn.
+      `;
+
+      const response = await ai.models.generateContent({
+        model: "gemini-flash-latest",
+        contents: [{ parts: [{ text: prompt }] }]
+      });
+
+      const suggestedText = response.text || "";
+      updateTopicContext(index, suggestedText.trim());
+    } catch (error) {
+      console.error("Context Suggestion Error:", error);
+    } finally {
+      setLoadingContextIndex(null);
+    }
   };
 
   const subjects = [
@@ -3372,17 +3444,59 @@ export default function App() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   key={index} 
-                  className="flex items-center justify-between p-2.5 bg-white border border-slate-200 rounded-xl shadow-sm hover:border-emerald-200 transition-all group"
+                  className="flex flex-col bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-emerald-200 transition-all group overflow-hidden"
                 >
-                  <span className="text-sm font-bold text-slate-800 leading-tight">
-                    <MathRenderer content={topic} />
-                  </span>
-                  <button 
-                    onClick={() => removeTopic(index)}
-                    className="p-1.5 text-rose-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                  <div className="flex items-center justify-between p-3">
+                    <span className="text-sm font-bold text-slate-800 leading-tight flex-grow">
+                      <MathRenderer content={topic.name} />
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <button 
+                        onClick={() => toggleTopicContext(index)}
+                        className={`p-2 rounded-xl transition-all flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider ${topic.context ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'text-slate-400 hover:text-emerald-600 hover:bg-emerald-50'}`}
+                        title="Thêm ngữ cảnh thực tế"
+                      >
+                        <Zap className={`w-3.5 h-3.5 ${topic.context ? 'fill-emerald-500' : ''}`} />
+                        {topic.context ? 'Đã có ngữ cảnh' : 'Ngữ cảnh'}
+                      </button>
+                      <button 
+                        onClick={() => removeTopic(index)}
+                        className="p-2 text-rose-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {topic.showContext && (
+                    <motion.div 
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      className="px-3 pb-3 pt-1 bg-slate-50/50 border-t border-slate-100"
+                    >
+                      <div className="flex justify-between items-center mb-2">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Tình huống / Ngữ cảnh thực tế</label>
+                        <button 
+                          onClick={() => suggestContext(index)}
+                          disabled={loadingContextIndex === index}
+                          className="text-[10px] font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1 disabled:opacity-50"
+                        >
+                          {loadingContextIndex === index ? (
+                            <Loader2 className="w-3 h-3 animate-spin" />
+                          ) : (
+                            <Sparkles className="w-3 h-3" />
+                          )}
+                          Gợi ý từ AI
+                        </button>
+                      </div>
+                      <textarea 
+                        value={topic.context || ''}
+                        onChange={(e) => updateTopicContext(index, e.target.value)}
+                        placeholder="Nhập tình huống thực tế cho bài học này (ví dụ: Vấn đề rác thải nhựa, hiện tượng bay hơi trong đời sống...)"
+                        className="w-full p-3 bg-white border border-slate-200 rounded-xl text-xs outline-none focus:border-emerald-500 transition-all min-h-[80px] resize-none leading-relaxed font-medium text-slate-700"
+                      />
+                    </motion.div>
+                  )}
                 </motion.div>
               ))}
             </div>
@@ -4365,6 +4479,62 @@ export default function App() {
                 className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl active:scale-95"
               >
                 Đã hiểu
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+      {/* New Updates Modal */}
+      {showUpdateModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl overflow-hidden border border-slate-100"
+          >
+            <div className="p-8 md:p-12">
+              <h2 className="text-2xl md:text-3xl font-black text-slate-900 mb-8 text-center tracking-tight uppercase">
+                CÁC CẬP NHẬT MỚI CHO ỨNG DỤNG
+              </h2>
+              
+              <div className="space-y-6 text-slate-700 leading-relaxed">
+                <section>
+                  <h3 className="font-black text-lg text-emerald-700 mb-2">1. Cập nhật thư viện bài học</h3>
+                  <p className="font-medium">Đã bổ sung đầy đủ tên các bài học môn <span className="font-black">Tin học 6 - 9</span> bộ sách <span className="font-black">Cánh Diều</span>.</p>
+                  <ul className="list-disc list-inside mt-2 space-y-1 text-sm font-medium text-slate-500">
+                    <li>Bộ sách KNTT: Đã có đầy đủ các môn.</li>
+                    <li>Bộ sách Cánh Diều: Hiện có môn Tin học 6 - 9.</li>
+                  </ul>
+                </section>
+
+                <section>
+                  <h3 className="font-black text-lg text-emerald-700 mb-2">2. Lọc khối lớp thông minh</h3>
+                  <p className="font-medium">Khi chọn môn, danh sách Khối lớp sẽ tự động lọc chỉ hiển thị các khối có môn học đó.</p>
+                  <div className="mt-2 bg-slate-50 p-3 rounded-2xl text-sm italic text-slate-500 border border-slate-100">
+                    VD: Môn KHTN chỉ hiện Khối 6 - 9; Môn Vật lí chỉ hiện Khối 10 - 12.
+                  </div>
+                </section>
+
+                <section>
+                  <h3 className="font-black text-lg text-emerald-700 mb-2">3. Bước 2 Ma trận: Tính năng "Ngữ cảnh"</h3>
+                  <p className="font-medium">Cập nhật nút <span className="font-black text-emerald-600 uppercase">“Ngữ cảnh”</span> sau mỗi tên bài. AI sẽ soạn câu hỏi tình huống thực tế phù hợp mục tiêu đổi mới giáo dục.</p>
+                  <div className="mt-3 space-y-2 bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100">
+                    <p className="text-xs font-black text-emerald-800 uppercase tracking-wider mb-2">Tỉ lệ vàng sử dụng ngữ cảnh:</p>
+                    <ul className="text-sm space-y-2">
+                      <li className="flex gap-2"><span className="text-emerald-500">•</span> <span><span className="font-bold">Mức Nhận biết (0-20% ngữ cảnh):</span> Giữ nguyên sự ngắn gọn, trực tiếp.</span></li>
+                      <li className="flex gap-2"><span className="text-emerald-500">•</span> <span><span className="font-bold">Mức Thông hiểu (40-60% ngữ cảnh):</span> Đưa khái niệm vào tình huống đơn giản.</span></li>
+                      <li className="flex gap-2"><span className="text-emerald-500">•</span> <span><span className="font-bold">Mức Vận dụng (80-100% ngữ cảnh):</span> "Đất diễn" chính, giải quyết vấn đề thực tế.</span></li>
+                    </ul>
+                  </div>
+                  <p className="text-xs text-slate-400 mt-3 italic">* Nếu không chọn “ngữ cảnh”, hệ thống soạn đề như trước đây.</p>
+                </section>
+              </div>
+
+              <button 
+                onClick={handleCloseUpdateModal}
+                className="w-full mt-10 py-5 bg-blue-600 text-yellow-400 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-700 transition-all shadow-xl shadow-blue-200 active:scale-95 text-lg"
+              >
+                TÔI HIỂU
               </button>
             </div>
           </motion.div>
