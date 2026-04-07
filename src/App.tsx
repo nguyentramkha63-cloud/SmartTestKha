@@ -4579,6 +4579,7 @@ export default function App() {
                   <h3 className="font-black text-lg text-slate-900 mb-3">3. Bước 2 Ma trận:</h3>
                   <div className="ml-4 space-y-4">
                     <p className="font-medium text-slate-600">- Cập nhật thêm nút <span className="font-black text-emerald-600 uppercase">“Ngữ cảnh”</span> sau mỗi tên bài. Tác dụng: AI sẽ ra câu hỏi tình huống/thực tế phù hợp mục tiêu đổi mới giáo dục.</p>
+                    <p className="font-medium text-slate-600">- Thầy cô lựa chọn bài học để sử dụng tình huống ngữ cảnh.</p>
                     
                     <div className="space-y-3">
                       <p className="font-black text-sm text-slate-900 uppercase tracking-wider">Tỉ lệ vàng sử dụng ngữ cảnh:</p>
