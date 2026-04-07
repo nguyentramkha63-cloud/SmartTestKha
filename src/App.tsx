@@ -4379,13 +4379,10 @@ export default function App() {
             <Eye className="w-6 h-6" />
           </div>
           <div className="flex flex-col">
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Số lượt truy cập</span>
+            <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Số lượt truy cập</span>
             <div className="flex items-center">
               <div className="flex items-center h-5 overflow-hidden rounded shadow-sm border border-slate-200">
-                <div className="bg-slate-700 px-2 h-full flex items-center">
-                  <span className="text-[10px] font-bold text-white leading-none">hits</span>
-                </div>
-                <div className="bg-emerald-500 px-2 h-full flex items-center min-w-[30px] justify-center">
+                <div className="bg-emerald-500 px-3 h-full flex items-center min-w-[40px] justify-center">
                   <span className="text-[10px] font-bold text-white leading-none">{visitorCount}</span>
                 </div>
               </div>
