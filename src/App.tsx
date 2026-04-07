@@ -4490,48 +4490,73 @@ export default function App() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            className="bg-white rounded-[2rem] shadow-2xl w-full max-w-lg overflow-hidden border border-slate-100 max-h-[90vh] flex flex-col"
+            className="bg-white rounded-[2rem] shadow-2xl w-full max-w-xl overflow-hidden border border-slate-100 max-h-[90vh] flex flex-col"
           >
-            <div className="p-6 md:p-8 overflow-y-auto custom-scrollbar">
-              <h2 className="text-xl md:text-2xl font-black text-slate-900 mb-6 text-center tracking-tight uppercase">
-                CÁC CẬP NHẬT MỚI
+            <div className="p-8 md:p-10 overflow-y-auto custom-scrollbar">
+              <h2 className="text-2xl md:text-3xl font-black text-slate-900 mb-8 text-center tracking-tight uppercase">
+                CÁC CẬP NHẬT MỚI CHO ỨNG DỤNG
               </h2>
               
-              <div className="space-y-5 text-slate-700 leading-relaxed">
-                <section className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                  <h3 className="font-black text-base text-emerald-700 mb-1.5 flex items-center gap-2">
-                    <BookOpen className="w-4 h-4" /> 1. Thư viện bài học
-                  </h3>
-                  <p className="text-sm font-medium">Bổ sung đầy đủ môn <span className="font-black">Tin học 6 - 9</span> bộ sách <span className="font-black">Cánh Diều</span>.</p>
+              <div className="space-y-8 text-slate-700 leading-relaxed">
+                <section>
+                  <h3 className="font-black text-lg text-slate-900 mb-3">1. Cập nhật vào thư viện đầy đủ tên các bài học môn Tin học 6 - 9 bộ sách Cánh Diều</h3>
+                  <ul className="space-y-2 ml-4">
+                    <li className="flex gap-2 font-medium text-slate-600">
+                      <span>-</span>
+                      <span>Bộ sách KNTT: đã có tên bài học các môn ra đề trong ứng dụng</span>
+                    </li>
+                    <li className="flex gap-2 font-medium text-slate-600">
+                      <span>-</span>
+                      <span>Bộ sách Cánh diều: chỉ có tên bài học môn Tin học 6 - 9.</span>
+                    </li>
+                  </ul>
                 </section>
 
-                <section className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                  <h3 className="font-black text-base text-emerald-700 mb-1.5 flex items-center gap-2">
-                    <Target className="w-4 h-4" /> 2. Lọc khối lớp
-                  </h3>
-                  <p className="text-sm font-medium">Tự động hiển thị các khối lớp phù hợp với môn học đã chọn.</p>
+                <section>
+                  <h3 className="font-black text-lg text-slate-900 mb-3">2. Khi chọn môn, danh sách Khối lớp chỉ có các khối lớp có môn học đó.</h3>
+                  <div className="ml-4 space-y-1 font-medium text-slate-600 italic">
+                    <p>VD: Môn KHTN thì chỉ có Khối 6 - 9</p>
+                    <p className="ml-7">Môn Vật lí thì chỉ có Khối 10 - 12</p>
+                  </div>
                 </section>
 
-                <section className="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100">
-                  <h3 className="font-black text-base text-emerald-700 mb-2 flex items-center gap-2">
-                    <Zap className="w-4 h-4 fill-emerald-500" /> 3. Tính năng "Ngữ cảnh"
-                  </h3>
-                  <p className="text-sm font-medium mb-3">Nút <span className="font-black text-emerald-600 uppercase">“Ngữ cảnh”</span> tại Bước 2 giúp AI soạn câu hỏi thực tế.</p>
-                  
-                  <div className="space-y-1.5 border-t border-emerald-100 pt-2">
-                    <p className="text-[10px] font-black text-emerald-800 uppercase tracking-wider">Tỉ lệ vàng ngữ cảnh:</p>
-                    <ul className="text-[11px] space-y-1 font-bold text-emerald-900/70">
-                      <li>• Nhận biết: 0-20%</li>
-                      <li>• Thông hiểu: 40-60%</li>
-                      <li>• Vận dụng: 80-100%</li>
-                    </ul>
+                <section>
+                  <h3 className="font-black text-lg text-slate-900 mb-3">3. Bước 2 Ma trận:</h3>
+                  <div className="ml-4 space-y-4">
+                    <p className="font-medium text-slate-600">- Cập nhật thêm nút <span className="font-black text-emerald-600 uppercase">“Ngữ cảnh”</span> sau mỗi tên bài. Tác dụng: AI sẽ ra câu hỏi tình huống/thực tế phù hợp mục tiêu đổi mới giáo dục.</p>
+                    
+                    <div className="space-y-3">
+                      <p className="font-black text-sm text-slate-900 uppercase tracking-wider">Tỉ lệ vàng sử dụng ngữ cảnh:</p>
+                      <ul className="space-y-3 ml-2">
+                        <li className="flex gap-3">
+                          <span className="text-slate-400 font-bold">•</span>
+                          <span className="text-sm font-medium text-slate-600">
+                            <span className="font-black text-slate-900">Mức Nhận biết (0-20% ngữ cảnh):</span> Giữ nguyên sự ngắn gọn, trực tiếp.
+                          </span>
+                        </li>
+                        <li className="flex gap-3">
+                          <span className="text-slate-400 font-bold">•</span>
+                          <span className="text-sm font-medium text-slate-600">
+                            <span className="font-black text-slate-900">Mức Thông hiểu (40-60% ngữ cảnh):</span> Bắt đầu đưa các khái niệm vào các tình huống đơn giản để học sinh giải thích.
+                          </span>
+                        </li>
+                        <li className="flex gap-3">
+                          <span className="text-slate-400 font-bold">•</span>
+                          <span className="text-sm font-medium text-slate-600">
+                            <span className="font-black text-slate-900">Mức Vận dụng (80-100% ngữ cảnh):</span> Đây là "đất diễn" chính của ngữ cảnh. Học sinh phải dùng kiến thức để giải quyết một vấn đề cụ thể trong tình huống đó.
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                    
+                    <p className="text-sm font-bold text-slate-400 italic">- Nếu không chọn “ngữ cảnh”, hệ thống soạn đề như trước đây.</p>
                   </div>
                 </section>
               </div>
 
               <button 
                 onClick={handleCloseUpdateModal}
-                className="w-full mt-8 py-4 bg-blue-600 text-yellow-400 rounded-xl font-black uppercase tracking-widest hover:bg-blue-700 transition-all shadow-lg active:scale-95 text-base"
+                className="w-full mt-12 py-5 bg-blue-600 text-yellow-400 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-700 transition-all shadow-xl shadow-blue-100 active:scale-95 text-lg"
               >
                 TÔI HIỂU
               </button>
