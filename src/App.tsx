@@ -2628,6 +2628,7 @@ export default function App() {
                     <p>- Ứng dụng thiết kế với 4 loại câu: MCQ, TF, SA và TL</p>
                     <p>- Thầy cô chọn lại Số câu, điểm/câu cho từng loại. Nếu không sử dụng loại câu nào thì đặt số câu loại đó là 0</p>
                     <p>- AI đề xuất sẵn các nội dung cốt lõi, thầy cô có thể xóa/thêm bài học. Trong trường hợp AI không đề xuất hoặc sai tên bài, hãy nhấn "Tải lại bằng AI"</p>
+                    <p>- Sau mỗi tên bài, thầy cô có thể bấm chọn nút "Ngữ cảnh" để AI ra câu hỏi tình huống cho bài đó.</p>
                   </div>
                 </section>
               </div>
