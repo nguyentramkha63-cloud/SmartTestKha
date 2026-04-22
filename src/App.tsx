@@ -2674,7 +2674,7 @@ export default function App() {
                   </p>
                   <p className="text-[16px] text-blue-800 mt-2 leading-relaxed italic">
                     - Hiện tại, ứng dụng tập trung vào bộ sách KNTT là chủ yếu và Phù hợp với một số GV, chưa mang "chất" chung của cộng đồng và còn nhiều hạn chế.<br />
-                    - Xin thầy cô góp ý qua zalo t/g để cải thiện ứng dụng. Trân trọng cám ơn!
+                    - Xin thầy cô góp ý qua zalo t/g: 0917.548.463 để cải thiện ứng dụng. Trân trọng cám ơn!
                   </p>
                 </div>
               </div>
