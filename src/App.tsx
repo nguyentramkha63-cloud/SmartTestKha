@@ -2664,7 +2664,7 @@ export default function App() {
                   <h4 className="text-[18px] font-bold text-emerald-900 mb-2">Một số Lưu ý khác:</h4>
                   <ul className="text-[16px] text-emerald-800 space-y-2 leading-relaxed italic">
                     <li>- Thầy cô có thể <strong>Lưu</strong> trạng thái đang làm việc thành file <strong>.json</strong> và <strong>Mở</strong> lại sau này để tiếp tục chỉnh sửa mà không mất dữ liệu.</li>
-                    <li>- Trong các file word đề, nếu có sử dụng biểu thức toán thì phần này sẽ nằm trong <strong>$...$</strong> và có màu xanh ngọc. Thầy cô có thể chọn từng nội dung hoặc tất cả và chuyển sang thẻ <strong>MathType</strong>, bấm tổ hợp <strong>"Alt+\"</strong> để chuyển sang dạng chuẩn SGK.</li>
+                    <li>- Trong các file word đề, nếu có sử dụng biểu thức toán thì phần này sẽ nằm trong <strong>$...$</strong> và có màu xanh ngọc. Thầy cô có thể chọn từng nội dung hoặc tất cả và chuyển sang thẻ <strong>MathType</strong>, bấm tổ hợp <strong>"Alt+\"</strong> để chuyển sang dạng chuẩn SGK. Một số trường hợp "văn bản thuần túy" nằm trong cặp <strong>$...$</strong> khi chuyển sang MathType sẽ bị lỗi, thầy cô thêm $ vào vị trí thích hợp. VD: <strong>$y=x^2+3x và hàm số y=x+2$</strong>, thầy cô sửa thành: <strong>$y=x^2+3x$</strong> và hàm số <strong>$y=x+2$</strong></li>
                   </ul>
                 </div>
 
@@ -2878,7 +2878,7 @@ export default function App() {
               SmartTest AI <span className="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded-full border border-green-200">PRO</span>
             </h1>
             <div className="text-emerald-900 mt-2 text-xs font-bold uppercase tracking-tight">
-              Giải pháp thông minh KTĐG cho Giáo dục 4.0
+              Trợ lý soạn đề thông minh - từ lớp 6 đến 12
             </div>
           </div>
         </div>
@@ -4606,7 +4606,7 @@ export default function App() {
                       </ul>
                     </div>
                     
-                    <p className="text-sm font-bold text-slate-400 italic">- Nếu không chọn “ngữ cảnh”, hệ thống soạn đề như trước đây.</p>
+                    <p className="text-sm font-bold text-red-600 italic">- Nếu không chọn “ngữ cảnh”, hệ thống soạn đề như trước đây.</p>
                   </div>
                 </section>
               </div>
