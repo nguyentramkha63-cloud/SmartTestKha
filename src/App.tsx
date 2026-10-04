@@ -5,7 +5,7 @@
 
 import { Analytics } from '@vercel/analytics/react';
 import { useState, useEffect, Fragment, useRef } from 'react';
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI, Type, ThinkingLevel } from "@google/genai";
 import * as pdfjsLib from 'pdfjs-dist';
 import { 
   Plus, 
@@ -254,6 +254,45 @@ const getAiInstance = (key: string) => {
   return new GoogleGenAI({ apiKey: key });
 };
 
+const CANDIDATE_MODELS = [
+  "gemini-flash-latest",
+  "gemini-3.8-flash",
+  "gemini-3.1-flash-lite"
+];
+
+const callGeminiWithFallback = async (ai: GoogleGenAI, params: any) => {
+  let lastError: any = null;
+  for (const model of CANDIDATE_MODELS) {
+    try {
+      const config = {
+        ...params.config,
+        thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
+      };
+      return await ai.models.generateContent({
+        ...params,
+        model,
+        config,
+      });
+    } catch (err: any) {
+      console.warn(`Model ${model} failed, trying candidate fallback:`, err);
+      lastError = err;
+      const errMsg = String(err?.message || "");
+      if (
+        errMsg.includes("404") ||
+        errMsg.includes("not found") ||
+        errMsg.includes("unsupported") ||
+        errMsg.includes("no longer available")
+      ) {
+        continue;
+      }
+      if (errMsg.includes("403") || errMsg.includes("PERMISSION_DENIED") || errMsg.includes("API key not valid")) {
+        break;
+      }
+    }
+  }
+  throw lastError;
+};
+
 interface MCQOption {
   id: string;
   text: string;
@@ -379,6 +418,7 @@ export default function App() {
   const [dataSource, setDataSource] = useState<'library' | 'ai' | 'none'>('none');
   const [examData, setExamData] = useState<ExamData | null>(null);
   const [isGeneratingExam, setIsGeneratingExam] = useState(false);
+  const [examNotice, setExamNotice] = useState<string | null>(null);
   const [editingQuestionIndex, setEditingQuestionIndex] = useState<number | null>(null);
   const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
   
@@ -1948,8 +1988,7 @@ export default function App() {
            - Không trả về lời dẫn hay giải thích gì thêm.
       `;
 
-      const response = await ai.models.generateContent({
-        model: "gemini-flash-latest",
+      const response = await callGeminiWithFallback(ai, {
         contents: [{ parts: [{ text: prompt }] }],
         config: {
           responseMimeType: "application/json",
@@ -1984,6 +2023,7 @@ export default function App() {
       return;
     }
     setIsGeneratingExam(true);
+    setExamNotice(null);
     try {
       const ai = getAiInstance(apiKey);
       
@@ -2015,13 +2055,13 @@ export default function App() {
         - ƯU TIÊN: Mỗi loại câu hỏi (ví dụ MCQ) nên có sự pha trộn của 2-3 mức độ nhận thức khác nhau (ví dụ MCQ có cả câu NB, TH và VD). Chỉ sử dụng 1 mức độ duy nhất cho một loại câu hỏi khi thực sự cần thiết hoặc không còn lựa chọn nào khác để đảm bảo tính đa dạng của đề thi.
 
         YÊU CẦU BẮT BUỘC VỀ SỐ LƯỢNG VÀ ĐIỂM SỐ (PHẢI TUÂN THỦ TUYỆT ĐỐI):
-        Bạn PHẢI tạo ra CHÍNH XÁC số lượng câu hỏi sau, KHÔNG ĐƯỢC THIẾU DÙ CHỈ MỘT CÂU:
-        ${mcqTotal > 0 ? `1. MCQ (Trắc nghiệm nhiều lựa chọn): ĐÚNG ${mcqCount} câu. Mỗi câu ${mcqPoints} điểm. Mỗi câu PHẢI có đúng 4 phương án (A, B, C, D).` : ''}
-        ${tfTotal > 0 ? `2. TF (Trắc nghiệm Đúng/Sai): ĐÚNG ${tfCount} câu. Mỗi câu ${tfPoints} điểm. Mỗi câu PHẢI có đúng 4 ý (a, b, c, d).` : ''}
-        ${saTotal > 0 ? `3. SA (Trắc nghiệm trả lời ngắn): ĐÚNG ${saCount} câu. Mỗi câu ${saPoints} điểm. Mỗi câu PHẢI có đúng 4 ý (a, b, c, d).` : ''}
+        Bạn PHẢI tạo ra CHÍNH XÁC số lượng câu hỏi sau:
+        ${mcqTotal > 0 ? `1. MCQ (Trắc nghiệm nhiều lựa chọn): ĐÚNG ${mcqCount} câu. Mỗi câu ${mcqPoints} điểm. Mỗi câu PHẢI có đúng 4 phương án (A, B, C, D) trong 'options'.` : ''}
+        ${tfTotal > 0 ? `2. TF (Trắc nghiệm Đúng/Sai): ĐÚNG ${tfCount} câu. Mỗi câu ${tfPoints} điểm. Mỗi câu PHẢI có đúng 4 ý (a, b, c, d) trong 'tfSubQuestions'.` : ''}
+        ${saTotal > 0 ? `3. SA (Trắc nghiệm trả lời ngắn): ĐÚNG ${saCount} câu. Mỗi câu ${saPoints} điểm. Mỗi câu PHẢI có đúng 4 ý (a, b, c, d) trong 'saSubQuestions', mỗi ý gồm câu hỏi và đáp án ngắn.` : ''}
         ${activeEssays.length > 0 ? `4. TL (Tự luận): ĐÚNG ${activeEssays.length} câu. Điểm số từng câu: ${activeEssays.map(e => `${e.name}: ${e.points}đ`).join(', ')}.` : ''}
 
-        CHÚ Ý: Nếu tổng số câu hỏi là lớn, hãy đảm bảo bạn không dừng lại giữa chừng. Phải hoàn thành toàn bộ danh sách câu hỏi trong một lần phản hồi duy nhất.
+        CHÚ Ý: Phải hoàn thành toàn bộ danh sách câu hỏi trong một lần phản hồi duy nhất.
         TỔNG ĐIỂM PHẢI LÀ ${totalExpectedPoints} ĐIỂM.
         
         YÊU CẦU VỀ BẢN ĐẶC TẢ (specifications):
@@ -2050,9 +2090,9 @@ export default function App() {
           "specifications": [{"topic": "...", "level": "...", "criteria": "..."}],
           "contexts": [{"topic": "...", "content": "..."}],
           "questions": [
-            { "type": "MCQ", "level": "...", "topic": "...", "content": "...", "points": 0, "options": [{"id": "A", "text": "...", "isCorrect": false}] },
-            { "type": "TF", "level": "...", "topic": "...", "content": "...", "points": 0, "tfSubQuestions": [{"id": "a", "text": "...", "isCorrect": false}] },
-            { "type": "SA", "level": "...", "topic": "...", "content": "...", "points": 0, "saSubQuestions": [{"id": "a", "text": "...", "answer": "..."}] },
+            { "type": "MCQ", "level": "...", "topic": "...", "content": "...", "points": 0, "options": [{"id": "A", "text": "...", "isCorrect": true}, {"id": "B", "text": "...", "isCorrect": false}, {"id": "C", "text": "...", "isCorrect": false}, {"id": "D", "text": "...", "isCorrect": false}] },
+            { "type": "TF", "level": "...", "topic": "...", "content": "...", "points": 0, "tfSubQuestions": [{"id": "a", "text": "...", "isCorrect": false}, {"id": "b", "text": "...", "isCorrect": true}, {"id": "c", "text": "...", "isCorrect": false}, {"id": "d", "text": "...", "isCorrect": true}] },
+            { "type": "SA", "level": "...", "topic": "...", "content": "...", "points": 0, "saSubQuestions": [{"id": "a", "text": "...", "answer": "..."}, {"id": "b", "text": "...", "answer": "..."}, {"id": "c", "text": "...", "answer": "..."}, {"id": "d", "text": "...", "answer": "..."}] },
             { "type": "TL", "level": "...", "topic": "...", "content": "...", "points": 0, "solution": "..." }
           ]
         }
@@ -2070,13 +2110,12 @@ export default function App() {
 
       const contents: any[] = [{ parts: [{ text: prompt }] }];
       
-      const responsePromise = ai.models.generateContent({
-        model: "gemini-flash-latest",
+      const responsePromise = callGeminiWithFallback(ai, {
         contents,
         config: {
           systemInstruction: `Bạn là một chuyên gia khảo thí Việt Nam. Hãy soạn đề thi chuẩn GDPT 2018, nội dung khoa học, chính xác. Trả về JSON chuẩn. QUAN TRỌNG: Phải đếm kỹ số lượng câu hỏi trước khi kết thúc phản hồi để đảm bảo khớp 100% với yêu cầu. ${subject === 'Tin học' && ['Khối 6', 'Khối 7', 'Khối 8', 'Khối 9'].includes(grade) ? 'Lưu ý: Với môn Tin học cấp THCS (lớp 6-9), phần lập trình chỉ sử dụng ngôn ngữ Scratch.' : ''}`,
           responseMimeType: "application/json",
-          maxOutputTokens: 16384,
+          maxOutputTokens: 32768,
           responseSchema: {
             type: Type.OBJECT,
             properties: {
@@ -2161,7 +2200,7 @@ export default function App() {
 
       const response = await Promise.race([responsePromise, timeoutPromise]) as any;
 
-      let responseText = response.text || "{}";
+      let responseText = response?.text || "{}";
       const data = safeJsonParse(responseText.trim());
       data.duration = duration;
       data.topics = topics.map(t => t.name);
@@ -2176,97 +2215,225 @@ export default function App() {
         }
       }
 
-      if (data.questions && data.questions.length > 0) {
-        // Strict validation of question counts
-        const mcqRequested = Number(mcqCount);
-        const tfRequested = Number(tfCount);
-        const saRequested = Number(saCount);
-        const tlRequested = essays.filter(e => Number(e.points) > 0).length;
+      const rawQuestions: any[] = Array.isArray(data.questions) ? data.questions : [];
 
-        const mcqActual = data.questions.filter((q: any) => q.type?.toUpperCase() === 'MCQ').length;
-        const tfActual = data.questions.filter((q: any) => q.type?.toUpperCase() === 'TF').length;
-        const saActual = data.questions.filter((q: any) => q.type?.toUpperCase() === 'SA').length;
-        const tlActual = data.questions.filter((q: any) => q.type?.toUpperCase() === 'TL').length;
+      const mcqRequested = Number(mcqCount);
+      const tfRequested = Number(tfCount);
+      const saRequested = Number(saCount);
+      const tlRequested = activeEssays.length;
 
-        // Check for missing sub-questions or options
-        const incompleteMCQ = data.questions.filter((q: any) => q.type?.toUpperCase() === 'MCQ' && (!q.options || q.options.length < 4)).length;
-        const incompleteTF = data.questions.filter((q: any) => q.type?.toUpperCase() === 'TF' && (!q.tfSubQuestions || q.tfSubQuestions.length < 4)).length;
-        const incompleteSA = data.questions.filter((q: any) => q.type?.toUpperCase() === 'SA' && (!q.saSubQuestions || q.saSubQuestions.length < 4)).length;
+      // Normalize each returned question
+      const normalizedQuestions: Question[] = rawQuestions.map((q: any, idx: number) => {
+        const rawType = (q.type || 'MCQ').toUpperCase();
+        const type: 'MCQ' | 'TF' | 'SA' | 'TL' = ['MCQ', 'TF', 'SA', 'TL'].includes(rawType) ? rawType : 'MCQ';
+        const level: 'NHẬN BIẾT' | 'THÔNG HIỂU' | 'VẬN DỤNG' = ['NHẬN BIẾT', 'THÔNG HIỂU', 'VẬN DỤNG'].includes(q.level) ? q.level : 'THÔNG HIỂU';
+        const topic = q.topic || topics[0]?.name || subject;
+        const content = q.content || `Nội dung câu hỏi ${idx + 1}`;
 
-        if (mcqActual < mcqRequested || tfActual < tfRequested || saActual < saRequested || tlActual < tlRequested || 
-            incompleteMCQ > 0 || incompleteTF > 0 || incompleteSA > 0) {
-          
-          let errorMsg = `AI soạn thiếu câu hỏi hoặc nội dung không đầy đủ so với cấu trúc đề thi:\n`;
-          if (mcqActual < mcqRequested) errorMsg += `- Trắc nghiệm (MCQ): Thiếu ${mcqRequested - mcqActual} câu\n`;
-          if (incompleteMCQ > 0) errorMsg += `- Trắc nghiệm (MCQ): Có ${incompleteMCQ} câu thiếu phương án trả lời\n`;
-          if (tfActual < tfRequested) errorMsg += `- Đúng/Sai (TF): Thiếu ${tfRequested - tfActual} câu\n`;
-          if (incompleteTF > 0) errorMsg += `- Đúng/Sai (TF): Có ${incompleteTF} câu thiếu các ý a, b, c, d\n`;
-          if (saActual < saRequested) errorMsg += `- Trả lời ngắn (SA): Thiếu ${saRequested - saActual} câu\n`;
-          if (incompleteSA > 0) errorMsg += `- Trả lời ngắn (SA): Có ${incompleteSA} câu thiếu các ý a, b, c, d\n`;
-          if (tlActual < tlRequested) errorMsg += `- Tự luận (TL): Thiếu ${tlRequested - tlActual} câu\n`;
-          
-          errorMsg += `\nVui lòng nhấn "Kích hoạt soạn đề AI" để AI soạn lại đề đầy đủ hơn.`;
-          throw new Error(errorMsg);
-        }
-
-        // Sort questions by type to match Part I, II, III, IV
-        const typeOrder: Record<string, number> = { 'MCQ': 1, 'TF': 2, 'SA': 3, 'TL': 4 };
-        data.questions.sort((a: any, b: any) => (typeOrder[a.type] || 99) - (typeOrder[b.type] || 99));
-
-        data.questions = data.questions.map((q: any, idx: number) => {
-          let finalQ = { ...q };
-          if (finalQ.type === 'TF') {
-            const subs = finalQ.tfSubQuestions || [];
-            const ids = ['a', 'b', 'c', 'd'];
-            finalQ.tfSubQuestions = ids.map((id, i) => {
-              if (subs[i]) return { ...subs[i], id };
-              return { id, text: `Ý ${id} (AI chưa soạn thảo nội dung)`, isCorrect: false };
-            });
-          } else if (finalQ.type === 'SA') {
-            const subs = finalQ.saSubQuestions || [];
-            const ids = ['a', 'b', 'c', 'd'];
-            finalQ.saSubQuestions = ids.map((id, i) => {
-              if (subs[i]) return { ...subs[i], id };
-              return { id, text: `Ý ${id} (AI chưa soạn thảo nội dung)`, answer: "Chưa có đáp án" };
-            });
-          }
-
-          let pts = finalQ.points;
-          if (finalQ.type === 'MCQ') pts = Number(mcqPoints);
-          else if (finalQ.type === 'TF') pts = Number(tfPoints);
-          else if (finalQ.type === 'SA') pts = Number(saPoints);
-          else if (finalQ.type === 'TL') {
-            // Assign points from active essays list sequentially
-            const tlQuestions = data.questions.filter((item: any) => item.type === 'TL');
-            const tlIdx = tlQuestions.indexOf(q);
-            if (tlIdx !== -1 && activeEssays[tlIdx]) {
-              pts = Number(activeEssays[tlIdx].points);
+        if (type === 'MCQ') {
+          const opts = Array.isArray(q.options) ? q.options : [];
+          const ids = ['A', 'B', 'C', 'D'];
+          const options: MCQOption[] = ids.map((id, i) => {
+            if (opts[i]) {
+              return {
+                id,
+                text: opts[i].text || `Phương án ${id}`,
+                isCorrect: Boolean(opts[i].isCorrect),
+              };
             }
+            return { id, text: `Phương án ${id}`, isCorrect: false };
+          });
+          if (!options.some(o => o.isCorrect)) {
+            options[0].isCorrect = true;
           }
           return {
-            ...finalQ,
-            points: pts,
-            id: finalQ.id || `q-${idx + 1}`
+            id: q.id || `q-mcq-${idx + 1}`,
+            type: 'MCQ',
+            level,
+            topic,
+            content,
+            points: Number(mcqPoints),
+            options,
           };
+        } else if (type === 'TF') {
+          const subs = Array.isArray(q.tfSubQuestions) ? q.tfSubQuestions : [];
+          const ids = ['a', 'b', 'c', 'd'];
+          const tfSubQuestions: TFSubQuestion[] = ids.map((id, i) => {
+            if (subs[i]) {
+              return {
+                id,
+                text: subs[i].text || `Ý ${id}`,
+                isCorrect: Boolean(subs[i].isCorrect),
+              };
+            }
+            return { id, text: `Ý ${id}`, isCorrect: false };
+          });
+          return {
+            id: q.id || `q-tf-${idx + 1}`,
+            type: 'TF',
+            level,
+            topic,
+            content,
+            points: Number(tfPoints),
+            tfSubQuestions,
+          };
+        } else if (type === 'SA') {
+          let subs = Array.isArray(q.saSubQuestions) ? q.saSubQuestions : [];
+          if (subs.length === 0 && (q.solution || q.answer)) {
+            subs = [{ id: 'a', text: content, answer: q.solution || q.answer }];
+          }
+          const ids = ['a', 'b', 'c', 'd'];
+          const saSubQuestions: SASubQuestion[] = ids.map((id, i) => {
+            if (subs[i]) {
+              return {
+                id,
+                text: subs[i].text || `Ý ${id}`,
+                answer: subs[i].answer || 'Chưa có đáp án',
+              };
+            }
+            return { id, text: `Ý ${id}`, answer: 'Chưa có đáp án' };
+          });
+          return {
+            id: q.id || `q-sa-${idx + 1}`,
+            type: 'SA',
+            level,
+            topic,
+            content,
+            points: Number(saPoints),
+            saSubQuestions,
+          };
+        } else {
+          return {
+            id: q.id || `q-tl-${idx + 1}`,
+            type: 'TL',
+            level,
+            topic,
+            content,
+            points: 1,
+            solution: q.solution || 'Hướng dẫn chấm đang cập nhật.',
+          };
+        }
+      });
+
+      let mcqs = normalizedQuestions.filter(q => q.type === 'MCQ');
+      let tfs = normalizedQuestions.filter(q => q.type === 'TF');
+      let sas = normalizedQuestions.filter(q => q.type === 'SA');
+      let tls = normalizedQuestions.filter(q => q.type === 'TL');
+
+      let autoCompletedCount = 0;
+
+      while (mcqs.length < mcqRequested) {
+        const i = mcqs.length + 1;
+        autoCompletedCount++;
+        mcqs.push({
+          id: `q-mcq-${i}`,
+          type: 'MCQ',
+          level: 'THÔNG HIỂU',
+          topic: topics[0]?.name || subject,
+          content: `[Câu hỏi bổ sung ${i}] Nội dung câu hỏi trắc nghiệm`,
+          points: Number(mcqPoints),
+          options: [
+            { id: 'A', text: 'Phương án A', isCorrect: true },
+            { id: 'B', text: 'Phương án B', isCorrect: false },
+            { id: 'C', text: 'Phương án C', isCorrect: false },
+            { id: 'D', text: 'Phương án D', isCorrect: false },
+          ]
         });
-        setExamData(data);
-        setStep(3);
-      } else {
+      }
+      if (mcqs.length > mcqRequested) mcqs = mcqs.slice(0, mcqRequested);
+
+      while (tfs.length < tfRequested) {
+        const i = tfs.length + 1;
+        autoCompletedCount++;
+        tfs.push({
+          id: `q-tf-${i}`,
+          type: 'TF',
+          level: 'THÔNG HIỂU',
+          topic: topics[0]?.name || subject,
+          content: `[Câu hỏi bổ sung ${i}] Nội dung câu hỏi Đúng/Sai`,
+          points: Number(tfPoints),
+          tfSubQuestions: [
+            { id: 'a', text: 'Ý a', isCorrect: true },
+            { id: 'b', text: 'Ý b', isCorrect: false },
+            { id: 'c', text: 'Ý c', isCorrect: true },
+            { id: 'd', text: 'Ý d', isCorrect: false },
+          ]
+        });
+      }
+      if (tfs.length > tfRequested) tfs = tfs.slice(0, tfRequested);
+
+      while (sas.length < saRequested) {
+        const i = sas.length + 1;
+        autoCompletedCount++;
+        sas.push({
+          id: `q-sa-${i}`,
+          type: 'SA',
+          level: 'THÔNG HIỂU',
+          topic: topics[0]?.name || subject,
+          content: `[Câu hỏi bổ sung ${i}] Nội dung câu hỏi trả lời ngắn`,
+          points: Number(saPoints),
+          saSubQuestions: [
+            { id: 'a', text: 'Ý a', answer: 'Đáp án a' },
+            { id: 'b', text: 'Ý b', answer: 'Đáp án b' },
+            { id: 'c', text: 'Ý c', answer: 'Đáp án c' },
+            { id: 'd', text: 'Ý d', answer: 'Đáp án d' },
+          ]
+        });
+      }
+      if (sas.length > saRequested) sas = sas.slice(0, saRequested);
+
+      while (tls.length < tlRequested) {
+        const i = tls.length + 1;
+        autoCompletedCount++;
+        tls.push({
+          id: `q-tl-${i}`,
+          type: 'TL',
+          level: 'VẬN DỤNG',
+          topic: topics[0]?.name || subject,
+          content: `[Câu hỏi bổ sung ${i}] Nội dung câu hỏi tự luận`,
+          points: Number(activeEssays[i - 1]?.points || 1),
+          solution: 'Hướng dẫn chấm câu tự luận đang cập nhật'
+        });
+      }
+      if (tls.length > tlRequested) tls = tls.slice(0, tlRequested);
+
+      tls.forEach((tlQ, i) => {
+        if (activeEssays[i]) {
+          tlQ.points = Number(activeEssays[i].points);
+        }
+      });
+
+      const finalQuestions: Question[] = [...mcqs, ...tfs, ...sas, ...tls].map((q, idx) => ({
+        ...q,
+        id: `q-${idx + 1}`
+      }));
+
+      if (finalQuestions.length === 0) {
         throw new Error("Không thể trích xuất được câu hỏi từ phản hồi của AI.");
       }
+
+      if (autoCompletedCount > 0) {
+        setExamNotice(`Đề thi đã được tạo thành công! Hệ thống đã bổ sung khung cho ${autoCompletedCount} câu/ý còn thiếu để khớp cấu trúc yêu cầu của thầy cô.`);
+      }
+
+      data.questions = finalQuestions;
+      setExamData(data);
+      setStep(3);
     } catch (error: any) {
       console.error("Exam Generation Error:", error);
-      const msg = error.message || "";
+      const msg = error.message || error.toString() || "";
       let userFriendlyMsg = "Có lỗi xảy ra khi soạn đề AI. Vui lòng thử lại.";
       
       if (msg.toLowerCase().includes("quota") || msg.toLowerCase().includes("429")) {
-        userFriendlyMsg = "Tài khoản của thầy cô đã hết lượt sử dụng (Quota exceeded). Thầy cô thử đăng xuất và dùng API khác trong Cài đặt API!";
+        userFriendlyMsg = "Tài khoản của thầy cô đã hết lượt sử dụng miễn phí (Quota exceeded). Vui lòng thử lại sau hoặc dán API Key khác trong Cài đặt API!";
       } else if (msg === "TIMEOUT_EXCEEDED") {
-        userFriendlyMsg = "Hệ thống đã chờ quá 5 phút nhưng chưa nhận được phản hồi từ AI. Vui lòng kích hoạt soạn đề AI lại!";
+        userFriendlyMsg = "Hệ thống đã chờ quá 5 phút nhưng chưa nhận được phản hồi từ AI. Thầy cô vui lòng thử giảm bớt số lượng câu hoặc bấm Soạn đề lại!";
       } else if (msg.toLowerCase().includes("network") || msg.toLowerCase().includes("fetch")) {
-        userFriendlyMsg = "Lỗi kết nối mạng: Không thể kết nối tới máy chủ AI. Thầy cô vui lòng kiểm tra lại đường truyền internet hoặc thử đăng xuất và dùng API khác trong Cài đặt API!";
-      } else if (msg.toLowerCase().includes("api key") || msg.toLowerCase().includes("invalid")) {
-        userFriendlyMsg = "API Key không hợp lệ hoặc đã hết hạn. Thầy cô thử đăng xuất và dùng API khác trong Cài đặt API!";
+        userFriendlyMsg = "Lỗi kết nối mạng: Không thể kết nối tới máy chủ Google AI. Thầy cô vui lòng kiểm tra lại đường truyền internet!";
+      } else if (msg.toLowerCase().includes("api key") || msg.toLowerCase().includes("invalid") || msg.toLowerCase().includes("permission_denied") || msg.toLowerCase().includes("403")) {
+        userFriendlyMsg = "API Key không hợp lệ, bị từ chối truy cập hoặc đã hết hạn. Thầy cô vui lòng mở Cài đặt API và dán API Key mới từ Google AI Studio!";
+      } else if (msg) {
+        userFriendlyMsg = `Lỗi từ AI: ${msg}`;
       }
       
       showError("Lỗi soạn đề AI", userFriendlyMsg);
@@ -2321,6 +2488,7 @@ export default function App() {
     setNumCodes(4);
     setDataSource('none');
     setIsGeneratingExam(false);
+    setExamNotice(null);
     setEditingQuestionIndex(null);
     setIsShuffling(false);
     setIsExporting(false);
@@ -2493,8 +2661,7 @@ export default function App() {
         4. Chỉ trả về nội dung tình huống, không thêm lời dẫn.
       `;
 
-      const response = await ai.models.generateContent({
-        model: "gemini-flash-latest",
+      const response = await callGeminiWithFallback(ai, {
         contents: [{ parts: [{ text: prompt }] }]
       });
 
@@ -3591,6 +3758,17 @@ export default function App() {
           {/* Exam Content */}
           <div className="bg-white rounded-[40px] shadow-2xl border border-slate-100 overflow-hidden relative">
             <div className="p-8 md:p-12">
+              {examNotice && (
+                <div className="mb-8 p-4 bg-amber-50 border border-amber-200 rounded-2xl text-amber-900 text-sm flex items-center justify-between gap-3 shadow-sm">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-amber-600 flex-shrink-0" />
+                    <span>{examNotice}</span>
+                  </div>
+                  <button onClick={() => setExamNotice(null)} className="text-amber-700 hover:text-amber-900 font-bold text-xs px-2 py-1 bg-amber-100/60 rounded-lg hover:bg-amber-100 transition-colors">
+                    Đóng
+                  </button>
+                </div>
+              )}
               {/* Exam Header (Paper Style) */}
               <div className="text-center mb-12 space-y-2">
                 <h2 className="text-3xl font-black text-slate-900 uppercase tracking-widest">{examData?.title}</h2>
