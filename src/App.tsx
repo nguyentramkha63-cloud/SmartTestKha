@@ -761,8 +761,8 @@ export default function App() {
           children: [
             new TextRun({
               text: isFullExport 
-                ? `Hồ sơ đề ${data.title} - ${data.subject} ${data.grade} - Năm học: 2025 – 2026 ---- trang `
-                : `Đề ${data.title} môn ${data.subject} lớp ${data.grade.replace(/[^0-9]/g, '')} Năm học: 2025 - 2026 - Mã đề ${data.code} trang `,
+                ? `Hồ sơ đề ${data.title} - ${data.subject} ${data.grade} - Năm học: 2026 – 2027 ---- trang `
+                : `Đề ${data.title} môn ${data.subject} lớp ${data.grade.replace(/[^0-9]/g, '')} Năm học: 2026 - 2027 - Mã đề ${data.code} trang `,
               italics: true,
               size: 20,
             }),
@@ -1208,7 +1208,7 @@ export default function App() {
                       }),
                       new Paragraph({
                         alignment: AlignmentType.CENTER,
-                        children: [new TextRun({ text: "NĂM HỌC 2025 - 2026", bold: true, size: 24 })],
+                        children: [new TextRun({ text: "NĂM HỌC 2026 - 2027", bold: true, size: 24 })],
                       }),
                     ],
                   }),
@@ -2711,10 +2711,14 @@ export default function App() {
 
   const books = [
     'Kết nối tri thức với cuộc sống',
-    'Cánh diều',
-    'Chân trời sáng tạo',
     'Khác'
   ];
+
+  useEffect(() => {
+    if (bookSeries === 'Cánh diều' || bookSeries === 'Chân trời sáng tạo') {
+      setBookSeries('Kết nối tri thức với cuộc sống');
+    }
+  }, [bookSeries]);
 
   const subSubjectsMap: Record<string, string[]> = {
     'Tin học': ['Tin học ứng dụng ICT', 'Khoa học máy tính CS'],
@@ -4733,17 +4737,10 @@ export default function App() {
               
               <div className="space-y-8 text-slate-700 leading-relaxed">
                 <section>
-                  <h3 className="font-black text-lg text-slate-900 mb-3">1. Cập nhật vào thư viện đầy đủ tên các bài học môn Tin học 6 - 9 bộ sách Cánh Diều</h3>
-                  <ul className="space-y-2 ml-4">
-                    <li className="flex gap-2 font-medium text-slate-600">
-                      <span>-</span>
-                      <span>Bộ sách KNTT: đã có tên bài học các môn ra đề trong ứng dụng</span>
-                    </li>
-                    <li className="flex gap-2 font-medium text-slate-600">
-                      <span>-</span>
-                      <span>Bộ sách Cánh diều: chỉ có tên bài học môn Tin học 6 - 9.</span>
-                    </li>
-                  </ul>
+                  <h3 className="font-black text-lg text-slate-900 mb-3">1. Thống nhất sử dụng bộ sách Kết nối tri thức với cuộc sống (KNTT)</h3>
+                  <div className="ml-4 space-y-1 font-medium text-slate-600">
+                    <p>Từ năm học 2026-2027, ứng dụng mặc định sử dụng bộ sách Kết nối tri thức với cuộc sống và đã tích hợp đầy đủ thư viện tên bài học chuẩn cho tất cả các môn học.</p>
+                  </div>
                 </section>
 
                 <section>
