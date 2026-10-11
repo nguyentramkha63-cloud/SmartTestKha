@@ -40,9 +40,14 @@ import {
   Eye,
   Sigma,
   Coffee,
-  Zap
+  Zap,
+  Globe,
+  AlertTriangle,
+  Upload
 } from 'lucide-react';
 import { motion } from 'motion/react';
+import OnlineExamView from './components/OnlineExamView';
+import { UploadExamModal } from './components/UploadExamModal';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
@@ -293,66 +298,23 @@ const callGeminiWithFallback = async (ai: GoogleGenAI, params: any) => {
   throw lastError;
 };
 
-interface MCQOption {
-  id: string;
-  text: string;
-  isCorrect: boolean;
-  isLocked?: boolean;
-  imageUrl?: string;
-}
+import type {
+  MCQOption,
+  TFSubQuestion,
+  SASubQuestion,
+  Question,
+  Specification,
+  ExamData
+} from './types';
 
-interface TFSubQuestion {
-  id: string;
-  text: string;
-  isCorrect: boolean;
-  isLocked?: boolean;
-  imageUrl?: string;
-}
-
-interface SASubQuestion {
-  id: string;
-  text: string;
-  answer: string;
-  isLocked?: boolean;
-  imageUrl?: string;
-}
-
-interface Question {
-  id: string;
-  type: 'MCQ' | 'TF' | 'SA' | 'TL';
-  level?: 'NHẬN BIẾT' | 'THÔNG HIỂU' | 'VẬN DỤNG';
-  topic?: string;
-  content: string;
-  points?: number;
-  options?: MCQOption[]; // For MCQ
-  tfSubQuestions?: TFSubQuestion[]; // For TF
-  saSubQuestions?: SASubQuestion[]; // For SA
-  solution?: string; // For TL
-  isLocked?: boolean;
-  imageUrl?: string;
-  imageWidth?: number;
-  imageHeight?: number;
-}
-
-interface Specification {
-  topic: string;
-  level: 'NHẬN BIẾT' | 'THÔNG HIỂU' | 'VẬN DỤNG';
-  criteria: string;
-}
-
-interface ExamData {
-  title: string;
-  subject: string;
-  grade: string;
-  duration: number | string;
-  bookSeries: string;
-  questions: Question[];
-  topics: string[];
-  specifications?: Specification[];
-  code?: string;
-  isSimpleExport?: boolean;
-  contexts?: { topic: string; content: string }[];
-}
+export type {
+  MCQOption,
+  TFSubQuestion,
+  SASubQuestion,
+  Question,
+  Specification,
+  ExamData
+};
 
 const getRomanSection = (type: string, allQuestions: Question[]) => {
   const activeTypes = ['MCQ', 'TF', 'SA', 'TL'].filter(t => allQuestions.some(q => q.type === t));
@@ -379,13 +341,48 @@ export default function App() {
   const [showGuide, setShowGuide] = useState(false);
   const [tempApiKey, setTempApiKey] = useState('');
 
+  // Detect Student Mode from URL (QR code scan, direct room link, or dedicated student paths /join, /student)
+  const [isDirectStudentPortal, setIsDirectStudentPortal] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    const path = window.location.pathname.toLowerCase();
+    return path.startsWith('/join') || path.startsWith('/student');
+  });
+  const [isStudentMode, setIsStudentMode] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    const path = window.location.pathname.toLowerCase();
+    const isStudentPath = path.startsWith('/join') || path.startsWith('/student');
+    const params = new URLSearchParams(window.location.search);
+    return isStudentPath || params.get('student') === 'true' || Boolean(params.get('room'));
+  });
+  const [targetRoomCode, setTargetRoomCode] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null;
+    const params = new URLSearchParams(window.location.search);
+    return params.get('room');
+  });
+
+  useEffect(() => {
+    const handleUrlCheck = () => {
+      const path = window.location.pathname.toLowerCase();
+      const isStudentPath = path.startsWith('/join') || path.startsWith('/student');
+      const params = new URLSearchParams(window.location.search);
+      const isStu = isStudentPath || params.get('student') === 'true' || Boolean(params.get('room'));
+      setIsDirectStudentPortal(isStudentPath);
+      setIsStudentMode(isStu);
+      setTargetRoomCode(params.get('room'));
+    };
+    window.addEventListener('popstate', handleUrlCheck);
+    return () => window.removeEventListener('popstate', handleUrlCheck);
+  }, []);
+
   const [step, setStep] = useState(1);
   const [maxStepReached, setMaxStepReached] = useState(1);
+  const stepButtonRefs = useRef<Record<number, HTMLButtonElement | null>>({});
 
   useEffect(() => {
     if (step > maxStepReached) {
       setMaxStepReached(step);
     }
+    stepButtonRefs.current[step]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
   }, [step, maxStepReached]);
   const [level, setLevel] = useState('vừa-phải');
   const [knowledge, setKnowledge] = useState(40);
@@ -428,8 +425,12 @@ export default function App() {
   const [isShuffling, setIsShuffling] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [masterExamData, setMasterExamData] = useState<ExamData | null>(null);
+  const [onlineExam, setOnlineExam] = useState<(ExamData & { code?: string }) | null>(null);
+  const [onlineExamInitialTab, setOnlineExamInitialTab] = useState<'library' | 'room' | 'report' | 'settings'>('library');
+  const [previewModalExam, setPreviewModalExam] = useState<(ExamData & { code?: string }) | null>(null);
   const [showNewConfirm, setShowNewConfirm] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showExternalUploadModal, setShowExternalUploadModal] = useState(false);
   const [visitorCount, setVisitorCount] = useState(1052);
   const [errorModal, setErrorModal] = useState<{ show: boolean; title: string; message: string }>({
     show: false,
@@ -437,15 +438,68 @@ export default function App() {
     message: ''
   });
 
+  const handleExportToOnlineExam = (selectedExam?: ExamData & { code?: string }) => {
+    const examToUse = selectedExam || (shuffledExams.length > 0 ? shuffledExams[0] : examData);
+    if (!examToUse) {
+      showError("Chưa có đề thi", "Vui lòng hoàn thành việc tạo đề thi trước khi xuất đề thi online!");
+      return;
+    }
+
+    // Lưu đề vào Thư viện đề trực tuyến (smarttest_exam_library)
+    try {
+      const existingStr = localStorage.getItem('smarttest_exam_library');
+      const library = existingStr ? JSON.parse(existingStr) : [];
+      const newId = 'lib_' + Date.now();
+      const libraryItem = {
+        id: newId,
+        title: examToUse.title || 'Đề thi trực tuyến GDPT 2018',
+        subject: examToUse.subject || subject,
+        grade: examToUse.grade || grade,
+        duration: Number(examToUse.duration) || 45,
+        questionsCount: examToUse.questions?.length || 0,
+        examData: examToUse,
+        allShuffledExams: shuffledExams.length > 0 ? shuffledExams : [examToUse],
+        createdAt: Date.now(),
+        visibility: 'private', // Mặc định là Riêng tư (Bảo mật tuyệt đối cho kỳ thi)
+        author: 'Tôi (Giáo viên)',
+        config: {
+          allowShuffleCodes: true,
+          requireFullscreen: true,
+          detectTabSwitch: true,
+          maxViolations: 3,
+          preventCopyInspect: true,
+          showSolutionsAfterSubmit: true,
+          minSubmitMinutes: 15,
+          maxAttempts: 1
+        },
+        sessions: []
+      };
+      const filtered = library.filter((it: any) => 
+        !(it.title === libraryItem.title && it.subject === libraryItem.subject && it.grade === libraryItem.grade)
+      );
+      const updatedLib = [libraryItem, ...filtered].slice(0, 50);
+      localStorage.setItem('smarttest_exam_library', JSON.stringify(updatedLib));
+    } catch (e) {
+      console.warn('Lỗi lưu vào thư viện đề:', e);
+    }
+
+    setOnlineExam(examToUse);
+    setOnlineExamInitialTab('library');
+    setMaxStepReached(prev => Math.max(prev, 5));
+    setStep(5);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   useEffect(() => {
-    const hasSeenUpdate = localStorage.getItem('has_seen_update_2026_04_07');
+    if (isStudentMode) return;
+    const hasSeenUpdate = localStorage.getItem('has_seen_update_2026_04_08_online_exam_warning');
     if (!hasSeenUpdate) {
       setShowUpdateModal(true);
     }
-  }, []);
+  }, [isStudentMode]);
 
   const handleCloseUpdateModal = () => {
-    localStorage.setItem('has_seen_update_2026_04_07', 'true');
+    localStorage.setItem('has_seen_update_2026_04_08_online_exam_warning', 'true');
     setShowUpdateModal(false);
   };
 
@@ -454,6 +508,7 @@ export default function App() {
   };
 
   useEffect(() => {
+    if (isStudentMode) return;
     const savedKey = localStorage.getItem('gemini_api_key');
     
     if (savedKey && savedKey.trim() !== '') {
@@ -464,7 +519,7 @@ export default function App() {
       // Không tự động điền key từ hệ thống để đảm bảo đồng nghiệp phải dán key của chính họ
       setTempApiKey('');
     }
-  }, []);
+  }, [isStudentMode]);
 
   useEffect(() => {
     if (showApiKeyModal) {
@@ -2489,6 +2544,8 @@ export default function App() {
     setDataSource('none');
     setIsGeneratingExam(false);
     setExamNotice(null);
+    setOnlineExam(null);
+    setPreviewModalExam(null);
     setEditingQuestionIndex(null);
     setIsShuffling(false);
     setIsExporting(false);
@@ -2739,6 +2796,18 @@ export default function App() {
 
   const isHighSchool = ['Khối 10', 'Khối 11', 'Khối 12'].includes(grade);
   const hasSubSubject = (isHighSchool && subSubjectsMap[subject]) || (grade === 'Khối 9' && subject === 'Công nghệ');
+
+  if (isStudentMode) {
+    return (
+      <div className="min-h-screen bg-slate-100 font-sans p-2 sm:p-4 lg:p-6">
+        <OnlineExamView 
+          isStudentOnly={true}
+          isStandaloneStudentPortal={true}
+          defaultRoomCode={targetRoomCode || ''}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen p-1 md:p-2 max-w-7xl mx-auto">
@@ -3049,7 +3118,7 @@ export default function App() {
               SmartTest AI <span className="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded-full border border-green-200">PRO</span>
             </h1>
             <div className="text-emerald-900 mt-2 text-xs font-bold uppercase tracking-tight">
-              Trợ lý soạn đề thông minh - từ lớp 6 đến 12
+              Trợ lý soạn đề 7991 thông minh và Thi online
             </div>
           </div>
         </div>
@@ -3072,47 +3141,71 @@ export default function App() {
             <button onClick={() => setShowGuide(true)} className="btn-outline text-sm bg-blue-600 text-white border-blue-600 hover:bg-blue-700">
               <HelpCircle className="w-4 h-4" /> Hướng dẫn
             </button>
+            <button 
+              onClick={() => setShowUpdateModal(true)} 
+              className="btn-outline text-sm bg-amber-500 hover:bg-amber-600 text-white border-amber-500 font-bold flex items-center gap-1.5 shadow-sm"
+              title="Xem thông báo cập nhật mới và lưu ý quan trọng"
+            >
+              <AlertTriangle className="w-4 h-4" /> Cập nhật mới
+            </button>
 
           </div>
         </div>
       </header>
 
       {/* Navigation Steps */}
-      <div className="flex flex-wrap items-center justify-center gap-2 mb-4">
-        <div className="flex items-center gap-2 bg-white/50 p-1 rounded-2xl border border-slate-100">
-          {[
-            { id: 1, label: 'Cấu hình', icon: Settings },
-            { id: 2, label: 'Ma trận', icon: LayoutGrid },
-            { id: 3, label: 'Xem đề gốc', icon: FileText },
-            { id: 4, label: 'Trộn đề', icon: Shuffle },
-          ].map((s, idx) => {
-            const isClickable = s.id <= maxStepReached;
-            return (
-              <div key={s.id} className="flex items-center gap-2">
-                <button 
-                  onClick={() => isClickable && setStep(s.id)}
-                  disabled={!isClickable}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all ${
-                    step === s.id 
-                      ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20' 
-                      : isClickable 
-                        ? 'text-slate-600 hover:bg-slate-100 cursor-pointer' 
-                        : 'text-slate-300 cursor-not-allowed'
-                  }`}
-                >
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xl ${
-                    step === s.id ? 'bg-white/20' : isClickable ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100'
-                  }`}>
-                    {s.id}
-                  </div>
-                  <div className="flex flex-col text-left">
-                    <span className="text-base font-bold leading-none">{s.label}</span>
-                  </div>
-                </button>
-                {idx < 3 && <div className="w-3 h-px bg-slate-200" />}
-              </div>
-            );
-          })}
+      <div className="w-full mb-4 px-2">
+        <div className="w-full overflow-x-auto no-scrollbar py-1 flex justify-start sm:justify-center">
+          <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-white/90 backdrop-blur-xs p-1.5 rounded-2xl border border-slate-200/80 shadow-xs shrink-0">
+            {[
+              { id: 1, label: 'Cấu hình', icon: Settings },
+              { id: 2, label: 'Ma trận', icon: LayoutGrid },
+              { id: 3, label: 'Xem đề gốc', icon: FileText },
+              { id: 4, label: 'Trộn đề', icon: Shuffle },
+              { id: 5, label: 'Thi online', icon: Globe },
+            ].map((s, idx, arr) => {
+              // Bước 5 luôn ở trạng thái mở để giáo viên có thể vào Thư viện đề & quản lý phòng thi bất cứ lúc nào
+              const isClickable = s.id <= maxStepReached || s.id === 5;
+              return (
+                <div key={s.id} className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                  <button 
+                    ref={el => { stepButtonRefs.current[s.id] = el; }}
+                    onClick={() => {
+                      if (isClickable) {
+                        if (s.id === 5) {
+                          if (!onlineExam && (shuffledExams.length > 0 || examData)) {
+                            handleExportToOnlineExam();
+                          } else {
+                            setStep(5);
+                          }
+                        } else {
+                          setStep(s.id);
+                        }
+                      }
+                    }}
+                    disabled={!isClickable}
+                    className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 rounded-xl transition-all shrink-0 ${
+                      step === s.id 
+                        ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20' 
+                        : isClickable 
+                          ? 'text-slate-600 hover:bg-slate-100 cursor-pointer' 
+                          : 'text-slate-300 cursor-not-allowed'
+                    }`}
+                  >
+                    <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-bold text-sm sm:text-base shrink-0 ${
+                      step === s.id ? 'bg-white/20' : isClickable ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100'
+                    }`}>
+                      {s.id}
+                    </div>
+                    <div className="flex flex-col text-left">
+                      <span className="text-xs sm:text-sm md:text-base font-bold leading-none whitespace-nowrap">{s.label}</span>
+                    </div>
+                  </button>
+                  {idx < arr.length - 1 && <div className="w-2 sm:w-3 h-px bg-slate-200 shrink-0" />}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
 
@@ -4346,22 +4439,21 @@ export default function App() {
                   </div>
                   <div className="flex gap-2 w-full">
                     <button 
-                      onClick={() => {
-                        setExamData(exam);
-                        setStep(5);
-                      }}
-                      className="flex-1 p-3 bg-white text-slate-700 rounded-xl border border-slate-200 hover:bg-slate-100 transition-all flex items-center justify-center"
-                      title="Xem trước"
+                      onClick={() => setPreviewModalExam(exam)}
+                      className="flex-1 p-2.5 bg-white text-slate-700 rounded-xl border border-slate-200 hover:bg-slate-100 transition-all flex items-center justify-center gap-1 text-xs font-bold"
+                      title="Xem nhanh đề thi"
                     >
                       <Eye className="w-4 h-4" />
+                      <span>Xem trước</span>
                     </button>
                     <button 
                       onClick={() => exportToWord(exam)}
                       disabled={isExporting}
-                      className="flex-1 p-3 bg-emerald-600 text-white rounded-xl border border-emerald-600 hover:bg-emerald-700 transition-all flex items-center justify-center"
+                      className="flex-1 p-2.5 bg-slate-100 text-slate-800 rounded-xl border border-slate-200 hover:bg-slate-200 transition-all flex items-center justify-center gap-1 text-xs font-bold"
                       title="Tải Word"
                     >
                       {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+                      <span>Word</span>
                     </button>
                   </div>
                 </motion.div>
@@ -4370,253 +4462,82 @@ export default function App() {
           </div>
 
           {/* Bottom Actions */}
-          <div className="flex flex-col lg:flex-row items-stretch justify-center gap-6 pt-12">
-            <div className="card flex-1 max-w-3xl flex flex-col md:flex-row items-center justify-between gap-8 bg-emerald-50/50 border-emerald-100 shadow-sm">
-              <div className="text-center md:text-left">
-                <h3 className="text-lg font-black text-slate-900 uppercase mb-2 flex items-center gap-3 justify-center md:justify-start">
-                  <FileArchive className="w-6 h-6 text-emerald-600" /> Đóng gói toàn bộ
+          <div className="flex flex-col gap-6 pt-10">
+            {/* Online Exam Card (Primary requested feature) */}
+            <div className="card flex flex-col md:flex-row items-center justify-between gap-6 bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 text-white shadow-xl p-8 rounded-[32px] border border-emerald-700/60">
+              <div className="text-center md:text-left space-y-2">
+                <div className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full text-xs font-black uppercase tracking-wider">
+                  <Globe className="w-4 h-4" /> BƯỚC 5: THI TRỰC TUYẾN
+                </div>
+                <h3 className="text-xl md:text-2xl font-black text-white uppercase tracking-tight">
+                  Xuất đề qua Thư viện thi online
                 </h3>
-                <p className="text-base text-slate-600 font-medium">Tải xuống file ZIP chứa tất cả các mã đề đã trộn kèm theo hồ sơ đề gốc.</p>
+                <p className="text-sm text-slate-300 font-medium max-w-2xl">
+                  Lưu trữ đề thi vào Thư viện đề trực tuyến. Trong thư viện, thầy cô có thể xem lại đề, thiết lập 8 cấu hình bảo mật chống gian lận và phát đề mở phòng thi cho học sinh.
+                </p>
               </div>
-              <button 
-                onClick={exportAllToZip}
-                disabled={isExporting}
-                className="w-full md:w-auto px-10 py-5 bg-emerald-600 text-white rounded-2xl font-black flex items-center justify-center gap-4 hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-600/20 whitespace-nowrap text-lg group"
-              >
-                {isExporting ? <Loader2 className="w-6 h-6 animate-spin" /> : <Download className="w-6 h-6 group-hover:translate-y-0.5 transition-transform" />}
-                TẢI FILE ZIP (FULL)
-              </button>
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
+                <button 
+                  onClick={() => handleExportToOnlineExam()}
+                  className="w-full sm:w-auto px-8 py-5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-2xl font-black flex items-center justify-center gap-3 transition-all shadow-xl shadow-emerald-500/20 active:scale-95 text-base whitespace-nowrap cursor-pointer"
+                >
+                  <Globe className="w-5 h-5" /> XUẤT ĐỀ VÀO THƯ VIỆN THI ONLINE
+                </button>
+                <button 
+                  onClick={() => setShowExternalUploadModal(true)}
+                  className="w-full sm:w-auto px-7 py-5 bg-teal-800/90 hover:bg-teal-700 text-white border border-teal-400/40 rounded-2xl font-black flex items-center justify-center gap-2.5 transition-all shadow-xl active:scale-95 text-base whitespace-nowrap cursor-pointer"
+                  title="Tải lên đề thi từ Word (.docx), PDF hoặc Text bên ngoài vào Kho riêng tư"
+                >
+                  <Upload className="w-5 h-5 text-teal-300" /> TẢI LÊN ĐỀ TỪ NGUỒN KHÁC
+                </button>
+              </div>
             </div>
-            
-            <div className="flex items-center">
-              <button 
-                onClick={() => {
-                  if (masterExamData) setExamData(masterExamData);
-                  setStep(3);
-                }}
-                className="w-full lg:w-auto px-10 py-6 bg-white text-slate-600 rounded-2xl font-black flex items-center justify-center gap-4 border-2 border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm text-lg"
-              >
-                <ArrowLeft className="w-6 h-6" /> QUAY LẠI ĐỀ GỐC
-              </button>
+
+            <div className="flex flex-col lg:flex-row items-stretch justify-center gap-6">
+              <div className="card flex-1 flex flex-col md:flex-row items-center justify-between gap-8 bg-emerald-50/50 border-emerald-100 shadow-sm">
+                <div className="text-center md:text-left">
+                  <h3 className="text-lg font-black text-slate-900 uppercase mb-2 flex items-center gap-3 justify-center md:justify-start">
+                    <FileArchive className="w-6 h-6 text-emerald-600" /> Đóng gói toàn bộ
+                  </h3>
+                  <p className="text-base text-slate-600 font-medium">Tải xuống file ZIP chứa tất cả các mã đề đã trộn kèm theo hồ sơ đề gốc.</p>
+                </div>
+                <button 
+                  onClick={exportAllToZip}
+                  disabled={isExporting}
+                  className="w-full md:w-auto px-10 py-5 bg-emerald-600 text-white rounded-2xl font-black flex items-center justify-center gap-4 hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-600/20 whitespace-nowrap text-lg group"
+                >
+                  {isExporting ? <Loader2 className="w-6 h-6 animate-spin" /> : <Download className="w-6 h-6 group-hover:translate-y-0.5 transition-transform" />}
+                  TẢI FILE ZIP (FULL)
+                </button>
+              </div>
+              
+              <div className="flex items-center">
+                <button 
+                  onClick={() => {
+                    if (masterExamData) setExamData(masterExamData);
+                    setStep(3);
+                  }}
+                  className="w-full lg:w-auto px-10 py-6 bg-white text-slate-600 rounded-2xl font-black flex items-center justify-center gap-4 border-2 border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm text-lg"
+                >
+                  <ArrowLeft className="w-6 h-6" /> QUAY LẠI ĐỀ GỐC
+                </button>
+              </div>
             </div>
           </div>
         </motion.div>
       ) : step === 5 ? (
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="space-y-6"
-        >
-          {/* Exam Content (Read-only) */}
-          <div className="bg-white rounded-[40px] shadow-2xl border border-slate-100 overflow-hidden relative">
-            <div className="p-8 md:p-12">
-              {/* Exam Header */}
-              <div className="text-center mb-12 space-y-2">
-                <h2 className="text-3xl font-black text-slate-900 uppercase tracking-widest">
-                  {examData?.title}
-                  {examData?.code && ` - MÃ ĐỀ: ${examData.code}`}
-                </h2>
-                <div className="flex justify-center items-center gap-6 font-bold uppercase text-xs tracking-widest">
-                  <span className="text-emerald-600">MÔN: {subject}</span>
-                  <span className="w-1.5 h-1.5 bg-slate-300 rounded-full" />
-                  <span className="text-blue-600">LỚP: {grade}</span>
-                  <span className="w-1.5 h-1.5 bg-slate-300 rounded-full" />
-                  <span className="text-orange-600">THỜI GIAN: {duration} PHÚT</span>
-                </div>
-                <div className="w-24 h-1 bg-emerald-600 mx-auto mt-6 rounded-full" />
-              </div>
-
-              {/* Questions List */}
-              <div className="space-y-12">
-                {(examData?.questions || []).map((q, idx) => {
-                  const showHeader = idx === 0 || (examData?.questions || [])[idx - 1]?.type !== q.type;
-                  const sectionStartIndex = (examData?.questions || []).findIndex(question => question.type === q.type);
-                  const questionNumber = idx - sectionStartIndex + 1;
-                  let headerText = "";
-                  let sectionPoints = 0;
-                  if (showHeader) {
-                    const roman = getRomanSection(q.type, examData?.questions || []);
-                    const uniqueTypes = Array.from(new Set((examData?.questions || []).map(item => item.type)));
-                    const prefix = uniqueTypes.length > 1 ? `PHẦN ${roman}. ` : "";
-
-                    switch (q.type) {
-                      case 'MCQ': 
-                        headerText = `${prefix}CÂU HỎI TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN LỰA CHỌN`; 
-                        sectionPoints = Number(mcqCount) * Number(mcqPoints);
-                        break;
-                      case 'TF': 
-                        headerText = `${prefix}CÂU HỎI TRẮC NGHIỆM ĐÚNG SAI`; 
-                        sectionPoints = Number(tfCount) * Number(tfPoints);
-                        break;
-                      case 'SA': 
-                        headerText = `${prefix}CÂU HỎI TRẮC NGHIỆM TRẢ LỜI NGẮN`; 
-                        sectionPoints = Number(saCount) * Number(saPoints);
-                        break;
-                      case 'TL': 
-                        headerText = `${prefix}CÂU HỎI TỰ LUẬN`; 
-                        sectionPoints = essays.filter(e => Number(e.points) > 0).reduce((sum, e) => sum + Number(e.points), 0);
-                        break;
-                    }
-                    if (sectionPoints > 0) {
-                      headerText += ` (${sectionPoints.toFixed(2).replace(/\.00$/, '').replace(/\.([1-9])0$/, '.$1')} ĐIỂM)`;
-                    }
-                  }
-
-                  return (
-                    <Fragment key={idx}>
-                      {showHeader && (
-                        <div className="flex items-center gap-4 mb-8 mt-4">
-                          <div className="w-1.5 h-8 bg-emerald-600 rounded-full" />
-                          <h3 className="text-xl font-black text-emerald-900 uppercase tracking-tight">
-                            {headerText}
-                          </h3>
-                        </div>
-                      )}
-                      <div className="relative group border border-emerald-500/30 rounded-[32px] p-6 mb-8 bg-white">
-                        {/* Question Header */}
-                        <div className="flex items-center justify-between mb-6">
-                          <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center font-black text-xl shadow-lg shadow-slate-900/20">
-                              {questionNumber}
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <span className="px-3 py-1.5 bg-slate-100 text-slate-600 rounded-full text-[10px] font-black uppercase tracking-wider border border-slate-200">
-                                {q.type}
-                              </span>
-                              <span className="px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded-full text-[10px] font-black uppercase tracking-wider border border-emerald-200">
-                                {q.level}
-                              </span>
-                              <span className="px-3 py-1.5 bg-yellow-50 text-red-600 rounded-full text-[10px] font-black uppercase tracking-wider border border-yellow-200 italic">
-                                NỘI DUNG: {q.topic}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="space-y-6">
-                          {q.imageUrl && (
-                            <div className="relative w-full max-w-2xl mx-auto aspect-square rounded-[32px] overflow-hidden border-4 border-emerald-100 shadow-2xl">
-                              <img 
-                                src={q.imageUrl} 
-                                alt="Hình ảnh minh họa" 
-                                className="w-full h-full object-cover"
-                                referrerPolicy="no-referrer"
-                              />
-                            </div>
-                          )}
-                          <div className="text-base font-bold text-slate-800 leading-relaxed">
-                            <MathRenderer content={q.content} />
-                          </div>
-
-                          {/* MCQ Options */}
-                          {q.type === 'MCQ' && q.options && (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              {q.options.map((opt, oIdx) => (
-                                <div 
-                                  key={oIdx}
-                                  className={`p-4 rounded-2xl border-2 transition-all flex items-center gap-4 ${
-                                    opt.isCorrect 
-                                    ? 'bg-emerald-50 border-emerald-200' 
-                                    : 'bg-slate-50 border-slate-100'
-                                  }`}
-                                >
-                                  <span className={`w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-lg font-black text-sm ${
-                                    opt.isCorrect ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-600'
-                                  }`}>
-                                    {opt.id}
-                                  </span>
-                                  <div className="font-bold text-slate-700 text-sm">
-                                    <MathRenderer content={opt.text} />
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-
-                          {/* True/False Options */}
-                          {q.type === 'TF' && q.tfSubQuestions && (
-                            <div className="space-y-2">
-                              {q.tfSubQuestions.map((sub, sIdx) => (
-                                <div key={sIdx} className="flex items-center justify-between p-3 bg-slate-50/50 rounded-2xl border border-slate-100">
-                                  <div className="flex items-center gap-4">
-                                    <span className="w-10 h-10 flex-shrink-0 flex items-center justify-center bg-slate-200 text-slate-600 rounded-lg font-black text-sm">
-                                      {String.fromCharCode(97 + sIdx)}
-                                    </span>
-                                    <div className="font-bold text-slate-700 text-sm">
-                                      <MathRenderer content={sub.text} />
-                                    </div>
-                                  </div>
-                                  <span className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-sm ${
-                                    sub.isCorrect 
-                                    ? 'bg-emerald-600 text-white' 
-                                    : 'bg-rose-600 text-white'
-                                  }`}>
-                                    {sub.isCorrect ? 'Đúng' : 'Sai'}
-                                  </span>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-
-                          {/* Short Answer Options */}
-                          {q.type === 'SA' && q.saSubQuestions && (
-                            <div className="space-y-2">
-                              {q.saSubQuestions.map((sub, sIdx) => (
-                                <div key={sIdx} className="p-3 bg-slate-50/50 rounded-2xl border border-slate-100 flex flex-col gap-2">
-                                  <div className="flex items-center gap-4">
-                                    <span className="w-10 h-10 flex-shrink-0 flex items-center justify-center bg-slate-200 text-slate-600 rounded-lg font-black text-sm">
-                                      {String.fromCharCode(97 + sIdx)}
-                                    </span>
-                                    <div className="font-bold text-slate-700 text-sm">
-                                      <MathRenderer content={sub.text} />
-                                    </div>
-                                  </div>
-                                  <div className="flex items-center gap-2">
-                                    <div className="px-4 py-1.5 bg-emerald-600 text-white rounded-xl text-[10px] font-black uppercase tracking-wider shadow-sm">
-                                      ĐÁP ÁN: {sub.answer}
-                                    </div>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-
-                          {/* Essay Answer */}
-                          {q.type === 'TL' && q.solution && (
-                            <div className="p-6 bg-emerald-50/50 rounded-[32px] border border-emerald-100">
-                              <div className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em] mb-4">Gợi ý đáp án</div>
-                              <div className="text-slate-700 leading-relaxed font-medium text-sm">
-                                <MathRenderer content={q.solution} />
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </Fragment>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
-            <button 
-              onClick={() => setStep(4)}
-              className="px-8 py-4 bg-white text-slate-600 rounded-2xl font-bold flex items-center gap-3 border border-slate-200 hover:bg-slate-50 transition-all"
-            >
-              <ArrowLeft className="w-5 h-5" /> Quay lại danh sách mã đề
-            </button>
-            <button 
-              onClick={() => examData && exportToWord(examData)}
-              disabled={isExporting}
-              className="px-8 py-4 bg-emerald-600 text-white rounded-2xl font-bold flex items-center gap-3 hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-600/20 disabled:opacity-50"
-            >
-              {isExporting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
-              Xuất file word mã đề này
-            </button>
-          </div>
-        </motion.div>
+        <OnlineExamView 
+          exam={onlineExam || (shuffledExams.length > 0 ? shuffledExams[0] : examData!)}
+          allShuffledExams={shuffledExams}
+          initialTab={onlineExamInitialTab}
+          onSelectExamCode={(chosenExam) => setOnlineExam(chosenExam)}
+          onBackToStep4={() => setStep(4)}
+          onOpenUploadModal={() => setShowExternalUploadModal(true)}
+          mcqPoints={mcqPoints}
+          tfPoints={tfPoints}
+          saPoints={saPoints}
+          essays={essays}
+        />
       ) : (
         <div className="flex flex-col items-center justify-center py-20 card">
           <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mb-6">
@@ -4736,6 +4657,29 @@ export default function App() {
               </h2>
               
               <div className="space-y-8 text-slate-700 leading-relaxed">
+                {/* THÔNG BÁO ĐẦU TIÊN NỔI BẬT: CHỨC NĂNG THI ONLINE */}
+                <div className="p-5 md:p-6 rounded-2xl bg-gradient-to-br from-amber-50 via-rose-50 to-amber-50 border-2 border-red-500 shadow-md relative overflow-hidden">
+                  <div className="absolute top-0 right-0 bg-red-600 text-white text-[11px] font-black uppercase tracking-widest px-3.5 py-1 rounded-bl-xl shadow-sm">
+                    LƯU Ý ĐẶC BIỆT
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <div className="p-3 bg-red-600 text-white rounded-2xl shadow-lg shadow-red-600/30 shrink-0 mt-0.5">
+                      <AlertTriangle className="w-7 h-7 text-white" />
+                    </div>
+                    <div className="pr-8 space-y-2">
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-600 text-white rounded-full text-xs font-black tracking-wider uppercase">
+                        <span>THÔNG BÁO QUAN TRỌNG</span>
+                      </div>
+                      <h3 className="text-lg md:text-xl font-black text-red-600 leading-snug">
+                        Chức năng Thi online đang trong quá trình phát triển! Thầy cô vui lòng không sử dụng!
+                      </h3>
+                      <p className="text-sm md:text-base font-semibold text-slate-700 leading-relaxed">
+                        Hệ thống phòng thi trực tuyến (Bước 5) hiện đang trong quá trình xây dựng và chạy thử nghiệm kỹ thuật trên môi trường web. Thầy cô vui lòng <strong className="text-red-700 font-black">không sử dụng chức năng này để tổ chức kiểm tra thực tế</strong> cho học sinh nhằm tránh gián đoạn không mong muốn cho đến khi có thông báo hoàn thiện chính thức.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
                 <section>
                   <h3 className="font-black text-lg text-slate-900 mb-3">1. Thống nhất sử dụng bộ sách Kết nối tri thức với cuộc sống (KNTT)</h3>
                   <div className="ml-4 space-y-1 font-medium text-slate-600">
@@ -4796,6 +4740,125 @@ export default function App() {
           </motion.div>
         </div>
       )}
+
+      {/* Quick Preview Modal for Shuffled Exam */}
+      {previewModalExam && (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-white rounded-[32px] max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl border border-slate-100">
+            <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 font-black flex items-center justify-center text-sm">
+                  {previewModalExam.code || 'ĐỀ'}
+                </span>
+                <div>
+                  <h3 className="font-black text-slate-900 uppercase">{previewModalExam.title} - MÃ ĐỀ: {previewModalExam.code}</h3>
+                  <p className="text-xs text-slate-500 font-medium">Môn {previewModalExam.subject} • Lớp {previewModalExam.grade} • {previewModalExam.duration} phút</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setPreviewModalExam(null)}
+                className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-600"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            <div className="p-6 overflow-y-auto custom-scrollbar space-y-6">
+              {previewModalExam.questions?.map((q, idx) => (
+                <div key={idx} className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <span className="font-black text-sm text-slate-900">Câu {idx + 1}:</span>
+                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-700 font-bold">{q.type}</span>
+                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">{q.level}</span>
+                    <span className="text-xs text-slate-400 font-medium">({q.points} điểm)</span>
+                  </div>
+                  <div className="text-sm font-bold text-slate-800">
+                    <MathRenderer content={q.content} />
+                  </div>
+                  {q.type === 'MCQ' && q.options && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs pt-1">
+                      {q.options.map(o => (
+                        <div key={o.id} className={`p-2.5 rounded-xl border flex items-center gap-2 ${o.isCorrect ? 'bg-emerald-50 border-emerald-300 font-bold text-emerald-900' : 'bg-white border-slate-200 text-slate-700'}`}>
+                          <span className={`w-6 h-6 rounded-md flex items-center justify-center font-black ${o.isCorrect ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-700'}`}>{o.id}</span>
+                          <div><MathRenderer content={o.text} /></div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {q.type === 'TF' && q.tfSubQuestions && (
+                    <div className="space-y-1.5 text-xs pt-1">
+                      {q.tfSubQuestions.map((s, sIdx) => (
+                        <div key={sIdx} className="p-2.5 rounded-xl bg-white border border-slate-200 flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2">
+                            <span className="w-5 h-5 rounded bg-slate-100 flex items-center justify-center font-bold text-[10px]">{String.fromCharCode(97 + sIdx)}</span>
+                            <span className="font-medium text-slate-800"><MathRenderer content={s.text} /></span>
+                          </div>
+                          <span className={`px-2 py-0.5 rounded font-bold text-[10px] ${s.isCorrect ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
+                            {s.isCorrect ? 'Đúng' : 'Sai'}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className="p-4 border-t border-slate-100 flex items-center justify-end gap-3 bg-slate-50">
+              <button
+                onClick={() => {
+                  const examToOpen = previewModalExam;
+                  setPreviewModalExam(null);
+                  handleExportToOnlineExam(examToOpen);
+                }}
+                className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-sm flex items-center gap-2 shadow-sm"
+              >
+                <Globe className="w-4 h-4" /> Xuất vào thư viện thi online
+              </button>
+              <button
+                onClick={() => setPreviewModalExam(null)}
+                className="px-5 py-2.5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 rounded-xl font-bold text-sm"
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL TẢI LÊN ĐỀ TỪ NGUỒN KHÁC */}
+      {showExternalUploadModal && (
+        <UploadExamModal 
+          isOpen={showExternalUploadModal}
+          onClose={() => setShowExternalUploadModal(false)}
+          apiKey={apiKey}
+          onExamExtractedAndSaved={(finalExam, action) => {
+            if (action === 'load_to_step3') {
+              setExamData(finalExam);
+              setMasterExamData(finalExam);
+              setShuffledExams([]);
+              setOnlineExam(finalExam);
+              setMaxStepReached(prev => Math.max(prev, 3));
+              setStep(3);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (action === 'open_config') {
+              setOnlineExam(finalExam);
+              setOnlineExamInitialTab('settings');
+              setMaxStepReached(prev => Math.max(prev, 5));
+              setStep(5);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+              // save_to_library
+              setOnlineExam(finalExam);
+              setOnlineExamInitialTab('library');
+              setMaxStepReached(prev => Math.max(prev, 5));
+              setStep(5);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }}
+          defaultSubject={subject}
+          defaultGrade={grade}
+        />
+      )}
+
       <Analytics />
       
       {/* Footer with Visitor Counter */}

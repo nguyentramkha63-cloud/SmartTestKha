@@ -37,4 +37,12 @@
   .btn-outline {
     @apply border border-slate-200 px-4 py-2 rounded-xl font-semibold text-slate-600 hover:bg-slate-50 transition-colors flex items-center justify-center gap-2;
   }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
