@@ -4130,9 +4130,23 @@ export default function OnlineExamView({
 
                   {/* 4. Cài đặt cấu hình giám sát phòng thi */}
                   <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2.5">
-                    <div className="flex items-center gap-1.5 text-xs font-black text-slate-800 uppercase">
-                      <ShieldAlert className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>4. Cấu hình bảo mật & phòng thi</span>
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-1.5 text-xs font-black text-slate-800 uppercase">
+                        <ShieldAlert className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>4. Cấu hình bảo mật & phòng thi</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setTempConfig({ ...defaultExamConfig, ...(item.config || {}) });
+                          setConfiguringLibraryExam(item);
+                        }}
+                        className="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all shadow-2xs hover:border-emerald-400 cursor-pointer shrink-0"
+                        title="Cài đặt 8 cấu hình bảo mật phòng thi trước khi phát đề"
+                      >
+                        <Settings className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                        <span>Cài đặt cấu hình</span>
+                      </button>
                     </div>
 
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-[10px]">
@@ -4149,16 +4163,20 @@ export default function OnlineExamView({
                         🚫 Tối đa {item.config?.maxViolations || 3} vi phạm
                       </div>
                     </div>
-                    <p className="text-[11px] text-slate-500">
-                      Bấm nút <strong>"Cài đặt cấu hình"</strong> ở bên dưới để kiểm tra hoặc điều chỉnh 8 thiết lập bảo mật trước khi phát đề cho lớp này.
-                    </p>
                   </div>
                 </div>
 
                 {/* Footer Actions */}
-                <div className="p-4 sm:p-5 border-t border-slate-200 bg-slate-50 space-y-3">
-                  {/* Hàng nút hành động chính: Hướng dẫn HS vào phòng & Phát đề */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div className="p-4 sm:p-5 border-t border-slate-200 bg-slate-50 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setCreatingClassForExam(null)}
+                    className="order-3 sm:order-1 px-5 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-bold text-xs transition-colors cursor-pointer text-center"
+                  >
+                    Hủy bỏ
+                  </button>
+
+                  <div className="order-1 sm:order-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
                     <button
                       type="button"
                       onClick={() => {
@@ -4166,7 +4184,7 @@ export default function OnlineExamView({
                         setRole('student');
                         setIsTeacherGuidanceMode(true);
                       }}
-                      className="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md shadow-slate-900/20 active:scale-95 transition-all cursor-pointer"
+                      className="py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md shadow-slate-900/20 active:scale-95 transition-all cursor-pointer"
                       title="Mở phòng và chuyển ngay sang màn hình thi để giáo viên hướng dẫn học sinh"
                     >
                       <GraduationCap className="w-4 h-4 text-emerald-400 shrink-0" />
@@ -4176,34 +4194,10 @@ export default function OnlineExamView({
                     <button
                       type="button"
                       onClick={() => handleCreateNewClassSession(item, true, false)}
-                      className="w-full py-2.5 px-5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md shadow-emerald-600/20 active:scale-95 transition-all cursor-pointer"
+                      className="py-2.5 px-5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md shadow-emerald-600/20 active:scale-95 transition-all cursor-pointer"
                     >
                       <Play className="w-4 h-4 fill-current shrink-0" />
                       <span>Phát đề (Mở phòng)</span>
-                    </button>
-                  </div>
-
-                  {/* Hàng nút phụ: Hủy bỏ & Cài đặt cấu hình */}
-                  <div className="flex items-center justify-between gap-3 pt-1 border-t border-slate-200/70">
-                    <button
-                      type="button"
-                      onClick={() => setCreatingClassForExam(null)}
-                      className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-bold text-xs transition-colors cursor-pointer"
-                    >
-                      Hủy bỏ
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setTempConfig({ ...defaultExamConfig, ...(item.config || {}) });
-                        setConfiguringLibraryExam(item);
-                      }}
-                      className="px-4 py-2 bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer"
-                      title="Cài đặt 8 cấu hình bảo mật phòng thi trước khi phát đề"
-                    >
-                      <Settings className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                      <span>Cài đặt cấu hình</span>
                     </button>
                   </div>
                 </div>
