@@ -18,7 +18,9 @@ import {
   ArrowRight, 
   Globe, 
   Lock, 
-  FileCode
+  FileCode,
+  Trash2,
+  Filter
 } from 'lucide-react';
 import type { ExamData, Question } from '../types';
 import { extractTextFromFile, parseExamWithAI, parseExamOffline } from '../utils/examParser';
@@ -57,6 +59,68 @@ export function UploadExamModal({
   const [isEditingMeta, setIsEditingMeta] = useState<boolean>(false);
   const [editTitle, setEditTitle] = useState<string>('');
   const [editDuration, setEditDuration] = useState<number>(45);
+
+  // Question editing and quick-deletion state
+  const [editingQuestionIdx, setEditingQuestionIdx] = useState<number | null>(null);
+  const [editingQuestionContent, setEditingQuestionContent] = useState<string>('');
+
+  const handleDeleteQuestion = (indexToDelete: number) => {
+    if (!extractedExam) return;
+    const updatedQuestions = extractedExam.questions.filter((_, idx) => idx !== indexToDelete);
+    setExtractedExam({
+      ...extractedExam,
+      questions: updatedQuestions
+    });
+    if (editingQuestionIdx === indexToDelete) {
+      setEditingQuestionIdx(null);
+    } else if (editingQuestionIdx !== null && editingQuestionIdx > indexToDelete) {
+      setEditingQuestionIdx(editingQuestionIdx - 1);
+    }
+  };
+
+  const handleStartEditQuestion = (index: number, content: string) => {
+    setEditingQuestionIdx(index);
+    setEditingQuestionContent(content);
+  };
+
+  const handleSaveQuestionContent = (indexToSave: number) => {
+    if (!extractedExam) return;
+    const updatedQuestions = [...extractedExam.questions];
+    if (updatedQuestions[indexToSave]) {
+      updatedQuestions[indexToSave] = {
+        ...updatedQuestions[indexToSave],
+        content: editingQuestionContent.trim() || updatedQuestions[indexToSave].content
+      };
+      setExtractedExam({
+        ...extractedExam,
+        questions: updatedQuestions
+      });
+    }
+    setEditingQuestionIdx(null);
+    setEditingQuestionContent('');
+  };
+
+  const isSuspiciousAdministrative = (content: string) => {
+    const lower = content.toLowerCase();
+    return (
+      lower.includes('sở giáo dục') ||
+      lower.includes('sở gd') ||
+      lower.includes('bộ giáo dục') ||
+      lower.includes('trường thpt') ||
+      lower.includes('trường thcs') ||
+      lower.includes('họ và tên thí sinh') ||
+      lower.includes('họ tên:') ||
+      lower.includes('số báo danh') ||
+      lower.includes('sbd:') ||
+      lower.includes('phòng thi:') ||
+      lower.includes('kỳ thi khảo sát') ||
+      lower.includes('cán bộ coi thi') ||
+      lower.includes('giám thị không giải thích') ||
+      lower.includes('thí sinh không được sử dụng') ||
+      lower.includes('bảng đáp án') ||
+      lower.includes('hướng dẫn chấm')
+    );
+  };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -397,16 +461,22 @@ export function UploadExamModal({
               </div>
 
               {/* Extraction method info */}
-              <div className="p-4 bg-emerald-50/70 border border-emerald-200 rounded-2xl flex items-start gap-3">
+              <div className="p-4 bg-emerald-50/80 border border-emerald-300 rounded-2xl flex items-start gap-3 shadow-xs">
                 <Sparkles className="w-5 h-5 text-emerald-700 shrink-0 mt-0.5" />
-                <div className="text-xs text-emerald-950 space-y-1 font-medium">
-                  <p className="font-black text-emerald-900">
-                    Cơ chế trích xuất đề thông minh:
+                <div className="text-xs text-emerald-950 space-y-1.5 font-medium leading-relaxed">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="font-black text-emerald-950 text-sm">
+                      Bộ lọc thông minh: Tự động bóc tách tiêu đề & bảng đáp án
+                    </p>
+                    <span className="px-2 py-0.5 bg-emerald-200 text-emerald-900 rounded-md text-[10px] uppercase font-black">
+                      Không cần cắt file
+                    </span>
+                  </div>
+                  <p className="text-emerald-900">
+                    Thầy cô có thể tải lên <strong>file đề gốc nguyên vẹn</strong> (có đầy đủ tiêu đề Sở GD&ĐT, Tên Trường, Tên kỳ thi, Mã đề, Họ tên thí sinh, SBD và Bảng đáp án/Lời giải ở cuối file).
                   </p>
-                  <p>
-                    {apiKey 
-                      ? 'Hệ thống sẽ kết hợp Gemini AI và bộ phân tích ngữ nghĩa để nhận diện đầy đủ công thức LaTeX ($...$), các phân mục Phần I, II, III, IV và tự động dò khớp bảng đáp án ở cuối đề.'
-                      : 'Hệ thống sử dụng bộ phân tích quy tắc cấu trúc chuẩn GDPT 2018 để tách từng câu, phương án A-B-C-D, ý Đúng/Sai và đáp số ngắn.'}
+                  <p className="text-emerald-800 text-[11px]">
+                    Hệ thống sẽ <strong>tự động nhận diện và đưa thông tin trường/kỳ thi vào Tiêu đề đề thi</strong>, <strong>loại bỏ sạch sẽ các phần hành chính & bảng đáp án</strong> khỏi danh sách câu hỏi để không bị nhầm lẫn thành câu hỏi thi.
                   </p>
                 </div>
               </div>
@@ -549,6 +619,14 @@ export function UploadExamModal({
                     </div>
                   )}
                 </div>
+
+                {/* Auto Filter Cleanup Success Pill */}
+                <div className="p-3 bg-emerald-100/80 border border-emerald-300 rounded-2xl flex items-center justify-between gap-3 text-xs text-emerald-950 font-bold">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-emerald-700 shrink-0" />
+                    <span>Bộ lọc thông minh đã tự động bóc tách tiêu đề trường/sở & loại bỏ bảng đáp án (Giữ lại chuẩn xác <strong className="text-emerald-900">{extractedExam.questions.length} câu hỏi</strong>).</span>
+                  </div>
+                </div>
               </div>
 
               {/* Questions List Preview */}
@@ -559,17 +637,25 @@ export function UploadExamModal({
                     <span>Nội dung chi tiết các câu hỏi ({extractedExam.questions.length})</span>
                   </h4>
                   <span className="text-[11px] text-slate-500 font-medium">
-                    Có thể biên tập thêm tại Bước 3 hoặc mở phòng thi online
+                    Thầy cô có thể bấm ✏️ để sửa hoặc 🗑️ để xóa câu hỏi bất kỳ trước khi lưu
                   </span>
                 </div>
 
                 <div className="space-y-3 max-h-[380px] overflow-y-auto pr-1">
                   {extractedExam.questions.map((q, idx) => {
+                    const isSuspicious = isSuspiciousAdministrative(q.content);
+                    const isEditingThis = editingQuestionIdx === idx;
+
                     return (
                       <div 
                         key={q.id || idx}
-                        className="p-4 bg-slate-50/80 hover:bg-white border border-slate-200 rounded-2xl space-y-2.5 transition-all shadow-2xs"
+                        className={`p-4 rounded-2xl space-y-2.5 transition-all shadow-2xs border ${
+                          isSuspicious 
+                            ? 'bg-amber-50/90 border-amber-300' 
+                            : 'bg-slate-50/80 hover:bg-white border-slate-200'
+                        }`}
                       >
+                        {/* Header bar of question card */}
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="px-2.5 py-0.5 bg-slate-800 text-white rounded-lg text-xs font-black">
@@ -590,14 +676,85 @@ export function UploadExamModal({
                               ({q.points || (q.type === 'MCQ' ? 0.25 : q.type === 'TF' ? 1.0 : 0.5)} điểm)
                             </span>
                           </div>
+
+                          {/* Action Buttons: Edit and Delete */}
+                          <div className="flex items-center gap-1 shrink-0">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (isEditingThis) {
+                                  setEditingQuestionIdx(null);
+                                } else {
+                                  handleStartEditQuestion(idx, q.content);
+                                }
+                              }}
+                              className="p-1.5 text-slate-500 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors"
+                              title={isEditingThis ? "Hủy sửa" : "Sửa nội dung câu hỏi"}
+                            >
+                              <Pencil className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteQuestion(idx)}
+                              className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                              title="Xóa câu hỏi này khỏi đề thi"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
                         </div>
 
-                        {/* Question Content */}
-                        <div className="text-xs text-slate-800 font-medium leading-relaxed prose prose-sm max-w-none">
-                          <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
-                            {q.content}
-                          </ReactMarkdown>
-                        </div>
+                        {/* Suspicious Administrative Warning Banner */}
+                        {isSuspicious && (
+                          <div className="p-2.5 bg-amber-100 border border-amber-300 rounded-xl flex items-center justify-between text-xs text-amber-950 font-bold gap-2">
+                            <div className="flex items-center gap-1.5">
+                              <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0" />
+                              <span>Nghi vấn nội dung tiêu đề/hành chính trường học sót lại</span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteQuestion(idx)}
+                              className="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-black flex items-center gap-1 shrink-0 cursor-pointer shadow-xs"
+                            >
+                              <Trash2 className="w-3 h-3" /> Xóa câu này ngay
+                            </button>
+                          </div>
+                        )}
+
+                        {/* Question Content or Inline Edit */}
+                        {isEditingThis ? (
+                          <div className="space-y-2 pt-1">
+                            <textarea
+                              rows={3}
+                              value={editingQuestionContent}
+                              onChange={(e) => setEditingQuestionContent(e.target.value)}
+                              className="w-full p-2.5 bg-white border border-emerald-400 rounded-xl text-xs font-medium text-slate-800 outline-none focus:ring-2 focus:ring-emerald-200"
+                              placeholder="Nhập nội dung câu hỏi..."
+                            />
+                            <div className="flex items-center justify-end gap-2">
+                              <button
+                                type="button"
+                                onClick={() => setEditingQuestionIdx(null)}
+                                className="px-3 py-1 text-xs text-slate-600 hover:bg-slate-200 rounded-lg font-bold"
+                              >
+                                Hủy
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleSaveQuestionContent(idx)}
+                                className="px-3.5 py-1 text-xs bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold flex items-center gap-1"
+                              >
+                                <Check className="w-3 h-3" /> Lưu
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="text-xs text-slate-800 font-medium leading-relaxed prose prose-sm max-w-none">
+                            <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
+                              {q.content}
+                            </ReactMarkdown>
+                          </div>
+                        )}
 
                         {/* MCQ Options */}
                         {q.type === 'MCQ' && q.options && (
