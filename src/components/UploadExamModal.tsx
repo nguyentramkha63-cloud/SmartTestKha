@@ -354,6 +354,40 @@ export function UploadExamModal({
                 </button>
               </div>
 
+              {/* Subject & Grade Defaults - Moved to TOP as requested */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-slate-50/90 rounded-2xl border border-slate-200">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                    <BookOpen className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Môn học:</span>
+                  </label>
+                  <select
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 cursor-pointer shadow-2xs"
+                  >
+                    {['Toán', 'Vật lí', 'Hóa học', 'Sinh học', 'Lịch sử', 'Địa lí', 'GDKT & PL', 'Tin học', 'Tiếng Anh', 'Công nghệ', 'Ngữ văn', 'KHTN'].map(s => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                    <Settings className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Khối lớp:</span>
+                  </label>
+                  <select
+                    value={grade}
+                    onChange={(e) => setGrade(e.target.value)}
+                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 cursor-pointer shadow-2xs"
+                  >
+                    {['Khối 6', 'Khối 7', 'Khối 8', 'Khối 9', 'Khối 10', 'Khối 11', 'Khối 12'].map(g => (
+                      <option key={g} value={g}>{g}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
               {activeTab === 'file' ? (
                 /* FILE UPLOAD DROPZONE */
                 <div
@@ -431,34 +465,6 @@ export function UploadExamModal({
                   />
                 </div>
               )}
-
-              {/* Subject & Grade Defaults */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-200">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700">Môn học:</label>
-                  <select
-                    value={subject}
-                    onChange={(e) => setSubject(e.target.value)}
-                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 outline-none"
-                  >
-                    {['Toán', 'Vật lí', 'Hóa học', 'Sinh học', 'Lịch sử', 'Địa lí', 'GDKT & PL', 'Tin học', 'Tiếng Anh', 'Công nghệ', 'Ngữ văn', 'KHTN'].map(s => (
-                      <option key={s} value={s}>{s}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700">Khối lớp:</label>
-                  <select
-                    value={grade}
-                    onChange={(e) => setGrade(e.target.value)}
-                    className="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 outline-none"
-                  >
-                    {['Khối 6', 'Khối 7', 'Khối 8', 'Khối 9', 'Khối 10', 'Khối 11', 'Khối 12'].map(g => (
-                      <option key={g} value={g}>{g}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
 
               {/* Extraction method info */}
               <div className="p-4 bg-emerald-50/80 border border-emerald-300 rounded-2xl flex items-start gap-3 shadow-xs">
