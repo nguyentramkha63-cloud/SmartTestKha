@@ -525,8 +525,20 @@ export default function OnlineExamView({
   const [isScreenShieldActive, setIsScreenShieldActive] = useState<boolean>(false);
   const [isMissingFullscreen, setIsMissingFullscreen] = useState<boolean>(false);
 
+  // Nhận diện thiết bị di động (điện thoại/máy tính bảng) để tránh khóa nhầm Fullscreen do giới hạn trình duyệt mobile
+  const isMobileDevice = useMemo(() => {
+    if (typeof window === 'undefined') return false;
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+      ('maxTouchPoints' in navigator && navigator.maxTouchPoints > 2);
+  }, []);
+
   // Helper: Request Fullscreen and lock keyboard (prevent ESC exit)
   const enterFullscreenAndLock = async () => {
+    // Trình duyệt điện thoại (iOS Safari, Android Webview/Zalo/QR) không hỗ trợ HTML5 Fullscreen API như máy tính
+    if (isMobileDevice) {
+      setIsMissingFullscreen(false);
+      return;
+    }
     try {
       if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
         await document.documentElement.requestFullscreen();
@@ -538,7 +550,7 @@ export default function OnlineExamView({
       setIsMissingFullscreen(false);
     } catch (err) {
       console.warn('Fullscreen / keyboard lock request:', err);
-      if (antiCheatSettings.requireFullscreen && !document.fullscreenElement) {
+      if (antiCheatSettings.requireFullscreen && !document.fullscreenElement && !isMobileDevice) {
         setIsMissingFullscreen(true);
       }
     }
@@ -686,6 +698,7 @@ export default function OnlineExamView({
         examData: activeExam,
         allShuffledExams,
         antiCheatSettings,
+        status: roomStatus,
         timestamp: Date.now()
       }));
 
@@ -697,7 +710,8 @@ export default function OnlineExamView({
           roomCode,
           examData: activeExam,
           allShuffledExams,
-          antiCheatSettings
+          antiCheatSettings,
+          status: roomStatus
         })
       })
         .then(r => r.json())
@@ -708,7 +722,7 @@ export default function OnlineExamView({
           console.warn('[Could not sync room to server, will use local fallback]:', err);
         });
     }
-  }, [role, roomCode, activeExam, allShuffledExams, antiCheatSettings]);
+  }, [role, roomCode, activeExam, allShuffledExams, antiCheatSettings, roomStatus]);
 
   // STUDENT: Load Exam Data from Server API or LocalStorage
   useEffect(() => {
@@ -779,22 +793,24 @@ export default function OnlineExamView({
     return () => clearInterval(interval);
   }, [role, roomCode]);
 
-  // STUDENT: Poll server every 2 seconds for room status (e.g. teacher clicked start or end)
+  // STUDENT: Poll server every 1.5 seconds for room status & suspensions
   useEffect(() => {
     if (role !== 'student' || !roomCode) return;
 
     const interval = setInterval(() => {
-      fetch(`/api/rooms/${roomCode}`)
+      const clean = encodeURIComponent(String(roomCode).trim());
+      fetch(`/api/rooms/${clean}`)
         .then(r => r.ok ? r.json() : null)
         .then(data => {
           if (data) {
-            if (data.status && data.status !== roomStatus) {
+            if (data.status) {
               setRoomStatus(data.status);
-              if (data.status === 'started' && studentJoined && studentStatus === 'waiting') {
-                triggerCountdownAndStart();
-              } else if (data.status === 'ended' && studentStatus === 'testing') {
-                handleStudentSubmit(true);
-              }
+            }
+            // CRITICAL FIX: Luôn kích hoạt bắt đầu làm bài khi phòng ở trạng thái 'started' và học sinh đã điểm danh đang chờ
+            if (data.status === 'started' && studentJoined && studentStatus === 'waiting') {
+              triggerCountdownAndStart();
+            } else if (data.status === 'ended' && studentStatus === 'testing') {
+              handleStudentSubmit(true);
             }
             if (Array.isArray(data.students)) {
               const me = data.students.find((s: any) => s.id === studentId);
@@ -809,7 +825,14 @@ export default function OnlineExamView({
     }, 1500);
 
     return () => clearInterval(interval);
-  }, [role, roomCode, roomStatus, studentJoined, studentStatus, studentId]);
+  }, [role, roomCode, studentJoined, studentStatus, studentId]);
+
+  // STUDENT: Tự động kích hoạt vào thi ngay lập tức khi học sinh vừa điểm danh xong mà phòng đã mở
+  useEffect(() => {
+    if (role === 'student' && studentJoined && studentStatus === 'waiting' && roomStatus === 'started') {
+      triggerCountdownAndStart();
+    }
+  }, [role, studentJoined, studentStatus, roomStatus]);
 
   // Broadcast Channel for live same-device cross-tab synchronization
   useEffect(() => {
@@ -970,6 +993,7 @@ export default function OnlineExamView({
     };
 
     const handleFullscreenChange = () => {
+      if (isMobileDevice) return;
       const isFs = Boolean(document.fullscreenElement);
       if (antiCheatSettings.requireFullscreen) {
         if (!isFs) {
@@ -1380,7 +1404,7 @@ export default function OnlineExamView({
       className,
       roomCode: pin,
       createdAt: Date.now(),
-      status: withSampleStudents ? 'ended' : 'lobby',
+      status: withSampleStudents ? 'ended' : 'started',
       students: mockList,
       notes: newClassNotes.trim()
     };
@@ -1406,7 +1430,7 @@ export default function OnlineExamView({
       setRoomCode(pin);
       setActiveExam(item.examData);
       setAntiCheatSettings(item.config);
-      setRoomStatus('lobby');
+      setRoomStatus('started');
       setStudents([]);
 
       fetch('/api/rooms', {
@@ -1417,7 +1441,8 @@ export default function OnlineExamView({
           examData: item.examData,
           allShuffledExams: item.allShuffledExams || allShuffledExams,
           antiCheatSettings: item.config,
-          className
+          className,
+          status: 'started'
         })
       }).catch(console.error);
 
@@ -1531,7 +1556,7 @@ export default function OnlineExamView({
     const existingCode = item.sessions?.find(s => s.status === 'started' || s.status === 'lobby')?.roomCode;
     const newCode = existingCode || Math.floor(100000 + Math.random() * 900000).toString();
     setRoomCode(newCode);
-    setRoomStatus('lobby');
+    setRoomStatus('started');
     setStudents([]);
     setActiveSessionId(null);
     setActiveSessionClassName('');
@@ -1544,7 +1569,8 @@ export default function OnlineExamView({
         examData: item.examData,
         allShuffledExams: item.allShuffledExams || [item.examData],
         antiCheatSettings: item.config || defaultExamConfig,
-        className: 'Chung'
+        className: 'Chung',
+        status: 'started'
       })
     }).catch(console.error);
 
@@ -4918,12 +4944,39 @@ export default function OnlineExamView({
             </div>
           </div>
 
-          {/* TRẠNG THÁI CHỜ GIÁO VIÊN BẤM PHÁT ĐỀ */}
-          <div className="pt-2">
+          {/* TRẠNG THÁI CHỜ GIÁO VIÊN BẤM PHÁT ĐỀ HOẶC BẮT ĐẦU NGAY */}
+          <div className="pt-2 space-y-3">
             <div className="p-4 bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 rounded-2xl border-2 border-emerald-300 text-emerald-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-3 shadow-sm">
               <span className="w-3 h-3 rounded-full bg-emerald-500 animate-ping shrink-0" />
-              <span>Đang kết nối phòng thi. Bài thi sẽ tự động bắt đầu khi thầy cô bấm Phát đề!</span>
+              <span>Đang kết nối phòng thi. Bài thi sẽ tự động bắt đầu khi thầy cô phát đề!</span>
             </div>
+
+            {/* Nút vào làm bài ngay dành cho học sinh trên điện thoại hoặc khi thầy cô đã mở phòng */}
+            <button
+              type="button"
+              onClick={() => {
+                const clean = encodeURIComponent(String(roomCode).trim());
+                fetch(`/api/rooms/${clean}`)
+                  .then(r => r.ok ? r.json() : null)
+                  .then(data => {
+                    if (data?.examData) {
+                      setActiveExam(data.examData);
+                      if (data.status) setRoomStatus(data.status);
+                    }
+                    triggerCountdownAndStart();
+                  })
+                  .catch(() => {
+                    triggerCountdownAndStart();
+                  });
+              }}
+              className="w-full py-4 px-6 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-500 hover:to-teal-500 text-white rounded-2xl font-black text-sm uppercase tracking-wide flex items-center justify-center gap-2.5 shadow-xl shadow-emerald-600/30 active:scale-95 transition-all cursor-pointer animate-pulse"
+            >
+              <Play className="w-5 h-5 fill-current" />
+              <span>BẮT ĐẦU VÀO LÀM BÀI NGAY</span>
+            </button>
+            <p className="text-[11px] text-slate-500 font-medium text-center">
+              Thầy cô đã phát đề trên lớp? Bấm nút trên để bắt đầu làm bài ngay nếu máy chưa tự chuyển trang.
+            </p>
           </div>
         </div>
       )}

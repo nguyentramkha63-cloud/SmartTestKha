@@ -184,28 +184,29 @@ async function startServer() {
   // API: Create or update room with Exam Data
   app.post('/api/rooms', (req, res) => {
     try {
-      const { roomCode, examData, antiCheatSettings, teacherName, allShuffledExams } = req.body;
+      const { roomCode, examData, antiCheatSettings, teacherName, allShuffledExams, status } = req.body;
       if (!roomCode || !examData) {
         return res.status(400).json({ error: 'Thiếu mã phòng hoặc dữ liệu đề thi' });
       }
 
-      const existing = rooms.get(roomCode);
+      const cleanCode = String(roomCode).trim();
+      const existing = rooms.get(cleanCode);
       const room = {
-        roomCode,
+        roomCode: cleanCode,
         examData,
         allShuffledExams: allShuffledExams || existing?.allShuffledExams || [],
         antiCheatSettings: antiCheatSettings || {},
         teacherName: teacherName || 'Giáo viên',
-        status: existing?.status || 'lobby',
+        status: status || existing?.status || 'lobby',
         students: existing?.students || [],
         createdAt: existing?.createdAt || Date.now(),
         lastActive: Date.now()
       };
 
-      rooms.set(roomCode, room);
+      rooms.set(cleanCode, room);
       persistRooms();
-      console.log(`[Room ${roomCode}] Đã mở phòng thi với ${examData.questions?.length || 0} câu hỏi`);
-      res.json({ success: true, roomCode });
+      console.log(`[Room ${cleanCode}] Đã mở/cập nhật phòng thi (Trạng thái: ${room.status}) với ${examData.questions?.length || 0} câu hỏi`);
+      res.json({ success: true, roomCode: cleanCode, status: room.status });
     } catch (err: any) {
       res.status(500).json({ error: err.message });
     }
@@ -213,7 +214,8 @@ async function startServer() {
 
   // API: Get room info for Student or Teacher
   app.get('/api/rooms/:roomCode', (req, res) => {
-    const room = rooms.get(req.params.roomCode);
+    const cleanCode = String(req.params.roomCode || '').trim();
+    const room = rooms.get(cleanCode);
     if (!room) {
       return res.status(404).json({ error: 'Phòng thi không tồn tại hoặc đã kết thúc' });
     }
@@ -222,7 +224,8 @@ async function startServer() {
 
   // API: Student joins room (Hỗ trợ tự động nhận diện thí sinh cũ khi đổi thiết bị / rớt mạng)
   app.post('/api/rooms/:roomCode/join', (req, res) => {
-    const room = rooms.get(req.params.roomCode);
+    const cleanCode = String(req.params.roomCode || '').trim();
+    const room = rooms.get(cleanCode);
     if (!room) return res.status(404).json({ error: 'Phòng thi không tồn tại' });
 
     const { student } = req.body;
@@ -259,7 +262,8 @@ async function startServer() {
 
   // API: Student updates progress / violations / submit (Hỗ trợ lưu toàn bộ đáp án theo thời gian thực)
   app.post('/api/rooms/:roomCode/student-update', (req, res) => {
-    const room = rooms.get(req.params.roomCode);
+    const cleanCode = String(req.params.roomCode || '').trim();
+    const room = rooms.get(cleanCode);
     if (!room) return res.status(404).json({ error: 'Phòng thi không tồn tại' });
 
     const { studentId, answeredCount, violations, status, score, rating, scoreDetails, answers, timeLeft } = req.body;
@@ -282,12 +286,14 @@ async function startServer() {
 
   // API: Teacher changes room status (lobby, started, ended)
   app.post('/api/rooms/:roomCode/status', (req, res) => {
-    const room = rooms.get(req.params.roomCode);
+    const cleanCode = String(req.params.roomCode || '').trim();
+    const room = rooms.get(cleanCode);
     if (!room) return res.status(404).json({ error: 'Phòng thi không tồn tại' });
 
     const { status } = req.body;
     room.status = status;
     persistRooms();
+    console.log(`[Room ${cleanCode}] Cập nhật trạng thái phòng -> ${room.status}`);
     res.json({ success: true, status: room.status });
   });
 
