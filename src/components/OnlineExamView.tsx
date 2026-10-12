@@ -46,7 +46,9 @@ import {
   Globe,
   Edit3,
   Info,
-  Upload
+  Upload,
+  UserCheck,
+  UserPlus
 } from 'lucide-react';
 import QRCode from 'qrcode';
 import ReactMarkdown from 'react-markdown';
@@ -54,6 +56,20 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
 import type { Question, ExamData } from '../types';
+
+export interface TeacherAccount {
+  id: string; // e.g. 'nguyentramkha63@gmail.com'
+  name: string; // e.g. 'Thầy Nguyễn Trầm Kha'
+  email: string;
+  avatarColor?: string;
+}
+
+export const DEFAULT_TEACHER_ACCOUNT: TeacherAccount = {
+  id: 'nguyentramkha63@gmail.com',
+  name: 'Thầy Nguyễn Trầm Kha',
+  email: 'nguyentramkha63@gmail.com',
+  avatarColor: 'from-emerald-600 to-teal-700'
+};
 
 export interface ExamConfig {
   allowShuffleCodes: boolean;
@@ -90,6 +106,8 @@ export interface LibraryExamItem {
   sessions?: ExamSession[];
   visibility?: 'private' | 'public'; // 'private': Chỉ mình tôi (bảo mật), 'public': Chia sẻ cộng đồng
   author?: string; // Tên tác giả/giáo viên
+  ownerId?: string; // ID tài khoản sở hữu đề (chỉ tài khoản này thấy trong kho riêng tư và có quyền xóa)
+  ownerEmail?: string;
   sharedAt?: number;
   isExternalUpload?: boolean;
   source?: string;
@@ -283,10 +301,54 @@ export default function OnlineExamView({
   const [activeExam, setActiveExam] = useState<(ExamData & { code?: string }) | null>(initialExam || defaultDemoExamData);
   const [isLoadingExam, setIsLoadingExam] = useState<boolean>(Boolean(roomCode && (!initialExam || isUrlStudent)));
 
-  // Teacher State: Exam Library
+  // Teacher Account State (Phân tách kho riêng tư bảo mật theo từng tài khoản giáo viên)
+  const [teacherAccount, setTeacherAccount] = useState<TeacherAccount>(() => {
+    try {
+      const saved = localStorage.getItem('smarttest_active_teacher_account');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed?.id) return parsed;
+      }
+    } catch (_) {}
+    return DEFAULT_TEACHER_ACCOUNT;
+  });
+
+  const [teacherAccountsList, setTeacherAccountsList] = useState<TeacherAccount[]>(() => {
+    try {
+      const saved = localStorage.getItem('smarttest_teacher_accounts_list');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (_) {}
+    return [
+      DEFAULT_TEACHER_ACCOUNT,
+      {
+        id: 'giaovien2@school.edu.vn',
+        name: 'Cô Trần Thị Lan',
+        email: 'giaovien2@school.edu.vn',
+        avatarColor: 'from-blue-600 to-indigo-700'
+      }
+    ];
+  });
+
+  const [showAccountModal, setShowAccountModal] = useState<boolean>(false);
+  const [newAccountName, setNewAccountName] = useState<string>('');
+  const [newAccountEmail, setNewAccountEmail] = useState<string>('');
+
+  // Teacher State: Exam Library (được lưu trữ và phân vùng theo tài khoản)
   const [examLibrary, setExamLibrary] = useState<LibraryExamItem[]>(() => {
     try {
-      const saved = localStorage.getItem('smarttest_exam_library');
+      const activeId = (() => {
+        try {
+          const acc = localStorage.getItem('smarttest_active_teacher_account');
+          if (acc) return JSON.parse(acc)?.id || DEFAULT_TEACHER_ACCOUNT.id;
+        } catch (_) {}
+        return DEFAULT_TEACHER_ACCOUNT.id;
+      })();
+
+      const accountSaved = localStorage.getItem(`smarttest_exam_library_${activeId}`);
+      const saved = accountSaved || localStorage.getItem('smarttest_exam_library');
       if (saved) {
         const parsed: LibraryExamItem[] = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
@@ -294,13 +356,15 @@ export default function OnlineExamView({
             const gradeClean = item.grade?.replace(/[^0-9]/g, '') || '12';
             const existingSessions = Array.isArray(item.sessions) ? item.sessions : [];
             const visibility: 'private' | 'public' = item.visibility || 'private';
-            const author = item.author || 'Tôi (Giáo viên)';
+            const author = item.author || DEFAULT_TEACHER_ACCOUNT.name;
+            const ownerId = item.ownerId || activeId;
             // If item has no sessions, pre-seed a sample class so teacher immediately sees the feature in action
             if (existingSessions.length === 0 && idx === 0) {
               return {
                 ...item,
                 visibility,
                 author,
+                ownerId,
                 sessions: [
                   {
                     id: `sess_${item.id}_sample`,
@@ -317,6 +381,7 @@ export default function OnlineExamView({
               ...item,
               visibility,
               author,
+              ownerId,
               sessions: existingSessions
             };
           });
@@ -454,6 +519,26 @@ export default function OnlineExamView({
   const [countdownNumber, setCountdownNumber] = useState<number | null>(null);
   const [isPaletteCollapsed, setIsPaletteCollapsed] = useState<boolean>(false);
   const [isScreenShieldActive, setIsScreenShieldActive] = useState<boolean>(false);
+  const [isMissingFullscreen, setIsMissingFullscreen] = useState<boolean>(false);
+
+  // Helper: Request Fullscreen and lock keyboard (prevent ESC exit)
+  const enterFullscreenAndLock = async () => {
+    try {
+      if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+        await document.documentElement.requestFullscreen();
+      }
+      // HTML5 Keyboard Lock API: Chặn phím ESC thoát fullscreen trên Chrome/Chromium/Edge
+      if ('keyboard' in navigator && (navigator as any).keyboard?.lock) {
+        await (navigator as any).keyboard.lock(['Escape']);
+      }
+      setIsMissingFullscreen(false);
+    } catch (err) {
+      console.warn('Fullscreen / keyboard lock request:', err);
+      if (antiCheatSettings.requireFullscreen && !document.fullscreenElement) {
+        setIsMissingFullscreen(true);
+      }
+    }
+  };
 
   // Modals for Student Submissions (early submit notice and submission confirmation)
   const [earlySubmitModal, setEarlySubmitModal] = useState<{
@@ -495,8 +580,8 @@ export default function OnlineExamView({
       return () => clearTimeout(timer);
     } else if (countdownNumber === 0) {
       const timer = setTimeout(() => {
-        if (antiCheatSettings.requireFullscreen && document.documentElement.requestFullscreen) {
-          document.documentElement.requestFullscreen().catch(() => {});
+        if (antiCheatSettings.requireFullscreen) {
+          enterFullscreenAndLock();
         }
         setStudentStatus('testing');
         setCountdownNumber(null);
@@ -843,6 +928,19 @@ export default function OnlineExamView({
         return;
       }
 
+      // Chặn phím ESC để chống thoát chế độ toàn màn hình
+      if (e.key === 'Escape' || e.keyCode === 27) {
+        if (antiCheatSettings.requireFullscreen) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (!document.fullscreenElement) {
+            setIsMissingFullscreen(true);
+          }
+          triggerViolation('Bấm phím ESC trong chế độ toàn màn hình');
+          return;
+        }
+      }
+
       if (!antiCheatSettings.preventCopyInspect) return;
       if (
         e.key === 'F12' ||
@@ -868,8 +966,18 @@ export default function OnlineExamView({
     };
 
     const handleFullscreenChange = () => {
-      if (antiCheatSettings.requireFullscreen && !document.fullscreenElement) {
-        triggerViolation('Thoát chế độ toàn màn hình khi đang làm bài');
+      const isFs = Boolean(document.fullscreenElement);
+      if (antiCheatSettings.requireFullscreen) {
+        if (!isFs) {
+          setIsMissingFullscreen(true);
+          triggerViolation('Thoát chế độ toàn màn hình (phím ESC hoặc phím tắt)');
+        } else {
+          setIsMissingFullscreen(false);
+          // Tái kích hoạt khóa phím ESC nếu trình duyệt hỗ trợ
+          if ('keyboard' in navigator && (navigator as any).keyboard?.lock) {
+            (navigator as any).keyboard.lock(['Escape']).catch(() => {});
+          }
+        }
       }
     };
 
@@ -1068,7 +1176,7 @@ export default function OnlineExamView({
       });
 
     if (antiCheatSettings.requireFullscreen) {
-      document.documentElement.requestFullscreen().catch(() => {});
+      enterFullscreenAndLock();
     }
   };
 
@@ -1114,6 +1222,16 @@ export default function OnlineExamView({
     setConfirmSubmitModal(false);
     setEarlySubmitModal(null);
     if (timerRef.current) clearInterval(timerRef.current);
+
+    // Mở khóa bàn phím và thoát chế độ toàn màn hình
+    if ('keyboard' in navigator && (navigator as any).keyboard?.unlock) {
+      (navigator as any).keyboard.unlock();
+    }
+    if (document.fullscreenElement && document.exitFullscreen) {
+      document.exitFullscreen().catch(() => {});
+    }
+    setIsMissingFullscreen(false);
+
     const questions = activeExam?.questions || [];
     let total = 0;
 
@@ -1459,16 +1577,55 @@ export default function OnlineExamView({
     }
   };
 
-  const handleConfirmDeleteLibraryExam = () => {
+  const handleConfirmDeleteLibraryExam = async () => {
     if (!examToDelete) return;
     const id = examToDelete.id;
+    const isPublic = examToDelete.visibility === 'public';
+
+    // Nếu đề công khai và thuộc về tài khoản khác -> Ngăn chặn xóa
+    if (isPublic && examToDelete.ownerId && examToDelete.ownerId !== teacherAccount.id) {
+      setShareToast({
+        type: 'info',
+        message: 'Bạn không có quyền xóa đề công khai do giáo viên khác chia sẻ!'
+      });
+      setExamToDelete(null);
+      setTimeout(() => setShareToast(null), 4000);
+      return;
+    }
+
     const updatedLib = examLibrary.filter(item => item.id !== id);
     setExamLibrary(updatedLib);
     try {
+      localStorage.setItem(`smarttest_exam_library_${teacherAccount.id}`, JSON.stringify(updatedLib));
       localStorage.setItem('smarttest_exam_library', JSON.stringify(updatedLib));
     } catch (e) {
       console.error(e);
     }
+
+    // Xóa trên Server theo tài khoản
+    try {
+      await fetch(`/api/teacher-library/${encodeURIComponent(teacherAccount.id)}/${id}`, {
+        method: 'DELETE'
+      });
+    } catch (_) {}
+
+    // Nếu là đề công khai do chính tài khoản này chia sẻ, gỡ khỏi kho cộng đồng
+    if (isPublic) {
+      try {
+        await fetch(`/api/community-exams/${id}`, {
+          method: 'DELETE',
+          headers: { 'x-teacher-id': teacherAccount.id }
+        });
+        fetchCommunityExams();
+      } catch (_) {}
+    }
+
+    setShareToast({
+      type: 'success',
+      message: `Đã xóa đề "${examToDelete.title}" khỏi kho riêng tư của tài khoản.`
+    });
+    setTimeout(() => setShareToast(null), 3000);
+
     if (activeExamLibraryId === id) {
       setActiveExamLibraryId(null);
       setActiveSessionId(null);
@@ -1659,10 +1816,121 @@ export default function OnlineExamView({
     setTimeout(() => setShareToast(null), 4000);
   };
 
-  // Filtered exams according to selected scope
+  // Tải đồng bộ kho đề riêng tư của tài khoản giáo viên đang chọn từ server
+  useEffect(() => {
+    if (role !== 'teacher' || !teacherAccount?.id) return;
+    const fetchAccountLibrary = async () => {
+      try {
+        const res = await fetch(`/api/teacher-library/${encodeURIComponent(teacherAccount.id)}`);
+        if (res.ok) {
+          const serverItems = await res.json();
+          if (Array.isArray(serverItems) && serverItems.length > 0) {
+            setExamLibrary(prev => {
+              const map = new Map<string, LibraryExamItem>();
+              prev.forEach(it => map.set(it.id, it));
+              serverItems.forEach((it: LibraryExamItem) => map.set(it.id, { ...it, ownerId: teacherAccount.id }));
+              const merged = Array.from(map.values()).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+              try {
+                localStorage.setItem(`smarttest_exam_library_${teacherAccount.id}`, JSON.stringify(merged));
+              } catch (_) {}
+              return merged;
+            });
+          }
+        }
+      } catch (err) {
+        console.warn('Lỗi tải kho riêng tư từ máy chủ:', err);
+      }
+    };
+    fetchAccountLibrary();
+  }, [teacherAccount.id, role]);
+
+  const handleSwitchAccount = async (targetAccount: TeacherAccount) => {
+    setTeacherAccount(targetAccount);
+    try {
+      localStorage.setItem('smarttest_active_teacher_account', JSON.stringify(targetAccount));
+    } catch (_) {}
+
+    // 1. Tải từ LocalStorage của tài khoản đích
+    const localSaved = localStorage.getItem(`smarttest_exam_library_${targetAccount.id}`);
+    if (localSaved) {
+      try {
+        const parsed = JSON.parse(localSaved);
+        if (Array.isArray(parsed)) {
+          setExamLibrary(parsed);
+        }
+      } catch (_) {}
+    } else {
+      setExamLibrary([]);
+    }
+
+    // 2. Tải từ Server của tài khoản đích
+    try {
+      const res = await fetch(`/api/teacher-library/${encodeURIComponent(targetAccount.id)}`);
+      if (res.ok) {
+        const serverData = await res.json();
+        if (Array.isArray(serverData)) {
+          setExamLibrary(serverData);
+          try {
+            localStorage.setItem(`smarttest_exam_library_${targetAccount.id}`, JSON.stringify(serverData));
+          } catch (_) {}
+        }
+      }
+    } catch (_) {}
+
+    setShowAccountModal(false);
+    setShareToast({
+      type: 'success',
+      message: `Đã chuyển sang tài khoản: ${targetAccount.name}. Kho đề riêng tư đã được tải tương ứng.`
+    });
+    setTimeout(() => setShareToast(null), 4000);
+  };
+
+  const handleAddNewAccount = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanName = newAccountName.trim();
+    const cleanEmail = newAccountEmail.trim().toLowerCase();
+    if (!cleanName || !cleanEmail) return;
+
+    const existing = teacherAccountsList.find(a => a.id === cleanEmail || a.email === cleanEmail);
+    if (existing) {
+      handleSwitchAccount(existing);
+      setNewAccountName('');
+      setNewAccountEmail('');
+      return;
+    }
+
+    const colors = [
+      'from-emerald-600 to-teal-700',
+      'from-blue-600 to-indigo-700',
+      'from-purple-600 to-pink-700',
+      'from-amber-600 to-orange-700',
+      'from-rose-600 to-red-700'
+    ];
+    const newAcc: TeacherAccount = {
+      id: cleanEmail,
+      name: cleanName,
+      email: cleanEmail,
+      avatarColor: colors[teacherAccountsList.length % colors.length]
+    };
+
+    const updatedList = [...teacherAccountsList, newAcc];
+    setTeacherAccountsList(updatedList);
+    try {
+      localStorage.setItem('smarttest_teacher_accounts_list', JSON.stringify(updatedList));
+    } catch (_) {}
+
+    handleSwitchAccount(newAcc);
+    setNewAccountName('');
+    setNewAccountEmail('');
+  };
+
+  // Filtered exams according to selected scope - PHÂN TÁCH KHO RIÊNG TƯ THEO TÀI KHOẢN
   const privateExams = useMemo(() => {
-    return examLibrary.filter(it => it.visibility !== 'public');
-  }, [examLibrary]);
+    return examLibrary.filter(it => 
+      it.visibility !== 'public' && 
+      (!it.ownerId || it.ownerId === teacherAccount.id)
+    );
+  }, [examLibrary, teacherAccount.id]);
 
   const publicExams = useMemo(() => {
     const localPublic = examLibrary.filter(it => it.visibility === 'public');
@@ -1942,7 +2210,7 @@ export default function OnlineExamView({
     return (
       <div className="max-w-7xl mx-auto space-y-6 animate-in fade-in pb-16">
         
-        {/* Top bar */}
+        {/* Top bar with Teacher Account Switcher */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
             <span className="p-2 bg-emerald-600 text-white rounded-xl shadow-xs">
@@ -1952,6 +2220,29 @@ export default function OnlineExamView({
               <h2 className="text-sm sm:text-base font-black text-slate-900 uppercase tracking-tight">Hệ thống Thi Online & Phòng thi Trực tuyến</h2>
               <p className="text-[11px] text-slate-500 font-medium">Tổ chức kiểm tra trắc nghiệm, quản lý phòng thi và chấm điểm tự động</p>
             </div>
+          </div>
+
+          {/* Teacher Account Profile Badge & Switcher */}
+          <div className="flex items-center gap-2 bg-white px-3.5 py-2 rounded-2xl border border-slate-200 shadow-2xs">
+            <div className={`w-8 h-8 rounded-xl bg-gradient-to-tr ${teacherAccount.avatarColor || 'from-emerald-600 to-teal-500'} text-white font-black text-xs flex items-center justify-center shadow-xs shrink-0`}>
+              {teacherAccount.name ? teacherAccount.name.slice(0, 1).toUpperCase() : 'G'}
+            </div>
+            <div className="text-left">
+              <div className="text-xs font-black text-slate-900 flex items-center gap-1.5">
+                <span>{teacherAccount.name}</span>
+                <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800">Kho riêng tư</span>
+              </div>
+              <div className="text-[11px] text-slate-500 font-medium">{teacherAccount.email}</div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowAccountModal(true)}
+              className="ml-2 px-2.5 py-1.5 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 text-slate-700 text-xs font-bold rounded-xl transition-all border border-slate-200 cursor-pointer flex items-center gap-1"
+              title="Quản lý / Đổi tài khoản giáo viên"
+            >
+              <UserCheck className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Đổi tài khoản</span>
+            </button>
           </div>
         </div>
 
@@ -2237,31 +2528,44 @@ export default function OnlineExamView({
                         </div>
 
                         <div className="flex items-center gap-1">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleRequestToggleVisibility(item);
-                            }}
-                            className={`p-2 rounded-xl transition-colors ${
-                              item.visibility === 'public'
-                                ? 'text-emerald-700 hover:text-amber-700 hover:bg-amber-50'
-                                : 'text-slate-400 hover:text-emerald-700 hover:bg-emerald-50'
-                            }`}
-                            title={item.visibility === 'public' ? 'Đang công khai. Bấm để chuyển về Chế độ riêng tư' : 'Đang riêng tư. Bấm để chia sẻ lên Thư viện cộng đồng'}
-                          >
-                            {item.visibility === 'public' ? <Globe className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
-                          </button>
+                          {/* Nút Chuyển quyền riêng tư (chỉ hiện khi là chủ sở hữu đề) */}
+                          {(!item.ownerId || item.ownerId === teacherAccount.id) && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRequestToggleVisibility(item);
+                              }}
+                              className={`p-2 rounded-xl transition-colors ${
+                                item.visibility === 'public'
+                                  ? 'text-emerald-700 hover:text-amber-700 hover:bg-amber-50'
+                                  : 'text-slate-400 hover:text-emerald-700 hover:bg-emerald-50'
+                              }`}
+                              title={item.visibility === 'public' ? 'Đang công khai. Bấm để chuyển về Chế độ riêng tư' : 'Đang riêng tư. Bấm để chia sẻ lên Thư viện cộng đồng'}
+                            >
+                              {item.visibility === 'public' ? <Globe className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
+                            </button>
+                          )}
 
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteLibraryExam(item.id);
-                            }}
-                            className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors"
-                            title="Xóa đề khỏi thư viện"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                          {/* Nút Xóa đề: Chỉ tài khoản sở hữu đề mới được xóa */}
+                          {(!item.ownerId || item.ownerId === teacherAccount.id) ? (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteLibraryExam(item.id);
+                              }}
+                              className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer"
+                              title="Xóa đề khỏi thư viện"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          ) : (
+                            <span 
+                              className="p-2 text-slate-300 cursor-not-allowed" 
+                              title="Đề do giáo viên khác chia sẻ (không thể xóa)"
+                            >
+                              <Lock className="w-4 h-4" />
+                            </span>
+                          )}
                         </div>
                       </div>
 
@@ -2278,27 +2582,30 @@ export default function OnlineExamView({
                           <span>Xem lại đề</span>
                         </button>
 
-                        <button
-                          onClick={() => handleRequestToggleVisibility(item)}
-                          className={`py-2.5 px-3 rounded-xl font-bold text-xs border flex items-center justify-center gap-1.5 transition-colors shadow-xs ${
-                            item.visibility === 'public'
-                              ? 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-200'
-                              : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
-                          }`}
-                          title={item.visibility === 'public' ? 'Chuyển về kho riêng tư (Chỉ mình tôi)' : 'Chia sẻ lên cộng đồng giáo viên'}
-                        >
-                          {item.visibility === 'public' ? (
-                            <>
-                              <Lock className="w-3.5 h-3.5 text-amber-600" />
-                              <span>Về riêng tư</span>
-                            </>
-                          ) : (
-                            <>
-                              <Share2 className="w-3.5 h-3.5 text-emerald-600" />
-                              <span>Chia sẻ</span>
-                            </>
-                          )}
-                        </button>
+                        {/* Nút Chia sẻ / Về riêng tư (chỉ chủ sở hữu đề) */}
+                        {(!item.ownerId || item.ownerId === teacherAccount.id) && (
+                          <button
+                            onClick={() => handleRequestToggleVisibility(item)}
+                            className={`py-2.5 px-3 rounded-xl font-bold text-xs border flex items-center justify-center gap-1.5 transition-colors shadow-xs ${
+                              item.visibility === 'public'
+                                ? 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-200'
+                                : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                            }`}
+                            title={item.visibility === 'public' ? 'Chuyển về kho riêng tư (Chỉ mình tôi)' : 'Chia sẻ lên cộng đồng giáo viên'}
+                          >
+                            {item.visibility === 'public' ? (
+                              <>
+                                <Lock className="w-3.5 h-3.5 text-amber-600" />
+                                <span>Về riêng tư</span>
+                              </>
+                            ) : (
+                              <>
+                                <Share2 className="w-3.5 h-3.5 text-emerald-600" />
+                                <span>Chia sẻ</span>
+                              </>
+                            )}
+                          </button>
+                        )}
 
                         {/* Nút nhân bản khi ở kho cộng đồng */}
                         {libraryTabScope === 'public' && (
@@ -4635,7 +4942,7 @@ export default function OnlineExamView({
 
       {/* 3. Màn hình làm bài thi */}
       {studentJoined && studentStatus === 'testing' && (
-        <div className="space-y-6 relative select-none">
+        <div className={`space-y-6 relative select-none ${antiCheatSettings.requireFullscreen && isMissingFullscreen ? 'pointer-events-none filter blur-md' : ''}`}>
           {/* Chống in đề thi / Save PDF */}
           <style>{`
             @media print {
@@ -4674,6 +4981,49 @@ export default function OnlineExamView({
               >
                 Nhấn vào đây để quay lại làm bài
               </button>
+            </div>
+          )}
+
+          {/* MANDATORY FULLSCREEN LOCKDOWN SHIELD (Chống bấm ESC hoặc thoát Fullscreen) */}
+          {antiCheatSettings.requireFullscreen && isMissingFullscreen && (
+            <div className="fixed inset-0 z-[120] bg-slate-950/95 backdrop-blur-2xl flex flex-col items-center justify-center p-6 text-center select-none animate-fadeIn pointer-events-auto filter-none">
+              <div className="max-w-lg w-full bg-slate-900 border-2 border-rose-500/80 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5 text-white text-center">
+                <div className="w-20 h-20 rounded-3xl bg-rose-500/20 border-2 border-rose-500 flex items-center justify-center mx-auto text-4xl shadow-lg shadow-rose-500/20 animate-pulse">
+                  ⚠️
+                </div>
+                
+                <div className="space-y-2">
+                  <span className="px-3 py-1 bg-rose-500/20 text-rose-300 border border-rose-500/40 rounded-full text-xs font-black uppercase tracking-wider">
+                    Quy chế thi trực tuyến
+                  </span>
+                  <h3 className="text-xl sm:text-2xl font-black uppercase text-white tracking-tight">
+                    Cảnh báo: Đã thoát toàn màn hình!
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
+                    Hệ thống phát hiện bạn vừa bấm phím <strong className="text-rose-400 font-mono bg-rose-950/80 px-2 py-0.5 rounded border border-rose-500/30">ESC</strong> hoặc thoát chế độ toàn màn hình. 
+                    Nội dung bài thi đã được tạm khóa để chống gian lận.
+                  </p>
+                </div>
+
+                <div className="p-3.5 bg-slate-950/70 rounded-2xl border border-slate-800 text-xs text-slate-300 space-y-1 text-left">
+                  <div className="flex items-center justify-between">
+                    <span>Số lần vi phạm đã ghi nhận:</span>
+                    <strong className="text-rose-400 text-sm font-black">{studentViolations} / {antiCheatSettings.maxViolations || 3} lần</strong>
+                  </div>
+                  <div className="text-[11px] text-amber-300/90 font-medium">
+                    Vui lòng bấm nút bên dưới để quay lại toàn màn hình ngay. Nếu vi phạm quá số lần cho phép, bài thi sẽ bị tự động thu và đình chỉ.
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={enterFullscreenAndLock}
+                  className="w-full py-4 px-6 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-sm uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2.5 shadow-xl shadow-emerald-500/25 active:scale-95 transition-all cursor-pointer"
+                >
+                  <Maximize2 className="w-5 h-5" />
+                  <span>BẬT LẠI TOÀN MÀN HÌNH ĐỂ TIẾP TỤC LÀM BÀI</span>
+                </button>
+              </div>
             </div>
           )}
           {/* Cụm cố định trên cùng: Thanh thông tin + Bảng danh sách câu hỏi cố định */}
@@ -5269,6 +5619,131 @@ export default function OnlineExamView({
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL QUẢN LÝ & CHUYỂN ĐỔI TÀI KHOẢN GIÁO VIÊN */}
+      {showAccountModal && (
+        <div className="fixed inset-0 z-[150] bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in">
+          <div className="bg-white rounded-[32px] max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-6 animate-in zoom-in-95 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center">
+                  <UserCheck className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black uppercase text-slate-900">Tài khoản Giáo viên & Kho riêng tư</h3>
+                  <p className="text-xs text-slate-500 font-medium">Bảo mật và phân tách đề thi theo từng tài khoản</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAccountModal(false)}
+                className="p-2 text-slate-400 hover:text-slate-600 rounded-xl"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-4 bg-emerald-50/70 border border-emerald-200/80 rounded-2xl text-xs text-emerald-950 space-y-1">
+              <p className="font-bold flex items-center gap-1.5 text-emerald-900">
+                <ShieldCheck className="w-4 h-4 text-emerald-700 shrink-0" /> Cơ chế bảo mật Kho riêng tư:
+              </p>
+              <p className="text-[11px] leading-relaxed text-emerald-900/90 font-medium">
+                Mỗi tài khoản giáo viên quản lý một <strong>Kho đề riêng tư hoàn toàn độc lập</strong>. Khi dùng tài khoản này đưa đề hoặc xóa đề, các tài khoản khác trên máy tính này hoặc thiết bị khác <strong>hoàn toàn không thấy và không thể xóa đề</strong> của thầy cô.
+              </p>
+            </div>
+
+            {/* Danh sách các tài khoản */}
+            <div className="space-y-3">
+              <span className="text-xs font-black uppercase text-slate-700 tracking-wide block">
+                Chọn tài khoản làm việc:
+              </span>
+              <div className="space-y-2">
+                {teacherAccountsList.map((acc) => {
+                  const isActive = acc.id === teacherAccount.id;
+                  return (
+                    <div
+                      key={acc.id}
+                      onClick={() => !isActive && handleSwitchAccount(acc)}
+                      className={`p-3.5 rounded-2xl border-2 flex items-center justify-between gap-3 transition-all cursor-pointer ${
+                        isActive
+                          ? 'border-emerald-500 bg-emerald-50/40 shadow-xs'
+                          : 'border-slate-200 hover:border-emerald-300 hover:bg-slate-50'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className={`w-9 h-9 rounded-xl bg-gradient-to-tr ${acc.avatarColor || 'from-emerald-600 to-teal-500'} text-white font-black text-xs flex items-center justify-center shrink-0 shadow-xs`}>
+                          {acc.name ? acc.name.slice(0, 1).toUpperCase() : 'G'}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-xs font-black text-slate-900 flex items-center gap-2 truncate">
+                            <span>{acc.name}</span>
+                            {isActive && (
+                              <span className="px-2 py-0.5 rounded-full bg-emerald-600 text-white text-[9px] font-black uppercase tracking-wider shrink-0">
+                                Đang chọn
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-[11px] text-slate-500 truncate">{acc.email}</div>
+                        </div>
+                      </div>
+
+                      {isActive ? (
+                        <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                      ) : (
+                        <span className="text-[11px] font-bold text-emerald-700 hover:underline shrink-0">
+                          Chuyển sang →
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Form thêm tài khoản mới */}
+            <form onSubmit={handleAddNewAccount} className="pt-3 border-t border-slate-100 space-y-3">
+              <span className="text-xs font-black uppercase text-slate-700 tracking-wide flex items-center gap-1.5">
+                <UserPlus className="w-4 h-4 text-emerald-600" /> Thêm hoặc đăng nhập tài khoản khác:
+              </span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <input
+                  type="text"
+                  required
+                  value={newAccountName}
+                  onChange={e => setNewAccountName(e.target.value)}
+                  placeholder="Họ tên (VD: Cô Nguyễn Lan)..."
+                  className="p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-900 focus:bg-white focus:border-emerald-500 focus:outline-none"
+                />
+                <input
+                  type="text"
+                  required
+                  value={newAccountEmail}
+                  onChange={e => setNewAccountEmail(e.target.value)}
+                  placeholder="Email / Tên tài khoản..."
+                  className="p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-900 focus:bg-white focus:border-emerald-500 focus:outline-none"
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-black uppercase flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-md"
+              >
+                <UserPlus className="w-3.5 h-3.5" />
+                <span>Thêm & Chuyển sang tài khoản này</span>
+              </button>
+            </form>
+
+            <div className="flex justify-end pt-2">
+              <button
+                type="button"
+                onClick={() => setShowAccountModal(false)}
+                className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl"
+              >
+                Đóng
+              </button>
+            </div>
           </div>
         </div>
       )}

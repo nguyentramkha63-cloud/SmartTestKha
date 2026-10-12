@@ -8,6 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const CACHE_FILE = path.resolve(__dirname, 'rooms_cache.json');
 const COMMUNITY_FILE = path.resolve(__dirname, 'community_exams.json');
+const TEACHER_LIBRARIES_FILE = path.resolve(__dirname, 'teacher_libraries.json');
 
 async function startServer() {
   const app = express();
@@ -59,6 +60,86 @@ async function startServer() {
     }
   };
 
+  // In-memory Teacher Private Libraries partitioned by Teacher Account
+  // accountId -> Map<examId, ExamItem>
+  const teacherLibraries = new Map<string, Map<string, any>>();
+  try {
+    if (fs.existsSync(TEACHER_LIBRARIES_FILE)) {
+      const saved = JSON.parse(fs.readFileSync(TEACHER_LIBRARIES_FILE, 'utf-8'));
+      Object.entries(saved).forEach(([accId, examsObj]: [string, any]) => {
+        const examMap = new Map<string, any>();
+        if (examsObj && typeof examsObj === 'object') {
+          Object.entries(examsObj).forEach(([exId, exVal]) => examMap.set(exId, exVal));
+        }
+        teacherLibraries.set(accId, examMap);
+      });
+      console.log(`[Cache] Loaded private libraries for ${teacherLibraries.size} teacher accounts.`);
+    }
+  } catch (err) {
+    console.warn('[Cache] Could not load teacher libraries:', err);
+  }
+
+  const persistTeacherLibraries = () => {
+    try {
+      const obj: Record<string, any> = {};
+      teacherLibraries.forEach((examMap, accId) => {
+        const examsObj: Record<string, any> = {};
+        examMap.forEach((v, k) => { examsObj[k] = v; });
+        obj[accId] = examsObj;
+      });
+      fs.writeFileSync(TEACHER_LIBRARIES_FILE, JSON.stringify(obj, null, 2), 'utf-8');
+    } catch (err) {
+      console.warn('[Cache] Could not save teacher libraries:', err);
+    }
+  };
+
+  // API: Get private exams for a specific teacher account
+  app.get('/api/teacher-library/:accountId', (req, res) => {
+    const { accountId } = req.params;
+    const examMap = teacherLibraries.get(accountId);
+    if (!examMap) return res.json([]);
+    const list = Array.from(examMap.values());
+    list.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    res.json(list);
+  });
+
+  // API: Save or update private exam in a specific teacher account's library
+  app.post('/api/teacher-library/:accountId', (req, res) => {
+    try {
+      const { accountId } = req.params;
+      const examItem = req.body;
+      if (!examItem || !examItem.id || !examItem.title) {
+        return res.status(400).json({ error: 'Thiếu dữ liệu đề thi' });
+      }
+      let examMap = teacherLibraries.get(accountId);
+      if (!examMap) {
+        examMap = new Map();
+        teacherLibraries.set(accountId, examMap);
+      }
+      examItem.ownerId = accountId;
+      examMap.set(examItem.id, examItem);
+      persistTeacherLibraries();
+      res.json({ success: true, item: examItem });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // API: Delete private exam from a specific teacher account's library
+  app.delete('/api/teacher-library/:accountId/:examId', (req, res) => {
+    try {
+      const { accountId, examId } = req.params;
+      const examMap = teacherLibraries.get(accountId);
+      if (examMap) {
+        examMap.delete(examId);
+        persistTeacherLibraries();
+      }
+      res.json({ success: true });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   // API: Get all public community exams
   app.get('/api/community-exams', (req, res) => {
     const list = Array.from(communityExams.values());
@@ -83,10 +164,15 @@ async function startServer() {
     }
   });
 
-  // API: Remove exam from community (revert to private)
+  // API: Remove exam from community (revert to private) - only allowed by the exam owner
   app.delete('/api/community-exams/:id', (req, res) => {
     try {
       const { id } = req.params;
+      const requesterId = (req.headers['x-teacher-id'] as string) || (req.query.requesterId as string);
+      const existing = communityExams.get(id);
+      if (existing && existing.ownerId && requesterId && existing.ownerId !== requesterId) {
+        return res.status(403).json({ error: 'Chỉ tài khoản giáo viên đã chia sẻ đề này mới có quyền gỡ đề!' });
+      }
       communityExams.delete(id);
       persistCommunity();
       res.json({ success: true });

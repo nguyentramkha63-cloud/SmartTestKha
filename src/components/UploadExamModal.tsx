@@ -136,7 +136,17 @@ export function UploadExamModal({
 
   const handleSaveToPrivateLibrary = (examToSave: ExamData) => {
     try {
-      const existingStr = localStorage.getItem('smarttest_exam_library');
+      let activeAccount = { id: 'nguyentramkha63@gmail.com', name: 'Thầy Nguyễn Trầm Kha', email: 'nguyentramkha63@gmail.com' };
+      try {
+        const savedAcc = localStorage.getItem('smarttest_active_teacher_account');
+        if (savedAcc) {
+          const parsed = JSON.parse(savedAcc);
+          if (parsed?.id) activeAccount = parsed;
+        }
+      } catch (_) {}
+
+      const accountLibKey = `smarttest_exam_library_${activeAccount.id}`;
+      const existingStr = localStorage.getItem(accountLibKey) || localStorage.getItem('smarttest_exam_library');
       const library = existingStr ? JSON.parse(existingStr) : [];
       const newId = 'lib_ext_' + Date.now();
       
@@ -151,7 +161,9 @@ export function UploadExamModal({
         allShuffledExams: [examToSave],
         createdAt: Date.now(),
         visibility: 'private', // Luôn nằm trong Kho riêng tư theo yêu cầu người dùng
-        author: 'Tôi (Giáo viên)',
+        author: activeAccount.name,
+        ownerId: activeAccount.id,
+        ownerEmail: activeAccount.email,
         isExternalUpload: true,
         source: selectedFile ? `File: ${selectedFile.name}` : 'Nguồn bên ngoài',
         config: {
@@ -168,7 +180,15 @@ export function UploadExamModal({
       };
 
       const updatedLib = [libraryItem, ...library].slice(0, 60);
+      localStorage.setItem(accountLibKey, JSON.stringify(updatedLib));
       localStorage.setItem('smarttest_exam_library', JSON.stringify(updatedLib));
+
+      // Sync to server account library
+      fetch(`/api/teacher-library/${encodeURIComponent(activeAccount.id)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(libraryItem)
+      }).catch(() => {});
     } catch (e) {
       console.warn('Lỗi lưu kho riêng tư:', e);
     }

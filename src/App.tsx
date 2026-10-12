@@ -447,7 +447,17 @@ export default function App() {
 
     // Lưu đề vào Thư viện đề trực tuyến (smarttest_exam_library)
     try {
-      const existingStr = localStorage.getItem('smarttest_exam_library');
+      let activeAccount = { id: 'nguyentramkha63@gmail.com', name: 'Thầy Nguyễn Trầm Kha', email: 'nguyentramkha63@gmail.com' };
+      try {
+        const savedAcc = localStorage.getItem('smarttest_active_teacher_account');
+        if (savedAcc) {
+          const parsed = JSON.parse(savedAcc);
+          if (parsed?.id) activeAccount = parsed;
+        }
+      } catch (_) {}
+
+      const accountLibKey = `smarttest_exam_library_${activeAccount.id}`;
+      const existingStr = localStorage.getItem(accountLibKey) || localStorage.getItem('smarttest_exam_library');
       const library = existingStr ? JSON.parse(existingStr) : [];
       const newId = 'lib_' + Date.now();
       const libraryItem = {
@@ -461,7 +471,9 @@ export default function App() {
         allShuffledExams: shuffledExams.length > 0 ? shuffledExams : [examToUse],
         createdAt: Date.now(),
         visibility: 'private', // Mặc định là Riêng tư (Bảo mật tuyệt đối cho kỳ thi)
-        author: 'Tôi (Giáo viên)',
+        author: activeAccount.name,
+        ownerId: activeAccount.id,
+        ownerEmail: activeAccount.email,
         config: {
           allowShuffleCodes: true,
           requireFullscreen: true,
@@ -478,7 +490,15 @@ export default function App() {
         !(it.title === libraryItem.title && it.subject === libraryItem.subject && it.grade === libraryItem.grade)
       );
       const updatedLib = [libraryItem, ...filtered].slice(0, 50);
+      localStorage.setItem(accountLibKey, JSON.stringify(updatedLib));
       localStorage.setItem('smarttest_exam_library', JSON.stringify(updatedLib));
+
+      // Sync to server account library
+      fetch(`/api/teacher-library/${encodeURIComponent(activeAccount.id)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(libraryItem)
+      }).catch(() => {});
     } catch (e) {
       console.warn('Lỗi lưu vào thư viện đề:', e);
     }
