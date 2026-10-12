@@ -43,11 +43,13 @@ import {
   Zap,
   Globe,
   AlertTriangle,
-  Upload
+  Upload,
+  UserCheck
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import OnlineExamView from './components/OnlineExamView';
 import { UploadExamModal } from './components/UploadExamModal';
+import { TeacherAccountModal } from './components/TeacherAccountModal';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
@@ -304,8 +306,10 @@ import type {
   SASubQuestion,
   Question,
   Specification,
-  ExamData
+  ExamData,
+  TeacherAccount
 } from './types';
+import { DEFAULT_TEACHER_ACCOUNT } from './types';
 
 export type {
   MCQOption,
@@ -313,7 +317,8 @@ export type {
   SASubQuestion,
   Question,
   Specification,
-  ExamData
+  ExamData,
+  TeacherAccount
 };
 
 const getRomanSection = (type: string, allQuestions: Question[]) => {
@@ -438,6 +443,62 @@ export default function App() {
     message: ''
   });
 
+  // Quản lý Tài khoản Giáo viên (Đăng nhập / Đổi tài khoản toàn hệ thống)
+  const [activeTeacherAccount, setActiveTeacherAccount] = useState<TeacherAccount>(() => {
+    try {
+      const saved = localStorage.getItem('smarttest_active_teacher_account');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed?.id) return parsed;
+      }
+    } catch (_) {}
+    return DEFAULT_TEACHER_ACCOUNT;
+  });
+
+  const [teacherAccountsList, setTeacherAccountsList] = useState<TeacherAccount[]>(() => {
+    try {
+      const saved = localStorage.getItem('smarttest_teacher_accounts_list');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (_) {}
+    return [
+      DEFAULT_TEACHER_ACCOUNT,
+      {
+        id: 'giaovien2@school.edu.vn',
+        name: 'Cô Trần Thị Lan',
+        email: 'giaovien2@school.edu.vn',
+        avatarColor: 'from-blue-600 to-indigo-700'
+      }
+    ];
+  });
+
+  const [showTeacherAccountModal, setShowTeacherAccountModal] = useState<boolean>(false);
+
+  const handleSwitchTeacherAccount = (account: TeacherAccount) => {
+    setActiveTeacherAccount(account);
+    try {
+      localStorage.setItem('smarttest_active_teacher_account', JSON.stringify(account));
+    } catch (_) {}
+    window.dispatchEvent(new CustomEvent('teacher-account-changed', { detail: account }));
+  };
+
+  const handleUpdateTeacherAccountsList = (list: TeacherAccount[]) => {
+    setTeacherAccountsList(list);
+    try {
+      localStorage.setItem('smarttest_teacher_accounts_list', JSON.stringify(list));
+    } catch (_) {}
+  };
+
+  const handleUpdateCurrentTeacherAccount = (updated: TeacherAccount) => {
+    setActiveTeacherAccount(updated);
+    try {
+      localStorage.setItem('smarttest_active_teacher_account', JSON.stringify(updated));
+    } catch (_) {}
+    window.dispatchEvent(new CustomEvent('teacher-account-changed', { detail: updated }));
+  };
+
   const handleExportToOnlineExam = (selectedExam?: ExamData & { code?: string }) => {
     const examToUse = selectedExam || (shuffledExams.length > 0 ? shuffledExams[0] : examData);
     if (!examToUse) {
@@ -447,15 +508,7 @@ export default function App() {
 
     // Lưu đề vào Thư viện đề trực tuyến (smarttest_exam_library)
     try {
-      let activeAccount = { id: 'nguyentramkha63@gmail.com', name: 'Thầy Nguyễn Trầm Kha', email: 'nguyentramkha63@gmail.com' };
-      try {
-        const savedAcc = localStorage.getItem('smarttest_active_teacher_account');
-        if (savedAcc) {
-          const parsed = JSON.parse(savedAcc);
-          if (parsed?.id) activeAccount = parsed;
-        }
-      } catch (_) {}
-
+      const activeAccount = activeTeacherAccount;
       const accountLibKey = `smarttest_exam_library_${activeAccount.id}`;
       const existingStr = localStorage.getItem(accountLibKey) || localStorage.getItem('smarttest_exam_library');
       const library = existingStr ? JSON.parse(existingStr) : [];
@@ -3143,32 +3196,61 @@ export default function App() {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2 bg-white p-1.5 rounded-2xl shadow-sm border border-slate-100">
-            <span className="text-[10px] font-bold text-black px-2 uppercase">Tác vụ:</span>
-            <button onClick={handleNewAndClose} className="bg-rose-500 text-white p-2 rounded-xl hover:bg-rose-600 transition-colors flex items-center gap-2 px-4 text-sm font-bold">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex items-center gap-1.5 sm:gap-2 bg-white p-1.5 rounded-2xl shadow-sm border border-slate-100">
+            <span className="text-[10px] font-bold text-black px-2 uppercase hidden sm:inline">Tác vụ:</span>
+            <button onClick={handleNewAndClose} className="bg-rose-500 text-white p-2 rounded-xl hover:bg-rose-600 transition-colors flex items-center gap-2 px-3 sm:px-4 text-xs sm:text-sm font-bold">
               <Plus className="w-4 h-4" /> Mới và Đóng
             </button>
-            <button onClick={openState} className="btn-outline text-sm">
+            <button onClick={openState} className="btn-outline text-xs sm:text-sm">
               <FolderOpen className="w-4 h-4" /> Mở
             </button>
-            <button onClick={saveState} className="btn-outline text-sm bg-brand-primary/5 text-brand-primary border-brand-primary/20">
+            <button onClick={saveState} className="btn-outline text-xs sm:text-sm bg-brand-primary/5 text-brand-primary border-brand-primary/20">
               <Save className="w-4 h-4" /> Lưu
             </button>
-            <button onClick={() => setShowApiKeyModal(true)} className="btn-outline text-sm bg-slate-900 text-white border-slate-900">
+            <button onClick={() => setShowApiKeyModal(true)} className="btn-outline text-xs sm:text-sm bg-slate-900 text-white border-slate-900">
               <Settings className="w-4 h-4" /> Cài đặt API
             </button>
-            <button onClick={() => setShowGuide(true)} className="btn-outline text-sm bg-blue-600 text-white border-blue-600 hover:bg-blue-700">
+            <button onClick={() => setShowGuide(true)} className="btn-outline text-xs sm:text-sm bg-blue-600 text-white border-blue-600 hover:bg-blue-700">
               <HelpCircle className="w-4 h-4" /> Hướng dẫn
             </button>
             <button 
               onClick={() => setShowUpdateModal(true)} 
-              className="btn-outline text-sm bg-amber-500 hover:bg-amber-600 text-white border-amber-500 font-bold flex items-center gap-1.5 shadow-sm"
+              className="btn-outline text-xs sm:text-sm bg-amber-500 hover:bg-amber-600 text-white border-amber-500 font-bold flex items-center gap-1.5 shadow-sm"
               title="Xem thông báo cập nhật mới và lưu ý quan trọng"
             >
               <AlertTriangle className="w-4 h-4" /> Cập nhật mới
             </button>
+          </div>
 
+          {/* VỊ TRÍ TÀI KHOẢN GIÁO VIÊN & NÚT ĐỔI TÀI KHOẢN (TRÊN HEADER CHUẨN TẤT CẢ TÁC VỤ) */}
+          <div className="flex items-center gap-2 bg-white p-1.5 px-3 rounded-2xl shadow-sm border border-slate-200 hover:border-emerald-300 transition-all">
+            <div 
+              onClick={() => setShowTeacherAccountModal(true)}
+              className="flex items-center gap-2.5 cursor-pointer group"
+              title="Nhấp để xem thông tin hoặc đổi tài khoản giáo viên"
+            >
+              <div className={`w-8 h-8 rounded-xl bg-gradient-to-tr ${activeTeacherAccount.avatarColor || 'from-emerald-600 to-teal-500'} text-white font-black text-xs flex items-center justify-center shadow-xs shrink-0 ring-2 ring-emerald-500/20`}>
+                {activeTeacherAccount.name ? activeTeacherAccount.name.slice(0, 1).toUpperCase() : 'G'}
+              </div>
+              <div className="text-left hidden md:block">
+                <div className="text-xs font-black text-slate-900 group-hover:text-emerald-700 transition-colors flex items-center gap-1.5 leading-tight">
+                  <span className="truncate max-w-[130px]">{activeTeacherAccount.name}</span>
+                  <span className="text-[9px] font-black px-1.5 py-0.2 rounded-md bg-emerald-100 text-emerald-800">Kho riêng</span>
+                </div>
+                <div className="text-[10px] text-slate-500 font-medium truncate max-w-[140px]">{activeTeacherAccount.email}</div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowTeacherAccountModal(true)}
+              className="px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-black rounded-xl transition-all border border-emerald-200/80 cursor-pointer flex items-center gap-1.5 shadow-2xs hover:shadow-xs active:scale-95"
+              title="Chuyển đổi hoặc đăng nhập tài khoản giáo viên khác"
+            >
+              <UserCheck className="w-3.5 h-3.5 text-emerald-700" />
+              <span className="font-bold">Đổi tài khoản</span>
+            </button>
           </div>
         </div>
       </header>
@@ -4557,6 +4639,8 @@ export default function App() {
           tfPoints={tfPoints}
           saPoints={saPoints}
           essays={essays}
+          activeTeacherAccount={activeTeacherAccount}
+          onOpenAccountModal={() => setShowTeacherAccountModal(true)}
         />
       ) : (
         <div className="flex flex-col items-center justify-center py-20 card">
@@ -4878,6 +4962,17 @@ export default function App() {
           defaultGrade={grade}
         />
       )}
+
+      {/* Teacher Account Management & Switcher Modal */}
+      <TeacherAccountModal
+        isOpen={showTeacherAccountModal}
+        onClose={() => setShowTeacherAccountModal(false)}
+        currentAccount={activeTeacherAccount}
+        accountsList={teacherAccountsList}
+        onSwitchAccount={handleSwitchTeacherAccount}
+        onUpdateAccountsList={handleUpdateTeacherAccountsList}
+        onUpdateCurrentAccount={handleUpdateCurrentTeacherAccount}
+      />
 
       <Analytics />
       

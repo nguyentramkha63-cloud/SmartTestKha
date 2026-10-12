@@ -245,6 +245,8 @@ interface OnlineExamViewProps {
   onSelectExamCode?: (chosenExam: ExamData & { code?: string }) => void;
   initialTab?: 'library' | 'room' | 'report' | 'settings';
   onOpenUploadModal?: () => void;
+  activeTeacherAccount?: TeacherAccount;
+  onOpenAccountModal?: () => void;
 }
 
 export default function OnlineExamView({
@@ -261,7 +263,9 @@ export default function OnlineExamView({
   defaultRoomCode = '',
   onSelectExamCode,
   initialTab = 'library',
-  onOpenUploadModal
+  onOpenUploadModal,
+  activeTeacherAccount: activeTeacherAccountProp,
+  onOpenAccountModal
 }: OnlineExamViewProps) {
   // Check URL params
   const urlParams = useMemo(() => new URLSearchParams(window.location.search), []);
@@ -1844,6 +1848,23 @@ export default function OnlineExamView({
     fetchAccountLibrary();
   }, [teacherAccount.id, role]);
 
+  useEffect(() => {
+    if (activeTeacherAccountProp && activeTeacherAccountProp.id !== teacherAccount.id) {
+      handleSwitchAccount(activeTeacherAccountProp);
+    }
+  }, [activeTeacherAccountProp]);
+
+  useEffect(() => {
+    const handleAccountEvent = (e: any) => {
+      const newAcc = e.detail;
+      if (newAcc && newAcc.id) {
+        handleSwitchAccount(newAcc);
+      }
+    };
+    window.addEventListener('teacher-account-changed', handleAccountEvent);
+    return () => window.removeEventListener('teacher-account-changed', handleAccountEvent);
+  }, []);
+
   const handleSwitchAccount = async (targetAccount: TeacherAccount) => {
     setTeacherAccount(targetAccount);
     try {
@@ -2210,8 +2231,8 @@ export default function OnlineExamView({
     return (
       <div className="max-w-7xl mx-auto space-y-6 animate-in fade-in pb-16">
         
-        {/* Top bar with Teacher Account Switcher */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        {/* Top bar with Step 5 title */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
           <div className="flex items-center gap-2.5">
             <span className="p-2 bg-emerald-600 text-white rounded-xl shadow-xs">
               <Radio className="w-5 h-5 animate-pulse" />
@@ -2220,29 +2241,6 @@ export default function OnlineExamView({
               <h2 className="text-sm sm:text-base font-black text-slate-900 uppercase tracking-tight">Hệ thống Thi Online & Phòng thi Trực tuyến</h2>
               <p className="text-[11px] text-slate-500 font-medium">Tổ chức kiểm tra trắc nghiệm, quản lý phòng thi và chấm điểm tự động</p>
             </div>
-          </div>
-
-          {/* Teacher Account Profile Badge & Switcher */}
-          <div className="flex items-center gap-2 bg-white px-3.5 py-2 rounded-2xl border border-slate-200 shadow-2xs">
-            <div className={`w-8 h-8 rounded-xl bg-gradient-to-tr ${teacherAccount.avatarColor || 'from-emerald-600 to-teal-500'} text-white font-black text-xs flex items-center justify-center shadow-xs shrink-0`}>
-              {teacherAccount.name ? teacherAccount.name.slice(0, 1).toUpperCase() : 'G'}
-            </div>
-            <div className="text-left">
-              <div className="text-xs font-black text-slate-900 flex items-center gap-1.5">
-                <span>{teacherAccount.name}</span>
-                <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800">Kho riêng tư</span>
-              </div>
-              <div className="text-[11px] text-slate-500 font-medium">{teacherAccount.email}</div>
-            </div>
-            <button
-              type="button"
-              onClick={() => setShowAccountModal(true)}
-              className="ml-2 px-2.5 py-1.5 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 text-slate-700 text-xs font-bold rounded-xl transition-all border border-slate-200 cursor-pointer flex items-center gap-1"
-              title="Quản lý / Đổi tài khoản giáo viên"
-            >
-              <UserCheck className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Đổi tài khoản</span>
-            </button>
           </div>
         </div>
 
@@ -3228,12 +3226,6 @@ export default function OnlineExamView({
                     </a>
                   </div>
                 </div>
-
-                {/* Ghi chú về lỗi 403 khi quét bằng điện thoại */}
-                <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-[11px] text-amber-900 leading-relaxed font-medium">
-                  <strong className="block text-amber-950 font-black mb-0.5">⚠️ Lưu ý khi quét mã QR bằng điện thoại:</strong>
-                  Khi ứng dụng đang chạy ở môi trường phát triển / xem thử (Google Cloud AI Studio / Localhost), điện thoại quét mã QR hoặc mở link có thể bị báo lỗi <strong>403 Forbidden</strong> do cơ chế bảo mật sandbox chặn thiết bị ngoài truy cập. Thầy cô và học sinh nên mở thi trực tiếp trên máy tính trường hoặc mở tab mới bằng nút <strong>"Mở tab thi thử"</strong> / nhập <strong>Mã PIN {roomCode}</strong>.
-                </div>
               </div>
 
               <div className="text-xs font-bold text-slate-600">
@@ -4033,7 +4025,7 @@ export default function OnlineExamView({
 
           return (
             <div className="fixed inset-0 z-[160] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in">
-              <div className="bg-white rounded-[32px] max-w-lg w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
+              <div className="bg-white rounded-[32px] max-w-xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
                 {/* Header */}
                 <div className="p-6 border-b border-slate-100 flex items-start justify-between gap-4 bg-gradient-to-r from-emerald-900 to-teal-900 text-white">
                   <div className="space-y-1">
@@ -4164,12 +4156,39 @@ export default function OnlineExamView({
                 </div>
 
                 {/* Footer Actions */}
-                <div className="p-4 border-t border-slate-200 bg-slate-50 flex flex-col sm:flex-row items-center justify-between gap-3">
-                  <div className="flex items-center gap-2 w-full sm:w-auto">
+                <div className="p-4 sm:p-5 border-t border-slate-200 bg-slate-50 space-y-3">
+                  {/* Hàng nút hành động chính: Hướng dẫn HS vào phòng & Phát đề */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        handleCreateNewClassSession(item, true, false);
+                        setRole('student');
+                        setIsTeacherGuidanceMode(true);
+                      }}
+                      className="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md shadow-slate-900/20 active:scale-95 transition-all cursor-pointer"
+                      title="Mở phòng và chuyển ngay sang màn hình thi để giáo viên hướng dẫn học sinh"
+                    >
+                      <GraduationCap className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span>Hướng dẫn HS vào phòng</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleCreateNewClassSession(item, true, false)}
+                      className="w-full py-2.5 px-5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md shadow-emerald-600/20 active:scale-95 transition-all cursor-pointer"
+                    >
+                      <Play className="w-4 h-4 fill-current shrink-0" />
+                      <span>Phát đề (Mở phòng)</span>
+                    </button>
+                  </div>
+
+                  {/* Hàng nút phụ: Hủy bỏ & Cài đặt cấu hình */}
+                  <div className="flex items-center justify-between gap-3 pt-1 border-t border-slate-200/70">
                     <button
                       type="button"
                       onClick={() => setCreatingClassForExam(null)}
-                      className="flex-1 sm:flex-none px-4 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-bold text-xs"
+                      className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-bold text-xs transition-colors cursor-pointer"
                     >
                       Hủy bỏ
                     </button>
@@ -4180,36 +4199,11 @@ export default function OnlineExamView({
                         setTempConfig({ ...defaultExamConfig, ...(item.config || {}) });
                         setConfiguringLibraryExam(item);
                       }}
-                      className="flex-1 sm:flex-none px-3.5 py-2.5 bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs"
+                      className="px-4 py-2 bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer"
                       title="Cài đặt 8 cấu hình bảo mật phòng thi trước khi phát đề"
                     >
-                      <Settings className="w-3.5 h-3.5 text-emerald-600" />
+                      <Settings className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                       <span>Cài đặt cấu hình</span>
-                    </button>
-                  </div>
-
-                  <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        handleCreateNewClassSession(item, true, false);
-                        setRole('student');
-                        setIsTeacherGuidanceMode(true);
-                      }}
-                      className="w-full sm:w-auto px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-md shadow-slate-900/20 active:scale-95 transition-all cursor-pointer"
-                      title="Mở phòng và chuyển ngay sang màn hình thi để giáo viên hướng dẫn học sinh"
-                    >
-                      <GraduationCap className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>Hướng dẫn HS vào phòng</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => handleCreateNewClassSession(item, true, false)}
-                      className="w-full sm:w-auto px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/20 active:scale-95 transition-all cursor-pointer"
-                    >
-                      <Play className="w-3.5 h-3.5 fill-current" />
-                      <span>Phát đề (Mở phòng)</span>
                     </button>
                   </div>
                 </div>
@@ -5619,131 +5613,6 @@ export default function OnlineExamView({
                 </button>
               </div>
             </form>
-          </div>
-        </div>
-      )}
-
-      {/* MODAL QUẢN LÝ & CHUYỂN ĐỔI TÀI KHOẢN GIÁO VIÊN */}
-      {showAccountModal && (
-        <div className="fixed inset-0 z-[150] bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in">
-          <div className="bg-white rounded-[32px] max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-6 animate-in zoom-in-95 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b pb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center">
-                  <UserCheck className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-black uppercase text-slate-900">Tài khoản Giáo viên & Kho riêng tư</h3>
-                  <p className="text-xs text-slate-500 font-medium">Bảo mật và phân tách đề thi theo từng tài khoản</p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowAccountModal(false)}
-                className="p-2 text-slate-400 hover:text-slate-600 rounded-xl"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="p-4 bg-emerald-50/70 border border-emerald-200/80 rounded-2xl text-xs text-emerald-950 space-y-1">
-              <p className="font-bold flex items-center gap-1.5 text-emerald-900">
-                <ShieldCheck className="w-4 h-4 text-emerald-700 shrink-0" /> Cơ chế bảo mật Kho riêng tư:
-              </p>
-              <p className="text-[11px] leading-relaxed text-emerald-900/90 font-medium">
-                Mỗi tài khoản giáo viên quản lý một <strong>Kho đề riêng tư hoàn toàn độc lập</strong>. Khi dùng tài khoản này đưa đề hoặc xóa đề, các tài khoản khác trên máy tính này hoặc thiết bị khác <strong>hoàn toàn không thấy và không thể xóa đề</strong> của thầy cô.
-              </p>
-            </div>
-
-            {/* Danh sách các tài khoản */}
-            <div className="space-y-3">
-              <span className="text-xs font-black uppercase text-slate-700 tracking-wide block">
-                Chọn tài khoản làm việc:
-              </span>
-              <div className="space-y-2">
-                {teacherAccountsList.map((acc) => {
-                  const isActive = acc.id === teacherAccount.id;
-                  return (
-                    <div
-                      key={acc.id}
-                      onClick={() => !isActive && handleSwitchAccount(acc)}
-                      className={`p-3.5 rounded-2xl border-2 flex items-center justify-between gap-3 transition-all cursor-pointer ${
-                        isActive
-                          ? 'border-emerald-500 bg-emerald-50/40 shadow-xs'
-                          : 'border-slate-200 hover:border-emerald-300 hover:bg-slate-50'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div className={`w-9 h-9 rounded-xl bg-gradient-to-tr ${acc.avatarColor || 'from-emerald-600 to-teal-500'} text-white font-black text-xs flex items-center justify-center shrink-0 shadow-xs`}>
-                          {acc.name ? acc.name.slice(0, 1).toUpperCase() : 'G'}
-                        </div>
-                        <div className="min-w-0">
-                          <div className="text-xs font-black text-slate-900 flex items-center gap-2 truncate">
-                            <span>{acc.name}</span>
-                            {isActive && (
-                              <span className="px-2 py-0.5 rounded-full bg-emerald-600 text-white text-[9px] font-black uppercase tracking-wider shrink-0">
-                                Đang chọn
-                              </span>
-                            )}
-                          </div>
-                          <div className="text-[11px] text-slate-500 truncate">{acc.email}</div>
-                        </div>
-                      </div>
-
-                      {isActive ? (
-                        <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-                      ) : (
-                        <span className="text-[11px] font-bold text-emerald-700 hover:underline shrink-0">
-                          Chuyển sang →
-                        </span>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Form thêm tài khoản mới */}
-            <form onSubmit={handleAddNewAccount} className="pt-3 border-t border-slate-100 space-y-3">
-              <span className="text-xs font-black uppercase text-slate-700 tracking-wide flex items-center gap-1.5">
-                <UserPlus className="w-4 h-4 text-emerald-600" /> Thêm hoặc đăng nhập tài khoản khác:
-              </span>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                <input
-                  type="text"
-                  required
-                  value={newAccountName}
-                  onChange={e => setNewAccountName(e.target.value)}
-                  placeholder="Họ tên (VD: Cô Nguyễn Lan)..."
-                  className="p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-900 focus:bg-white focus:border-emerald-500 focus:outline-none"
-                />
-                <input
-                  type="text"
-                  required
-                  value={newAccountEmail}
-                  onChange={e => setNewAccountEmail(e.target.value)}
-                  placeholder="Email / Tên tài khoản..."
-                  className="p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-900 focus:bg-white focus:border-emerald-500 focus:outline-none"
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-black uppercase flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-md"
-              >
-                <UserPlus className="w-3.5 h-3.5" />
-                <span>Thêm & Chuyển sang tài khoản này</span>
-              </button>
-            </form>
-
-            <div className="flex justify-end pt-2">
-              <button
-                type="button"
-                onClick={() => setShowAccountModal(false)}
-                className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl"
-              >
-                Đóng
-              </button>
-            </div>
           </div>
         </div>
       )}

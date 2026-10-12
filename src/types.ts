@@ -58,3 +58,21 @@ export interface ExamData {
   isSimpleExport?: boolean;
   contexts?: { topic: string; content: string }[];
 }
+
+export interface TeacherAccount {
+  id: string; // email or unique key
+  name: string; // e.g. 'Thầy Nguyễn Trầm Kha'
+  email: string;
+  avatarColor?: string;
+  school?: string;
+  subject?: string;
+}
+
+export const DEFAULT_TEACHER_ACCOUNT: TeacherAccount = {
+  id: 'nguyentramkha63@gmail.com',
+  name: 'Thầy Nguyễn Trầm Kha',
+  email: 'nguyentramkha63@gmail.com',
+  avatarColor: 'from-emerald-600 to-teal-700',
+  school: 'Trường THPT',
+  subject: 'Toán học'
+};
