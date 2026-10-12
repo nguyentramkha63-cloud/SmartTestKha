@@ -2391,7 +2391,7 @@ export default function OnlineExamView({
                   const isJustExported = idx === 0 && (Date.now() - (item.createdAt || 0) < 600000 || initialExam?.title === item.title);
                   return (
                     <div 
-                      key={item.id}
+                      key={item.id ? `exam_${item.id}_${idx}` : `exam_${idx}`}
                       className={`bg-white rounded-3xl border-2 p-6 transition-all hover:shadow-lg space-y-5 ${
                         isJustExported ? 'border-emerald-500 shadow-md ring-2 ring-emerald-500/20' :
                         isCurrentActive ? 'border-emerald-400 ring-1 ring-emerald-400/20' : 'border-slate-200'
@@ -2467,7 +2467,7 @@ export default function OnlineExamView({
                               </div>
                             ) : (
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                {item.sessions.map((sess) => {
+                                {item.sessions.map((sess, sIdx) => {
                                   const submittedCount = sess.students.filter(s => s.status === 'submitted').length;
                                   const totalCount = sess.students.length;
                                   const scores = sess.students.filter(s => s.status === 'submitted' && typeof s.score === 'number').map(s => s.score as number);
@@ -2476,7 +2476,7 @@ export default function OnlineExamView({
 
                                   return (
                                     <div
-                                      key={sess.id}
+                                      key={sess.id ? `sess_${item.id}_${sess.id}_${sIdx}` : `sess_${item.id}_${sIdx}`}
                                       onClick={() => handleViewClassResult(item, sess)}
                                       className="p-3 rounded-2xl border border-slate-200 hover:border-emerald-500 bg-white hover:bg-emerald-50/30 transition-all cursor-pointer group shadow-2xs space-y-1.5 relative"
                                     >
@@ -2937,9 +2937,9 @@ export default function OnlineExamView({
                 <span className="text-xs font-bold text-slate-600 flex items-center gap-1">
                   <GraduationCap className="w-3.5 h-3.5 text-emerald-600" /> Bảng điểm các lớp đã thi:
                 </span>
-                {examLibrary.flatMap(e => (e.sessions || []).map(sess => ({ exam: e, session: sess }))).map(({ exam, session }) => (
+                {examLibrary.flatMap(e => (e.sessions || []).map(sess => ({ exam: e, session: sess }))).map(({ exam, session }, sIdx) => (
                   <button
-                    key={session.id}
+                    key={`${exam.id}_${session.id}_${sIdx}`}
                     onClick={() => handleViewClassResult(exam, session)}
                     className="px-3 py-1.5 bg-white hover:bg-emerald-50 text-slate-800 hover:text-emerald-800 rounded-xl border border-slate-200 hover:border-emerald-300 text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-all"
                   >
@@ -3297,9 +3297,9 @@ export default function OnlineExamView({
                     >
                       Đề gốc
                     </button>
-                    {previewingLibraryExam.allShuffledExams.map(ex => (
+                    {previewingLibraryExam.allShuffledExams.map((ex, exIdx) => (
                       <button
-                        key={ex.code}
+                        key={ex.code ? `shuf_${ex.code}` : `shuf_idx_${exIdx}`}
                         onClick={() => {
                           setSelectedPreviewCode(ex.code);
                           setEditingQuestionIdx(null);
@@ -3324,7 +3324,7 @@ export default function OnlineExamView({
                   ) : (
                     questions.map((q, qIdx) => (
                       editingQuestionIdx === qIdx && editingQuestionDraft ? (
-                        <div key={q.id || qIdx} className="p-5 bg-white rounded-2xl border-2 border-emerald-500 shadow-xl space-y-4 animate-in fade-in">
+                        <div key={q.id ? `edit_q_${q.id}_${qIdx}` : `edit_q_${qIdx}`} className="p-5 bg-white rounded-2xl border-2 border-emerald-500 shadow-xl space-y-4 animate-in fade-in">
                           {/* Header of Editor */}
                           <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100">
                             <div className="flex items-center gap-2">
@@ -3560,7 +3560,7 @@ export default function OnlineExamView({
                           </div>
                         </div>
                       ) : (
-                        <div key={q.id || qIdx} className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3 hover:border-slate-300 transition-colors">
+                        <div key={q.id ? `view_q_${q.id}_${qIdx}` : `view_q_${qIdx}`} className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3 hover:border-slate-300 transition-colors">
                           <div className="flex items-center justify-between">
                             <span className="text-xs font-black text-emerald-800 uppercase flex items-center gap-1.5">
                               <span className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-[11px]">
@@ -3590,9 +3590,9 @@ export default function OnlineExamView({
                           {/* MCQ Options */}
                           {q.type === 'MCQ' && q.options && (
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-                              {q.options.map((opt) => (
+                              {q.options.map((opt, oIdx) => (
                                 <div
-                                  key={opt.id}
+                                  key={opt.id ? `prev_opt_${opt.id}_${oIdx}` : `prev_opt_${oIdx}`}
                                   className={`p-2.5 rounded-xl border text-xs font-medium flex items-start gap-2 ${
                                     opt.isCorrect
                                       ? 'bg-emerald-50 border-emerald-400 text-emerald-900 font-bold ring-1 ring-emerald-400'
@@ -3623,7 +3623,7 @@ export default function OnlineExamView({
                               {q.tfSubQuestions.map((sub, sIdx) => {
                                 const letter = String.fromCharCode(97 + sIdx);
                                 return (
-                                  <div key={sIdx} className="p-2.5 bg-white rounded-xl border border-slate-200 flex items-center justify-between gap-3 text-xs">
+                                  <div key={sub.id ? `prev_tf_${sub.id}_${sIdx}` : `prev_tf_${sIdx}`} className="p-2.5 bg-white rounded-xl border border-slate-200 flex items-center justify-between gap-3 text-xs">
                                     <div className="flex items-start gap-2 flex-1">
                                       <span className="font-bold text-slate-900">({letter})</span>
                                       <MathRenderer content={sub.text} />
@@ -3645,7 +3645,7 @@ export default function OnlineExamView({
                               {q.saSubQuestions.map((sub, sIdx) => {
                                 const letter = String.fromCharCode(97 + sIdx);
                                 return (
-                                  <div key={sIdx} className="p-2.5 bg-white rounded-xl border border-slate-200 flex items-center justify-between gap-3 text-xs">
+                                  <div key={sub.id ? `prev_sa_${sub.id}_${sIdx}` : `prev_sa_${sIdx}`} className="p-2.5 bg-white rounded-xl border border-slate-200 flex items-center justify-between gap-3 text-xs">
                                     <div className="flex items-start gap-2 flex-1">
                                       <span className="font-bold text-slate-900">({letter})</span>
                                       <MathRenderer content={sub.text} />
@@ -5139,11 +5139,11 @@ export default function OnlineExamView({
                 {/* Phần I: MCQ */}
                 {q.type === 'MCQ' && q.options && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-                    {q.options.map(opt => {
+                    {q.options.map((opt, oIdx) => {
                       const isChosen = studentAnswers.mcq[idx] === opt.id;
                       return (
                         <div
-                          key={opt.id}
+                          key={opt.id ? `stu_opt_${opt.id}_${oIdx}` : `stu_opt_${idx}_${oIdx}`}
                           onClick={() => {
                             setStudentAnswers(prev => {
                               const next = { ...prev, mcq: { ...prev.mcq, [idx]: opt.id } };
@@ -5170,7 +5170,7 @@ export default function OnlineExamView({
                       const letter = String.fromCharCode(97 + sIdx);
                       const choice = studentAnswers.tf[idx]?.[sIdx];
                       return (
-                        <div key={sIdx} className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                        <div key={sub.id ? `stu_tf_${sub.id}_${sIdx}` : `stu_tf_${idx}_${sIdx}`} className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                           <div className="text-xs text-slate-800 flex items-start gap-2">
                             <span className="font-bold text-slate-900 uppercase">({letter})</span>
                             <MathRenderer content={sub.text} />
@@ -5218,7 +5218,7 @@ export default function OnlineExamView({
                       const letter = String.fromCharCode(97 + sIdx);
                       const currentVal = studentAnswers.sa[idx]?.[sIdx] || '';
                       return (
-                        <div key={sIdx} className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+                        <div key={sub.id ? `stu_sa_${sub.id}_${sIdx}` : `stu_sa_${idx}_${sIdx}`} className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
                           <div className="text-xs text-slate-800 flex items-start gap-2">
                             <span className="font-bold text-slate-900 uppercase">({letter})</span>
                             <MathRenderer content={sub.text} />
@@ -5317,7 +5317,7 @@ export default function OnlineExamView({
                   const isMcqCorrect = studentMcq === correctMcq;
 
                   return (
-                    <div key={idx} className="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-xs space-y-2">
+                    <div key={q.id ? `res_q_${q.id}_${idx}` : `res_q_${idx}`} className="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-xs space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="font-bold text-emerald-900">Câu {idx + 1} ({q.type})</span>
                         {q.type === 'MCQ' && (

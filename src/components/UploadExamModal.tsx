@@ -602,9 +602,9 @@ export function UploadExamModal({
                         {/* MCQ Options */}
                         {q.type === 'MCQ' && q.options && (
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-                            {q.options.map(opt => (
+                            {q.options.map((opt, oIdx) => (
                               <div
-                                key={opt.id}
+                                key={opt.id ? `upl_opt_${opt.id}_${oIdx}` : `upl_opt_${oIdx}`}
                                 className={`p-2 rounded-xl text-xs flex items-start gap-2 border ${
                                   opt.isCorrect 
                                     ? 'bg-emerald-50 border-emerald-300 font-bold text-emerald-950' 
@@ -632,9 +632,9 @@ export function UploadExamModal({
                         {/* TF Sub-questions */}
                         {q.type === 'TF' && q.tfSubQuestions && (
                           <div className="space-y-1.5 pt-1">
-                            {q.tfSubQuestions.map(sub => (
+                            {q.tfSubQuestions.map((sub, sIdx) => (
                               <div
-                                key={sub.id}
+                                key={sub.id ? `upl_tf_${sub.id}_${sIdx}` : `upl_tf_${sIdx}`}
                                 className="p-2 bg-white border border-slate-200 rounded-xl text-xs flex items-center justify-between gap-2"
                               >
                                 <div className="flex items-center gap-2 min-w-0">
